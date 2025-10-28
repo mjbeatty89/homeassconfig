@@ -14,13 +14,6 @@ views:
         content: |
           # 🏠 Home Sensor Status
           **Monitor all motion and occupancy sensors throughout your home**
-        style: |
-          ha-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 10px;
-            border-radius: 15px;
-          }
 
       # Living Room
       - type: vertical-stack
@@ -28,30 +21,16 @@ views:
           - type: markdown
             content: |
               ## 🛋️ Living Room
-            style: |
-              ha-card {
-                background: rgba(102, 126, 234, 0.1);
-                border-left: 4px solid #667eea;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
                 entity: binary_sensor.living_room_motion
                 name: Motion
                 icon: mdi:motion-sensor
-                style: |
-                  ha-card {
-                    border-radius: 10px;
-                  }
               - type: entity
                 entity: binary_sensor.living_room_occupancy
                 name: Occupancy
                 icon: mdi:account-check
-                style: |
-                  ha-card {
-                    border-radius: 10px;
-                  }
 
       # Kitchen
       - type: vertical-stack
@@ -59,12 +38,6 @@ views:
           - type: markdown
             content: |
               ## 🍳 Kitchen
-            style: |
-              ha-card {
-                background: rgba(34, 193, 195, 0.1);
-                border-left: 4px solid #22c1c3;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -82,12 +55,6 @@ views:
           - type: markdown
             content: |
               ## 🛏️ Bedroom
-            style: |
-              ha-card {
-                background: rgba(253, 121, 168, 0.1);
-                border-left: 4px solid #fd79a8;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -105,12 +72,6 @@ views:
           - type: markdown
             content: |
               ## 🚿 Bathroom
-            style: |
-              ha-card {
-                background: rgba(0, 184, 212, 0.1);
-                border-left: 4px solid #00b8d4;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -128,12 +89,6 @@ views:
           - type: markdown
             content: |
               ## 💼 Office
-            style: |
-              ha-card {
-                background: rgba(255, 159, 64, 0.1);
-                border-left: 4px solid #ff9f40;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -151,12 +106,6 @@ views:
           - type: markdown
             content: |
               ## 🚪 Hallway
-            style: |
-              ha-card {
-                background: rgba(156, 39, 176, 0.1);
-                border-left: 4px solid #9c27b0;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -174,12 +123,6 @@ views:
           - type: markdown
             content: |
               ## 🚗 Garage
-            style: |
-              ha-card {
-                background: rgba(96, 125, 139, 0.1);
-                border-left: 4px solid #607d8b;
-                padding: 5px;
-              }
           - type: horizontal-stack
             cards:
               - type: entity
@@ -198,10 +141,4 @@ views:
           ### 📊 Quick Stats
           **Total Sensors:** 14 (7 Motion + 7 Occupancy)
           
-          **Last Updated:** {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
-        style: |
-          ha-card {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 15px;
-            padding: 10px;
-          }
+          **Rooms Monitored:** 7 (Living Room, Kitchen, Bedroom, Bathroom, Office, Hallway, Garage)

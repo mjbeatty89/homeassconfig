@@ -7,7 +7,7 @@
     living_room_motion:
       friendly_name: "Living Room Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.living_room_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.living_room_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.living_room_motion_state', 'on') %}
           mdi:motion-sensor
@@ -18,7 +18,7 @@
     living_room_occupancy:
       friendly_name: "Living Room Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.living_room_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.living_room_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.living_room_occupancy_state', 'on') %}
           mdi:account-check
@@ -30,7 +30,7 @@
     kitchen_motion:
       friendly_name: "Kitchen Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.kitchen_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.kitchen_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.kitchen_motion_state', 'on') %}
           mdi:motion-sensor
@@ -41,7 +41,7 @@
     kitchen_occupancy:
       friendly_name: "Kitchen Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.kitchen_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.kitchen_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.kitchen_occupancy_state', 'on') %}
           mdi:account-check
@@ -53,7 +53,7 @@
     bedroom_motion:
       friendly_name: "Bedroom Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.bedroom_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.bedroom_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.bedroom_motion_state', 'on') %}
           mdi:motion-sensor
@@ -64,7 +64,7 @@
     bedroom_occupancy:
       friendly_name: "Bedroom Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.bedroom_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.bedroom_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.bedroom_occupancy_state', 'on') %}
           mdi:account-check
@@ -76,7 +76,7 @@
     bathroom_motion:
       friendly_name: "Bathroom Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.bathroom_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.bathroom_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.bathroom_motion_state', 'on') %}
           mdi:motion-sensor
@@ -87,7 +87,7 @@
     bathroom_occupancy:
       friendly_name: "Bathroom Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.bathroom_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.bathroom_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.bathroom_occupancy_state', 'on') %}
           mdi:account-check
@@ -99,7 +99,7 @@
     office_motion:
       friendly_name: "Office Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.office_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.office_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.office_motion_state', 'on') %}
           mdi:motion-sensor
@@ -110,7 +110,7 @@
     office_occupancy:
       friendly_name: "Office Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.office_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.office_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.office_occupancy_state', 'on') %}
           mdi:account-check
@@ -122,7 +122,7 @@
     hallway_motion:
       friendly_name: "Hallway Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.hallway_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.hallway_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.hallway_motion_state', 'on') %}
           mdi:motion-sensor
@@ -133,7 +133,7 @@
     hallway_occupancy:
       friendly_name: "Hallway Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.hallway_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.hallway_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.hallway_occupancy_state', 'on') %}
           mdi:account-check
@@ -145,7 +145,7 @@
     garage_motion:
       friendly_name: "Garage Motion"
       device_class: motion
-      value_template: "{{ states('input_boolean.garage_motion_state') }}"
+      value_template: "{{ is_state('input_boolean.garage_motion_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.garage_motion_state', 'on') %}
           mdi:motion-sensor
@@ -156,7 +156,7 @@
     garage_occupancy:
       friendly_name: "Garage Occupancy"
       device_class: occupancy
-      value_template: "{{ states('input_boolean.garage_occupancy_state') }}"
+      value_template: "{{ is_state('input_boolean.garage_occupancy_state', 'on') }}"
       icon_template: >-
         {% if is_state('input_boolean.garage_occupancy_state', 'on') %}
           mdi:account-check

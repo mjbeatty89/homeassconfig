@@ -36,7 +36,15 @@ HomeAssistantLoader.add_constructor('!include_dir_list', include_dir_constructor
 HomeAssistantLoader.add_constructor('!include_dir_merge_list', include_dir_constructor)
 
 def validate_yaml_file(filepath):
-    """Validate a YAML file"""
+    """
+    Validate a YAML file
+    
+    Note: We use yaml.load() with a custom SafeLoader subclass instead of 
+    yaml.safe_load() because we need to handle Home Assistant's custom tags
+    (!include, !secret, etc.). The custom loader inherits from SafeLoader
+    and only adds constructors for known Home Assistant tags, maintaining
+    the same security guarantees as safe_load().
+    """
     try:
         with open(filepath, 'r') as f:
             yaml.load(f, Loader=HomeAssistantLoader)
