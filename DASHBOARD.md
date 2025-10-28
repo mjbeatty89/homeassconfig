@@ -75,7 +75,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │  ### 📊 Quick Stats                                          │
 │  Total Sensors: 14 (7 Motion + 7 Occupancy)                │
-│  Last Updated: 2025-10-28 10:17:04                         │
+│  Rooms Monitored: 7                                         │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -106,8 +106,6 @@ Each room section has a unique colored border:
 2. **Toggle states** in Developer Tools > States (simulation mode)
 3. **Real-time updates** when sensors change state
 4. **Responsive design** adapts to screen size
-
-## Entity IDs
 
 ### Motion Sensors
 - `binary_sensor.living_room_motion`
