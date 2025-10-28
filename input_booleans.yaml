@@ -1,0 +1,79 @@
+# Input Booleans for Sensor Simulation
+# These can be replaced with actual sensor integrations
+
+# Living Room
+living_room_motion_state:
+  name: Living Room Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+living_room_occupancy_state:
+  name: Living Room Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Kitchen
+kitchen_motion_state:
+  name: Kitchen Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+kitchen_occupancy_state:
+  name: Kitchen Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Bedroom
+bedroom_motion_state:
+  name: Bedroom Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+bedroom_occupancy_state:
+  name: Bedroom Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Bathroom
+bathroom_motion_state:
+  name: Bathroom Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+bathroom_occupancy_state:
+  name: Bathroom Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Office
+office_motion_state:
+  name: Office Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+office_occupancy_state:
+  name: Office Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Hallway
+hallway_motion_state:
+  name: Hallway Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+hallway_occupancy_state:
+  name: Hallway Occupancy State
+  initial: off
+  icon: mdi:account
+
+# Garage
+garage_motion_state:
+  name: Garage Motion State
+  initial: off
+  icon: mdi:motion-sensor
+
+garage_occupancy_state:
+  name: Garage Occupancy State
+  initial: off
+  icon: mdi:account
