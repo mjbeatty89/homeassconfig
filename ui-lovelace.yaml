@@ -1,0 +1,144 @@
+# Sensor Status Dashboard
+# Displays all motion and occupancy sensors grouped by room
+
+title: Sensor Status Dashboard
+views:
+  - title: Home Sensors
+    path: home-sensors
+    icon: mdi:home-analytics
+    theme: default
+    badges: []
+    cards:
+      # Header Card
+      - type: markdown
+        content: |
+          # 🏠 Home Sensor Status
+          **Monitor all motion and occupancy sensors throughout your home**
+
+      # Living Room
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🛋️ Living Room
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.living_room_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.living_room_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Kitchen
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🍳 Kitchen
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.kitchen_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.kitchen_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Bedroom
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🛏️ Bedroom
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.bedroom_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.bedroom_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Bathroom
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🚿 Bathroom
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.bathroom_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.bathroom_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Office
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 💼 Office
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.office_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.office_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Hallway
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🚪 Hallway
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.hallway_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.hallway_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Garage
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🚗 Garage
+          - type: horizontal-stack
+            cards:
+              - type: entity
+                entity: binary_sensor.garage_motion
+                name: Motion
+                icon: mdi:motion-sensor
+              - type: entity
+                entity: binary_sensor.garage_occupancy
+                name: Occupancy
+                icon: mdi:account-check
+
+      # Summary Card
+      - type: markdown
+        content: |
+          ---
+          ### 📊 Quick Stats
+          **Total Sensors:** 14 (7 Motion + 7 Occupancy)
+          
+          **Rooms Monitored:** 7 (Living Room, Kitchen, Bedroom, Bathroom, Office, Hallway, Garage)

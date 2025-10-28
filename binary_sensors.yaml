@@ -1,0 +1,165 @@
+# Binary Sensors Configuration
+# Motion and Occupancy Sensors by Room
+
+# Living Room Sensors
+- platform: template
+  sensors:
+    living_room_motion:
+      friendly_name: "Living Room Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.living_room_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.living_room_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    living_room_occupancy:
+      friendly_name: "Living Room Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.living_room_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.living_room_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Kitchen Sensors
+    kitchen_motion:
+      friendly_name: "Kitchen Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.kitchen_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.kitchen_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    kitchen_occupancy:
+      friendly_name: "Kitchen Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.kitchen_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.kitchen_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Bedroom Sensors
+    bedroom_motion:
+      friendly_name: "Bedroom Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.bedroom_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.bedroom_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    bedroom_occupancy:
+      friendly_name: "Bedroom Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.bedroom_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.bedroom_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Bathroom Sensors
+    bathroom_motion:
+      friendly_name: "Bathroom Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.bathroom_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.bathroom_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    bathroom_occupancy:
+      friendly_name: "Bathroom Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.bathroom_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.bathroom_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Office Sensors
+    office_motion:
+      friendly_name: "Office Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.office_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.office_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    office_occupancy:
+      friendly_name: "Office Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.office_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.office_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Hallway Sensors
+    hallway_motion:
+      friendly_name: "Hallway Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.hallway_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.hallway_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    hallway_occupancy:
+      friendly_name: "Hallway Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.hallway_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.hallway_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}
+
+# Garage Sensors
+    garage_motion:
+      friendly_name: "Garage Motion"
+      device_class: motion
+      value_template: "{{ is_state('input_boolean.garage_motion_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.garage_motion_state', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    garage_occupancy:
+      friendly_name: "Garage Occupancy"
+      device_class: occupancy
+      value_template: "{{ is_state('input_boolean.garage_occupancy_state', 'on') }}"
+      icon_template: >-
+        {% if is_state('input_boolean.garage_occupancy_state', 'on') %}
+          mdi:account-check
+        {% else %}
+          mdi:account-off
+        {% endif %}

@@ -1,0 +1,41 @@
+# Home Assistant Main Configuration
+homeassistant:
+  name: Home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  unit_system: metric
+  time_zone: America/New_York
+  currency: USD
+
+# Default config components
+default_config:
+
+# Enable frontend
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Enable Lovelace UI
+lovelace:
+  mode: yaml
+  dashboards:
+    lovelace-sensors:
+      mode: yaml
+      title: Sensor Dashboard
+      icon: mdi:gauge
+      show_in_sidebar: true
+      filename: ui-lovelace.yaml
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+# Input booleans (for simulation/testing)
+input_boolean: !include input_booleans.yaml
+
+# Binary sensors
+binary_sensor: !include binary_sensors.yaml
+
+# Logger
+logger:
+  default: info
