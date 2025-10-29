@@ -1,0 +1,15 @@
+{
+    "body": {
+        "contact": [
+            "mailto:matt@beattyfamily.net"
+        ],
+        "key": {
+            "e": "AQAB",
+            "kty": "RSA",
+            "n": "thXweIWk7z9JVsISEsHAy3uXIRTcGfBDd5qRi1nzgmDIt3Q76K69KUY0dvKIsG9kUHLQr7TwEkr9WhbWaVK9MJFeqMMHiAK_PaBweVv05rT_bANCE8UcXh9RWIIxkLJxDztL1ZFkvYpHvHnpGUJ_GPIdXcYJtvuDe0Y2vOKsPaqLDtQD8xADqiL_agLtqgpOAng6PKrFUT5Ta5jiAAJY08b4QGaeO3-Ut-1q-ObFIW3HSea8Lx4GXqwKAZwzEnN6GFgKyCYNoJaNLyUvrHBwaaer5gEues6AwmcW3MWDPTAIc7JYMDAW6SKflEXTXHm9vU-Mr378htaOn1xv-TBXjQ"
+        },
+        "status": "valid"
+    },
+    "terms_of_service": "https://letsencrypt.org/documents/LE-SA-v1.5-February-24-2025.pdf",
+    "uri": "https://acme-v02.api.letsencrypt.org/acme/acct/2389656077"
+}
