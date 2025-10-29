@@ -1,1 +1,44 @@
+# Home Assistant database
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ESPHome (external git repo)
 esphome/
+
+# Secrets and sensitive data
+secrets.yaml
+*.secret
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Home Assistant specific
+.storage/
+.cloud/
+.google.token
+deps/
+tts/
+www/known_devices.yaml
+
+# Node modules if using custom frontends
+node_modules/
