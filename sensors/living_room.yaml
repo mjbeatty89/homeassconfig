@@ -1,0 +1,100 @@
+# ═══════════════════════════════════════════════════════════════════
+# Living Room Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    living_room_temperature:
+      friendly_name: "Living Room Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.living_room_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.living_room_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    living_room_humidity:
+      friendly_name: "Living Room Humidity"
+      unit_of_measurement: "%"
+      device_class: humidity
+      value_template: "{{ states('sensor.living_room_multisensor_humidity') | float(0) }}"
+      availability_template: "{{ states('sensor.living_room_multisensor_humidity') not in ['unavailable', 'unknown'] }}"
+
+    living_room_illuminance:
+      friendly_name: "Living Room Light Level"
+      unit_of_measurement: "lx"
+      device_class: illuminance
+      value_template: "{{ states('sensor.living_room_multisensor_illuminance') | float(0) }}"
+      availability_template: "{{ states('sensor.living_room_multisensor_illuminance') not in ['unavailable', 'unknown'] }}"
+
+    living_room_air_quality:
+      friendly_name: "Living Room Air Quality"
+      unit_of_measurement: "AQI"
+      value_template: "{{ states('sensor.living_room_air_quality_sensor') | int(0) }}"
+      icon_template: >
+        {% set aqi = states('sensor.living_room_air_quality_sensor') | int(0) %}
+        {% if aqi < 50 %}
+          mdi:air-filter
+        {% elif aqi < 100 %}
+          mdi:air-filter-outline
+        {% else %}
+          mdi:biohazard
+        {% endif %}
+
+    living_room_comfort_level:
+      friendly_name: "Living Room Comfort"
+      value_template: >
+        {% set temp = states('sensor.living_room_temperature') | float(0) %}
+        {% set humidity = states('sensor.living_room_humidity') | float(0) %}
+        {% if temp >= 20 and temp <= 24 and humidity >= 40 and humidity <= 60 %}
+          Optimal
+        {% elif temp >= 18 and temp <= 26 and humidity >= 30 and humidity <= 70 %}
+          Comfortable
+        {% else %}
+          Uncomfortable
+        {% endif %}
+      icon_template: >
+        {% set comfort = states('sensor.living_room_comfort_level') %}
+        {% if comfort == 'Optimal' %}
+          mdi:emoticon-happy
+        {% elif comfort == 'Comfortable' %}
+          mdi:emoticon-neutral
+        {% else %}
+          mdi:emoticon-sad
+        {% endif %}
+
+    living_room_light_state:
+      friendly_name: "Living Room Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.living_room_main',
+          'light.living_room_lamp_left',
+          'light.living_room_lamp_right',
+          'light.living_room_led_strip'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    living_room_energy_usage:
+      friendly_name: "Living Room Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.living_room_main', 'on') %}
+          {% set total = total + 60 %}
+        {% endif %}
+        {% if is_state('light.living_room_lamp_left', 'on') %}
+          {% set total = total + 15 %}
+        {% endif %}
+        {% if is_state('light.living_room_lamp_right', 'on') %}
+          {% set total = total + 15 %}
+        {% endif %}
+        {% if is_state('light.living_room_led_strip', 'on') %}
+          {% set total = total + 10 %}
+        {% endif %}
+        {{ total }}

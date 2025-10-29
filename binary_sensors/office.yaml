@@ -1,0 +1,167 @@
+# ═══════════════════════════════════════════════════════════════════
+# Office Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    office_temperature_high:
+      friendly_name: "Office Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.office_temperature') | float(0) > 25 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    office_temperature_low:
+      friendly_name: "Office Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.office_temperature') | float(0) < 18 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    office_temperature_optimal:
+      friendly_name: "Office Temperature Optimal"
+      value_template: >
+        {% set temp = states('sensor.office_temperature') | float(0) %}
+        {{ temp >= 20 and temp <= 23 }}
+      icon_template: >
+        {% if is_state('binary_sensor.office_temperature_optimal', 'on') %}
+          mdi:thermometer-check
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    office_humidity_high:
+      friendly_name: "Office Humidity High"
+      device_class: moisture
+      value_template: "{{ states('sensor.office_humidity') | float(0) > 65 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_humidity_high', 'on') %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    office_humidity_low:
+      friendly_name: "Office Humidity Low"
+      device_class: moisture
+      value_template: "{{ states('sensor.office_humidity') | float(0) < 35 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_humidity_low', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water
+        {% endif %}
+
+    office_co2_high:
+      friendly_name: "Office CO2 High"
+      device_class: carbon_dioxide
+      value_template: "{{ states('sensor.office_co2') | int(0) > 1200 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_co2_high', 'on') %}
+          mdi:alert-circle
+        {% else %}
+          mdi:molecule-co2
+        {% endif %}
+
+    office_co2_warning:
+      friendly_name: "Office CO2 Warning"
+      device_class: carbon_dioxide
+      value_template: "{{ states('sensor.office_co2') | int(0) > 800 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_co2_warning', 'on') %}
+          mdi:alert
+        {% else %}
+          mdi:molecule-co2
+        {% endif %}
+
+    office_air_quality_good:
+      friendly_name: "Office Air Quality Good"
+      value_template: "{{ states('sensor.office_co2') | int(0) < 800 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_air_quality_good', 'on') %}
+          mdi:air-filter
+        {% else %}
+          mdi:air-filter-outline
+        {% endif %}
+
+    office_too_noisy:
+      friendly_name: "Office Too Noisy"
+      device_class: sound
+      value_template: "{{ states('sensor.office_noise_level') | float(0) > 65 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_too_noisy', 'on') %}
+          mdi:volume-high
+        {% else %}
+          mdi:volume-medium
+        {% endif %}
+
+    office_quiet:
+      friendly_name: "Office Quiet"
+      device_class: sound
+      value_template: "{{ states('sensor.office_noise_level') | float(0) < 40 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_quiet', 'on') %}
+          mdi:volume-low
+        {% else %}
+          mdi:volume-medium
+        {% endif %}
+
+    office_productive_environment:
+      friendly_name: "Office Productive Environment"
+      value_template: >
+        {% set temp = states('sensor.office_temperature') | float(0) %}
+        {% set co2 = states('sensor.office_co2') | int(0) %}
+        {% set noise = states('sensor.office_noise_level') | float(0) %}
+        {{ temp >= 20 and temp <= 23 and
+           co2 < 800 and
+           noise < 50 }}
+      icon_template: >
+        {% if is_state('binary_sensor.office_productive_environment', 'on') %}
+          mdi:star
+        {% else %}
+          mdi:star-outline
+        {% endif %}
+
+    office_needs_ventilation:
+      friendly_name: "Office Needs Ventilation"
+      device_class: problem
+      value_template: "{{ states('sensor.office_co2') | int(0) > 1000 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.office_needs_ventilation', 'on') %}
+          mdi:window-open-variant
+        {% else %}
+          mdi:window-closed-variant
+        {% endif %}
+
+    office_lights_on:
+      friendly_name: "Office Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.office_ceiling', 'on') or
+           is_state('light.office_desk_lamp', 'on') or
+           is_state('light.office_bookshelf', 'on') }}
+
+    office_soft_lights_on:
+      friendly_name: "Office Soft Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.office_desk_lamp', 'on') or
+           is_state('light.office_bookshelf', 'on') }}
+
+    office_harsh_lights_on:
+      friendly_name: "Office Harsh Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.office_ceiling', 'on') }}"
+
+    office_occupied:
+      friendly_name: "Office Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.office_motion', 'on') }}"

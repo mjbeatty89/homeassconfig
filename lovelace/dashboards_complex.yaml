@@ -1,0 +1,642 @@
+# ╔═══════════════════════════════════════════════════════════════════╗
+# ║                     Complex Dashboards                             ║
+# ║              One View Per Room - Detailed & Advanced               ║
+# ╚═══════════════════════════════════════════════════════════════════╝
+
+title: Complex View
+views:
+  # ═════════════════════════════════════════════════════════════════
+  # Living Room - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Living Room
+    path: living-room-complex
+    icon: mdi:sofa
+    badges:
+      - entity: sensor.living_room_temperature
+      - entity: sensor.living_room_humidity
+      - entity: sensor.living_room_comfort_level
+      - entity: sensor.living_room_energy_usage
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.living_room_temperature
+            name: Temperature
+            icon: mdi:thermometer
+          - entity: binary_sensor.living_room_temperature_high
+            name: Temperature High Alert
+          - entity: binary_sensor.living_room_temperature_low
+            name: Temperature Low Alert
+          - type: divider
+          - entity: sensor.living_room_humidity
+            name: Humidity
+            icon: mdi:water-percent
+          - entity: binary_sensor.living_room_humidity_high
+            name: Humidity High Alert
+          - entity: binary_sensor.living_room_humidity_low
+            name: Humidity Low Alert
+          - type: divider
+          - entity: sensor.living_room_air_quality
+            name: Air Quality Index
+          - entity: binary_sensor.living_room_poor_air_quality
+            name: Poor Air Quality Alert
+          - type: divider
+          - entity: sensor.living_room_illuminance
+            name: Light Level
+          - entity: binary_sensor.living_room_too_dark
+            name: Too Dark
+          - entity: binary_sensor.living_room_too_bright
+            name: Too Bright
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.living_room_main
+            name: Main Ceiling Light
+            icon: mdi:ceiling-light
+          - entity: binary_sensor.living_room_harsh_lights_on
+            name: Any Harsh Light On
+          - type: section
+            label: Ambient Lights (Soft)
+          - entity: light.living_room_lamp_left
+            name: Left Lamp
+            icon: mdi:lamp
+          - entity: light.living_room_lamp_right
+            name: Right Lamp
+            icon: mdi:lamp
+          - entity: light.living_room_led_strip
+            name: LED Strip
+            icon: mdi:led-strip-variant
+          - entity: binary_sensor.living_room_soft_lights_on
+            name: Any Soft Light On
+          - type: divider
+          - entity: sensor.living_room_light_state
+            name: Overall Light Status
+          - entity: binary_sensor.living_room_lights_on
+            name: Any Light On
+
+      # Comfort & Analytics
+      - type: entities
+        title: Comfort Analysis
+        show_header_toggle: false
+        entities:
+          - entity: sensor.living_room_comfort_level
+            name: Comfort Level
+            icon: mdi:emoticon
+          - entity: binary_sensor.living_room_comfortable
+            name: Is Comfortable
+          - type: divider
+          - entity: sensor.living_room_energy_usage
+            name: Current Energy Usage
+            icon: mdi:flash
+          - entity: binary_sensor.living_room_occupied
+            name: Room Occupied
+
+      # Historical Graph
+      - type: history-graph
+        title: Living Room History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.living_room_temperature
+          - entity: sensor.living_room_humidity
+          - entity: sensor.living_room_air_quality
+
+      # Energy Graph
+      - type: history-graph
+        title: Living Room Energy Usage
+        hours_to_show: 24
+        entities:
+          - entity: sensor.living_room_energy_usage
+
+  # ═════════════════════════════════════════════════════════════════
+  # Kitchen - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Kitchen
+    path: kitchen-complex
+    icon: mdi:chef-hat
+    badges:
+      - entity: sensor.kitchen_temperature
+      - entity: sensor.kitchen_humidity
+      - entity: sensor.kitchen_safety_status
+      - entity: binary_sensor.kitchen_safe
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.kitchen_temperature
+            name: Temperature
+          - entity: binary_sensor.kitchen_temperature_high
+            name: Temperature High Alert
+          - entity: binary_sensor.kitchen_temperature_low
+            name: Temperature Low Alert
+          - type: divider
+          - entity: sensor.kitchen_humidity
+            name: Humidity
+          - entity: binary_sensor.kitchen_humidity_high
+            name: Humidity High Alert
+
+      # Safety Monitoring
+      - type: entities
+        title: Safety Monitoring System
+        show_header_toggle: false
+        entities:
+          - entity: sensor.kitchen_safety_status
+            name: Overall Safety Status
+            icon: mdi:shield-check
+          - entity: binary_sensor.kitchen_safe
+            name: Kitchen Safe
+          - type: divider
+          - type: section
+            label: Gas Detection
+          - entity: sensor.kitchen_gas
+            name: Gas Level (ppm)
+            icon: mdi:gas-cylinder
+          - entity: binary_sensor.kitchen_gas_detected
+            name: Gas Detected (Alert)
+          - entity: binary_sensor.kitchen_gas_warning
+            name: Gas Warning Level
+          - type: divider
+          - type: section
+            label: Smoke Detection
+          - entity: sensor.kitchen_smoke
+            name: Smoke Level (%)
+            icon: mdi:smoke-detector
+          - entity: binary_sensor.kitchen_smoke_detected
+            name: Smoke Detected (Alert)
+          - entity: binary_sensor.kitchen_smoke_warning
+            name: Smoke Warning Level
+          - type: divider
+          - entity: binary_sensor.kitchen_safety_alert
+            name: Critical Safety Alert
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.kitchen_ceiling
+            name: Ceiling Light
+          - entity: light.kitchen_pendant
+            name: Pendant Light
+          - entity: binary_sensor.kitchen_harsh_lights_on
+            name: Any Harsh Light On
+          - type: section
+            label: Ambient Lights (Soft)
+          - entity: light.kitchen_under_cabinet
+            name: Under Cabinet Lights
+          - entity: binary_sensor.kitchen_soft_lights_on
+            name: Soft Lights On
+          - type: divider
+          - entity: sensor.kitchen_light_state
+            name: Overall Light Status
+          - entity: sensor.kitchen_energy_usage
+            name: Energy Usage
+
+      # Historical Graph
+      - type: history-graph
+        title: Kitchen Environment History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.kitchen_temperature
+          - entity: sensor.kitchen_humidity
+
+      # Safety History
+      - type: history-graph
+        title: Kitchen Safety History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.kitchen_gas
+          - entity: sensor.kitchen_smoke
+
+  # ═════════════════════════════════════════════════════════════════
+  # Bedroom - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Bedroom
+    path: bedroom-complex
+    icon: mdi:bed
+    badges:
+      - entity: sensor.bedroom_temperature
+      - entity: sensor.bedroom_humidity
+      - entity: sensor.bedroom_sleep_environment
+      - entity: binary_sensor.bedroom_sleep_ready
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.bedroom_temperature
+            name: Temperature
+          - entity: binary_sensor.bedroom_temperature_high
+            name: Temperature High
+          - entity: binary_sensor.bedroom_temperature_low
+            name: Temperature Low
+          - entity: binary_sensor.bedroom_temperature_optimal
+            name: Sleep Temperature Optimal
+          - type: divider
+          - entity: sensor.bedroom_humidity
+            name: Humidity
+          - entity: binary_sensor.bedroom_humidity_high
+            name: Humidity High
+          - entity: binary_sensor.bedroom_humidity_low
+            name: Humidity Low
+          - type: divider
+          - entity: sensor.bedroom_air_quality
+            name: Air Quality
+          - entity: binary_sensor.bedroom_poor_air_quality
+            name: Poor Air Quality Alert
+          - type: divider
+          - entity: sensor.bedroom_noise_level
+            name: Noise Level (dB)
+          - entity: binary_sensor.bedroom_too_noisy
+            name: Too Noisy Alert
+          - entity: binary_sensor.bedroom_quiet
+            name: Quiet Environment
+
+      # Sleep Environment Analysis
+      - type: entities
+        title: Sleep Environment Analysis
+        show_header_toggle: false
+        entities:
+          - entity: sensor.bedroom_sleep_environment
+            name: Sleep Quality Score
+            icon: mdi:sleep
+          - entity: binary_sensor.bedroom_sleep_ready
+            name: Sleep Ready Status
+          - entity: binary_sensor.bedroom_comfortable
+            name: Comfortable Environment
+          - type: divider
+          - type: section
+            label: Sleep Factors
+          - entity: binary_sensor.bedroom_temperature_optimal
+            name: Temperature Optimal
+          - entity: binary_sensor.bedroom_quiet
+            name: Quiet
+          - entity: binary_sensor.bedroom_lights_on
+            name: Lights Status (Should be Off)
+          - entity: binary_sensor.bedroom_poor_air_quality
+            name: Air Quality Issue
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.bedroom_ceiling
+            name: Ceiling Light
+          - entity: light.bedroom_closet
+            name: Closet Light
+          - entity: binary_sensor.bedroom_harsh_lights_on
+            name: Any Harsh Light On
+          - type: section
+            label: Bedside Lights (Soft)
+          - entity: light.bedroom_bedside_left
+            name: Left Bedside
+          - entity: light.bedroom_bedside_right
+            name: Right Bedside
+          - entity: binary_sensor.bedroom_soft_lights_on
+            name: Any Soft Light On
+          - type: divider
+          - entity: sensor.bedroom_light_state
+            name: Overall Light Status
+          - entity: sensor.bedroom_energy_usage
+            name: Energy Usage
+
+      # Historical Graph
+      - type: history-graph
+        title: Bedroom Environment History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.bedroom_temperature
+          - entity: sensor.bedroom_humidity
+          - entity: sensor.bedroom_air_quality
+
+      # Sleep Quality Graph
+      - type: history-graph
+        title: Sleep Environment Quality
+        hours_to_show: 24
+        entities:
+          - entity: sensor.bedroom_noise_level
+          - entity: binary_sensor.bedroom_sleep_ready
+
+  # ═════════════════════════════════════════════════════════════════
+  # Bathroom - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Bathroom
+    path: bathroom-complex
+    icon: mdi:shower
+    badges:
+      - entity: sensor.bathroom_temperature
+      - entity: sensor.bathroom_humidity
+      - entity: binary_sensor.bathroom_ventilation_needed
+      - entity: binary_sensor.bathroom_water_leak_detected
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.bathroom_temperature
+            name: Temperature
+          - entity: binary_sensor.bathroom_temperature_high
+            name: Temperature High
+          - entity: binary_sensor.bathroom_temperature_low
+            name: Temperature Low
+          - type: divider
+          - entity: sensor.bathroom_humidity
+            name: Humidity
+          - entity: sensor.bathroom_humidity_status
+            name: Humidity Status
+          - entity: binary_sensor.bathroom_humidity_high
+            name: Humidity High
+          - entity: binary_sensor.bathroom_humidity_very_high
+            name: Humidity Very High
+
+      # Bathroom-Specific Monitoring
+      - type: entities
+        title: Bathroom Monitoring
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Ventilation
+          - entity: sensor.bathroom_ventilation_needed
+            name: Ventilation Status
+            icon: mdi:fan
+          - entity: binary_sensor.bathroom_ventilation_needed
+            name: Needs Ventilation
+          - entity: binary_sensor.bathroom_mold_risk
+            name: Mold Risk Alert
+          - type: divider
+          - type: section
+            label: Water & Safety
+          - entity: sensor.bathroom_water_leak
+            name: Leak Sensor Status
+          - entity: binary_sensor.bathroom_water_leak_detected
+            name: Water Leak Alert
+          - entity: binary_sensor.bathroom_shower_active
+            name: Shower Active
+          - type: divider
+          - entity: binary_sensor.bathroom_occupied
+            name: Bathroom Occupied
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.bathroom_ceiling
+            name: Ceiling Light
+          - entity: light.bathroom_shower
+            name: Shower Light
+          - entity: binary_sensor.bathroom_harsh_lights_on
+            name: Any Harsh Light On
+          - type: section
+            label: Ambient Lights (Soft)
+          - entity: light.bathroom_mirror
+            name: Mirror Light
+          - entity: binary_sensor.bathroom_soft_lights_on
+            name: Soft Lights On
+          - type: divider
+          - entity: sensor.bathroom_light_state
+            name: Overall Light Status
+          - entity: sensor.bathroom_energy_usage
+            name: Energy Usage
+
+      # Historical Graph
+      - type: history-graph
+        title: Bathroom Environment History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.bathroom_temperature
+          - entity: sensor.bathroom_humidity
+
+      # Humidity Monitoring
+      - type: history-graph
+        title: Humidity & Ventilation Monitoring
+        hours_to_show: 12
+        entities:
+          - entity: sensor.bathroom_humidity
+          - entity: binary_sensor.bathroom_ventilation_needed
+          - entity: binary_sensor.bathroom_shower_active
+
+  # ═════════════════════════════════════════════════════════════════
+  # Office - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Office
+    path: office-complex
+    icon: mdi:desk
+    badges:
+      - entity: sensor.office_temperature
+      - entity: sensor.office_co2
+      - entity: sensor.office_productivity_environment
+      - entity: binary_sensor.office_productive_environment
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.office_temperature
+            name: Temperature
+          - entity: binary_sensor.office_temperature_high
+            name: Temperature High
+          - entity: binary_sensor.office_temperature_low
+            name: Temperature Low
+          - entity: binary_sensor.office_temperature_optimal
+            name: Temperature Optimal
+          - type: divider
+          - entity: sensor.office_humidity
+            name: Humidity
+          - entity: binary_sensor.office_humidity_high
+            name: Humidity High
+          - entity: binary_sensor.office_humidity_low
+            name: Humidity Low
+
+      # Productivity Environment
+      - type: entities
+        title: Productivity Environment Analysis
+        show_header_toggle: false
+        entities:
+          - entity: sensor.office_productivity_environment
+            name: Productivity Score
+            icon: mdi:star
+          - entity: binary_sensor.office_productive_environment
+            name: Productive Environment
+          - type: divider
+          - type: section
+            label: Air Quality
+          - entity: sensor.office_co2
+            name: CO2 Level (ppm)
+            icon: mdi:molecule-co2
+          - entity: sensor.office_air_quality_status
+            name: Air Quality Status
+          - entity: binary_sensor.office_co2_high
+            name: CO2 High Alert
+          - entity: binary_sensor.office_co2_warning
+            name: CO2 Warning
+          - entity: binary_sensor.office_air_quality_good
+            name: Air Quality Good
+          - entity: binary_sensor.office_needs_ventilation
+            name: Needs Ventilation
+          - type: divider
+          - type: section
+            label: Noise Environment
+          - entity: sensor.office_noise_level
+            name: Noise Level (dB)
+            icon: mdi:volume-medium
+          - entity: binary_sensor.office_too_noisy
+            name: Too Noisy
+          - entity: binary_sensor.office_quiet
+            name: Quiet Environment
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.office_ceiling
+            name: Ceiling Light
+          - entity: binary_sensor.office_harsh_lights_on
+            name: Harsh Lights On
+          - type: section
+            label: Task & Ambient Lights (Soft)
+          - entity: light.office_desk_lamp
+            name: Desk Lamp
+          - entity: light.office_bookshelf
+            name: Bookshelf Light
+          - entity: binary_sensor.office_soft_lights_on
+            name: Any Soft Light On
+          - type: divider
+          - entity: sensor.office_light_state
+            name: Overall Light Status
+          - entity: sensor.office_energy_usage
+            name: Energy Usage
+
+      # Historical Graph - Temperature & Humidity
+      - type: history-graph
+        title: Office Climate History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.office_temperature
+          - entity: sensor.office_humidity
+
+      # Air Quality Graph
+      - type: history-graph
+        title: Office Air Quality History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.office_co2
+          - entity: sensor.office_noise_level
+
+      # Productivity Graph
+      - type: history-graph
+        title: Productivity Environment
+        hours_to_show: 24
+        entities:
+          - entity: binary_sensor.office_productive_environment
+          - entity: binary_sensor.office_needs_ventilation
+
+  # ═════════════════════════════════════════════════════════════════
+  # Hallway - Complex View
+  # ═════════════════════════════════════════════════════════════════
+  - title: Hallway
+    path: hallway-complex
+    icon: mdi:door
+    badges:
+      - entity: sensor.hallway_temperature
+      - entity: binary_sensor.hallway_motion_detected
+      - entity: binary_sensor.hallway_night_mode
+    cards:
+      # Complete Status Overview
+      - type: entities
+        title: Complete Environment Status
+        show_header_toggle: false
+        entities:
+          - entity: sensor.hallway_temperature
+            name: Temperature
+          - entity: binary_sensor.hallway_temperature_high
+            name: Temperature High
+          - entity: binary_sensor.hallway_temperature_low
+            name: Temperature Low
+          - type: divider
+          - entity: sensor.hallway_motion
+            name: Motion Sensor Status
+          - entity: binary_sensor.hallway_motion_detected
+            name: Motion Detected
+          - entity: binary_sensor.hallway_occupied
+            name: Hallway Occupied
+          - type: divider
+          - entity: binary_sensor.hallway_night_mode
+            name: Night Mode Active
+
+      # Advanced Lighting Control
+      - type: entities
+        title: Advanced Lighting Control
+        show_header_toggle: false
+        entities:
+          - type: section
+            label: Main Lights (Harsh)
+          - entity: light.hallway_ceiling
+            name: Ceiling Light
+          - entity: binary_sensor.hallway_harsh_lights_on
+            name: Harsh Lights On
+          - type: section
+            label: Night Lights (Soft)
+          - entity: light.hallway_night_light
+            name: Night Light
+          - entity: binary_sensor.hallway_soft_lights_on
+            name: Soft Lights On
+          - type: divider
+          - entity: sensor.hallway_light_state
+            name: Overall Light Status
+          - entity: sensor.hallway_energy_usage
+            name: Energy Usage
+
+      # Motion & Automation Status
+      - type: entities
+        title: Motion & Automation
+        show_header_toggle: false
+        entities:
+          - entity: binary_sensor.hallway_motion_detected
+            name: Motion Detected
+            icon: mdi:motion-sensor
+          - entity: binary_sensor.hallway_occupied
+            name: Currently Occupied
+          - entity: binary_sensor.hallway_night_mode
+            name: Night Mode
+            icon: mdi:weather-night
+          - type: divider
+          - entity: binary_sensor.hallway_lights_on
+            name: Any Light On
+
+      # Historical Graph
+      - type: history-graph
+        title: Hallway Activity History
+        hours_to_show: 24
+        entities:
+          - entity: sensor.hallway_temperature
+          - entity: binary_sensor.hallway_motion_detected
+
+      # Energy Graph
+      - type: history-graph
+        title: Hallway Energy & Usage
+        hours_to_show: 24
+        entities:
+          - entity: sensor.hallway_energy_usage
+          - entity: binary_sensor.hallway_lights_on

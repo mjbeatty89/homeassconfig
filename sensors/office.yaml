@@ -1,0 +1,119 @@
+# ═══════════════════════════════════════════════════════════════════
+# Office Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    office_temperature:
+      friendly_name: "Office Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.office_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.office_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    office_humidity:
+      friendly_name: "Office Humidity"
+      unit_of_measurement: "%"
+      device_class: humidity
+      value_template: "{{ states('sensor.office_multisensor_humidity') | float(0) }}"
+      availability_template: "{{ states('sensor.office_multisensor_humidity') not in ['unavailable', 'unknown'] }}"
+
+    office_co2:
+      friendly_name: "Office CO2 Level"
+      unit_of_measurement: "ppm"
+      device_class: carbon_dioxide
+      value_template: "{{ states('sensor.office_co2_sensor') | int(0) }}"
+      icon_template: >
+        {% set co2 = states('sensor.office_co2_sensor') | int(0) %}
+        {% if co2 < 800 %}
+          mdi:molecule-co2
+        {% elif co2 < 1200 %}
+          mdi:alert-circle-outline
+        {% else %}
+          mdi:alert-circle
+        {% endif %}
+
+    office_noise_level:
+      friendly_name: "Office Noise Level"
+      unit_of_measurement: "dB"
+      value_template: "{{ states('sensor.office_noise_sensor') | float(0) }}"
+      icon_template: >
+        {% set noise = states('sensor.office_noise_sensor') | float(0) %}
+        {% if noise < 40 %}
+          mdi:volume-low
+        {% elif noise < 60 %}
+          mdi:volume-medium
+        {% else %}
+          mdi:volume-high
+        {% endif %}
+
+    office_productivity_environment:
+      friendly_name: "Office Productivity Score"
+      value_template: >
+        {% set temp = states('sensor.office_temperature') | float(0) %}
+        {% set co2 = states('sensor.office_co2') | int(0) %}
+        {% set noise = states('sensor.office_noise_level') | float(0) %}
+        {% if temp >= 20 and temp <= 23 and co2 < 800 and noise < 50 %}
+          Excellent
+        {% elif temp >= 18 and temp <= 25 and co2 < 1200 and noise < 65 %}
+          Good
+        {% else %}
+          Poor
+        {% endif %}
+      icon_template: >
+        {% set score = states('sensor.office_productivity_environment') %}
+        {% if score == 'Excellent' %}
+          mdi:star
+        {% elif score == 'Good' %}
+          mdi:star-half-full
+        {% else %}
+          mdi:star-outline
+        {% endif %}
+
+    office_air_quality_status:
+      friendly_name: "Office Air Quality Status"
+      value_template: >
+        {% set co2 = states('sensor.office_co2') | int(0) %}
+        {% if co2 < 600 %}
+          Excellent
+        {% elif co2 < 800 %}
+          Good
+        {% elif co2 < 1200 %}
+          Fair - Open Window
+        {% else %}
+          Poor - Ventilate Now
+        {% endif %}
+
+    office_light_state:
+      friendly_name: "Office Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.office_ceiling',
+          'light.office_desk_lamp',
+          'light.office_bookshelf'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    office_energy_usage:
+      friendly_name: "Office Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.office_ceiling', 'on') %}
+          {% set total = total + 65 %}
+        {% endif %}
+        {% if is_state('light.office_desk_lamp', 'on') %}
+          {% set total = total + 12 %}
+        {% endif %}
+        {% if is_state('light.office_bookshelf', 'on') %}
+          {% set total = total + 18 %}
+        {% endif %}
+        {{ total }}

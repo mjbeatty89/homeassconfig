@@ -1,0 +1,313 @@
+# ╔═══════════════════════════════════════════════════════════════════╗
+# ║                      Light Configuration                          ║
+# ║           Organized by Room with Lighting Type Tags               ║
+# ╚═══════════════════════════════════════════════════════════════════╝
+
+# ═══════════════════════════════════════════════════════════════════
+# Living Room Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Main Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    living_room_main:
+      friendly_name: "Living Room Main Light"
+      unique_id: living_room_main_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.living_room_main_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.living_room_main_bulb
+
+# Left Lamp - Soft Lighting
+- platform: template
+  lights:
+    living_room_lamp_left:
+      friendly_name: "Living Room Left Lamp"
+      unique_id: living_room_lamp_left_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.living_room_left_lamp_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.living_room_left_lamp_bulb
+
+# Right Lamp - Soft Lighting
+- platform: template
+  lights:
+    living_room_lamp_right:
+      friendly_name: "Living Room Right Lamp"
+      unique_id: living_room_lamp_right_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.living_room_right_lamp_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.living_room_right_lamp_bulb
+
+# LED Strip - Soft Lighting
+- platform: template
+  lights:
+    living_room_led_strip:
+      friendly_name: "Living Room LED Strip"
+      unique_id: living_room_led_strip_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.living_room_led_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.living_room_led_bulb
+
+# ═══════════════════════════════════════════════════════════════════
+# Kitchen Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    kitchen_ceiling:
+      friendly_name: "Kitchen Ceiling Light"
+      unique_id: kitchen_ceiling_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.kitchen_ceiling_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.kitchen_ceiling_bulb
+
+# Under Cabinet - Soft Lighting
+- platform: template
+  lights:
+    kitchen_under_cabinet:
+      friendly_name: "Kitchen Under Cabinet"
+      unique_id: kitchen_under_cabinet_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.kitchen_cabinet_strip
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.kitchen_cabinet_strip
+
+# Pendant Light - Harsh Lighting
+- platform: template
+  lights:
+    kitchen_pendant:
+      friendly_name: "Kitchen Pendant Light"
+      unique_id: kitchen_pendant_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.kitchen_pendant_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.kitchen_pendant_bulb
+
+# ═══════════════════════════════════════════════════════════════════
+# Bedroom Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    bedroom_ceiling:
+      friendly_name: "Bedroom Ceiling Light"
+      unique_id: bedroom_ceiling_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bedroom_ceiling_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bedroom_ceiling_bulb
+
+# Left Bedside - Soft Lighting
+- platform: template
+  lights:
+    bedroom_bedside_left:
+      friendly_name: "Bedroom Left Bedside"
+      unique_id: bedroom_bedside_left_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bedroom_left_bedside_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bedroom_left_bedside_bulb
+
+# Right Bedside - Soft Lighting
+- platform: template
+  lights:
+    bedroom_bedside_right:
+      friendly_name: "Bedroom Right Bedside"
+      unique_id: bedroom_bedside_right_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bedroom_right_bedside_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bedroom_right_bedside_bulb
+
+# Closet Light - Harsh Lighting
+- platform: template
+  lights:
+    bedroom_closet:
+      friendly_name: "Bedroom Closet Light"
+      unique_id: bedroom_closet_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bedroom_closet_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bedroom_closet_bulb
+
+# ═══════════════════════════════════════════════════════════════════
+# Bathroom Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    bathroom_ceiling:
+      friendly_name: "Bathroom Ceiling Light"
+      unique_id: bathroom_ceiling_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bathroom_ceiling_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bathroom_ceiling_bulb
+
+# Mirror Light - Soft Lighting
+- platform: template
+  lights:
+    bathroom_mirror:
+      friendly_name: "Bathroom Mirror Light"
+      unique_id: bathroom_mirror_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bathroom_mirror_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bathroom_mirror_bulb
+
+# Shower Light - Harsh Lighting
+- platform: template
+  lights:
+    bathroom_shower:
+      friendly_name: "Bathroom Shower Light"
+      unique_id: bathroom_shower_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.bathroom_shower_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.bathroom_shower_bulb
+
+# ═══════════════════════════════════════════════════════════════════
+# Office Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    office_ceiling:
+      friendly_name: "Office Ceiling Light"
+      unique_id: office_ceiling_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.office_ceiling_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.office_ceiling_bulb
+
+# Desk Lamp - Soft Lighting
+- platform: template
+  lights:
+    office_desk_lamp:
+      friendly_name: "Office Desk Lamp"
+      unique_id: office_desk_lamp_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.office_desk_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.office_desk_bulb
+
+# Bookshelf Light - Soft Lighting
+- platform: template
+  lights:
+    office_bookshelf:
+      friendly_name: "Office Bookshelf Light"
+      unique_id: office_bookshelf_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.office_bookshelf_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.office_bookshelf_bulb
+
+# ═══════════════════════════════════════════════════════════════════
+# Hallway Lights
+# ═══════════════════════════════════════════════════════════════════
+
+# Ceiling Light - Harsh Lighting
+- platform: template
+  lights:
+    hallway_ceiling:
+      friendly_name: "Hallway Ceiling Light"
+      unique_id: hallway_ceiling_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.hallway_ceiling_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.hallway_ceiling_bulb
+
+# Night Light - Soft Lighting
+- platform: template
+  lights:
+    hallway_night_light:
+      friendly_name: "Hallway Night Light"
+      unique_id: hallway_night_light
+      turn_on:
+        service: light.turn_on
+        target:
+          entity_id: light.hallway_night_bulb
+      turn_off:
+        service: light.turn_off
+        target:
+          entity_id: light.hallway_night_bulb

@@ -1,0 +1,123 @@
+# ═══════════════════════════════════════════════════════════════════
+# Living Room Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    living_room_temperature_high:
+      friendly_name: "Living Room Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.living_room_temperature') | float(0) > 26 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    living_room_temperature_low:
+      friendly_name: "Living Room Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.living_room_temperature') | float(0) < 18 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    living_room_humidity_high:
+      friendly_name: "Living Room Humidity High"
+      device_class: moisture
+      value_template: "{{ states('sensor.living_room_humidity') | float(0) > 65 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_humidity_high', 'on') %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    living_room_humidity_low:
+      friendly_name: "Living Room Humidity Low"
+      device_class: moisture
+      value_template: "{{ states('sensor.living_room_humidity') | float(0) < 35 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_humidity_low', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water
+        {% endif %}
+
+    living_room_too_dark:
+      friendly_name: "Living Room Too Dark"
+      device_class: light
+      value_template: "{{ states('sensor.living_room_illuminance') | float(0) < 100 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_too_dark', 'on') %}
+          mdi:brightness-3
+        {% else %}
+          mdi:brightness-6
+        {% endif %}
+
+    living_room_too_bright:
+      friendly_name: "Living Room Too Bright"
+      device_class: light
+      value_template: "{{ states('sensor.living_room_illuminance') | float(0) > 1000 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_too_bright', 'on') %}
+          mdi:brightness-7
+        {% else %}
+          mdi:brightness-6
+        {% endif %}
+
+    living_room_poor_air_quality:
+      friendly_name: "Living Room Poor Air Quality"
+      device_class: problem
+      value_template: "{{ states('sensor.living_room_air_quality') | int(0) > 100 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_poor_air_quality', 'on') %}
+          mdi:biohazard
+        {% else %}
+          mdi:air-filter
+        {% endif %}
+
+    living_room_lights_on:
+      friendly_name: "Living Room Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.living_room_main', 'on') or
+           is_state('light.living_room_lamp_left', 'on') or
+           is_state('light.living_room_lamp_right', 'on') or
+           is_state('light.living_room_led_strip', 'on') }}
+
+    living_room_soft_lights_on:
+      friendly_name: "Living Room Soft Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.living_room_lamp_left', 'on') or
+           is_state('light.living_room_lamp_right', 'on') or
+           is_state('light.living_room_led_strip', 'on') }}
+
+    living_room_harsh_lights_on:
+      friendly_name: "Living Room Harsh Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.living_room_main', 'on') }}"
+
+    living_room_comfortable:
+      friendly_name: "Living Room Comfortable"
+      value_template: >
+        {% set temp = states('sensor.living_room_temperature') | float(0) %}
+        {% set humidity = states('sensor.living_room_humidity') | float(0) %}
+        {% set aqi = states('sensor.living_room_air_quality') | int(0) %}
+        {{ temp >= 20 and temp <= 24 and humidity >= 40 and humidity <= 60 and aqi < 50 }}
+      icon_template: >
+        {% if is_state('binary_sensor.living_room_comfortable', 'on') %}
+          mdi:emoticon-happy
+        {% else %}
+          mdi:emoticon-sad
+        {% endif %}
+
+    living_room_occupied:
+      friendly_name: "Living Room Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.living_room_motion', 'on') }}"

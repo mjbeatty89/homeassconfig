@@ -1,0 +1,123 @@
+# ═══════════════════════════════════════════════════════════════════
+# Bathroom Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    bathroom_temperature_high:
+      friendly_name: "Bathroom Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.bathroom_temperature') | float(0) > 28 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    bathroom_temperature_low:
+      friendly_name: "Bathroom Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.bathroom_temperature') | float(0) < 16 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    bathroom_humidity_high:
+      friendly_name: "Bathroom Humidity High"
+      device_class: moisture
+      value_template: "{{ states('sensor.bathroom_humidity') | float(0) > 80 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_humidity_high', 'on') %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    bathroom_humidity_very_high:
+      friendly_name: "Bathroom Humidity Very High"
+      device_class: moisture
+      value_template: "{{ states('sensor.bathroom_humidity') | float(0) > 90 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_humidity_very_high', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    bathroom_ventilation_needed:
+      friendly_name: "Bathroom Needs Ventilation"
+      device_class: problem
+      value_template: "{{ states('sensor.bathroom_humidity') | float(0) > 70 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_ventilation_needed', 'on') %}
+          mdi:fan-alert
+        {% else %}
+          mdi:fan
+        {% endif %}
+
+    bathroom_water_leak_detected:
+      friendly_name: "Bathroom Water Leak"
+      device_class: moisture
+      value_template: "{{ is_state('binary_sensor.bathroom_leak_sensor', 'on') }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_water_leak_detected', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water-check
+        {% endif %}
+
+    bathroom_shower_active:
+      friendly_name: "Bathroom Shower Active"
+      value_template: >
+        {% set humidity = states('sensor.bathroom_humidity') | float(0) %}
+        {% set temp = states('sensor.bathroom_temperature') | float(0) %}
+        {{ humidity > 75 and temp > 24 }}
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_shower_active', 'on') %}
+          mdi:shower-head
+        {% else %}
+          mdi:shower
+        {% endif %}
+
+    bathroom_lights_on:
+      friendly_name: "Bathroom Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.bathroom_ceiling', 'on') or
+           is_state('light.bathroom_mirror', 'on') or
+           is_state('light.bathroom_shower', 'on') }}
+
+    bathroom_soft_lights_on:
+      friendly_name: "Bathroom Soft Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.bathroom_mirror', 'on') }}"
+
+    bathroom_harsh_lights_on:
+      friendly_name: "Bathroom Harsh Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.bathroom_ceiling', 'on') or
+           is_state('light.bathroom_shower', 'on') }}
+
+    bathroom_occupied:
+      friendly_name: "Bathroom Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.bathroom_motion', 'on') }}"
+
+    bathroom_mold_risk:
+      friendly_name: "Bathroom Mold Risk"
+      device_class: problem
+      value_template: >
+        {% set humidity = states('sensor.bathroom_humidity') | float(0) %}
+        {% set temp = states('sensor.bathroom_temperature') | float(0) %}
+        {{ humidity > 80 and temp > 15 and temp < 25 }}
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_mold_risk', 'on') %}
+          mdi:alert-circle
+        {% else %}
+          mdi:shield-check
+        {% endif %}

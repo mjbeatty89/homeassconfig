@@ -1,0 +1,158 @@
+# ═══════════════════════════════════════════════════════════════════
+# Bedroom Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    bedroom_temperature_high:
+      friendly_name: "Bedroom Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.bedroom_temperature') | float(0) > 24 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    bedroom_temperature_low:
+      friendly_name: "Bedroom Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.bedroom_temperature') | float(0) < 16 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    bedroom_temperature_optimal:
+      friendly_name: "Bedroom Sleep Temperature"
+      value_template: >
+        {% set temp = states('sensor.bedroom_temperature') | float(0) %}
+        {{ temp >= 18 and temp <= 22 }}
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_temperature_optimal', 'on') %}
+          mdi:thermometer-check
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    bedroom_humidity_high:
+      friendly_name: "Bedroom Humidity High"
+      device_class: moisture
+      value_template: "{{ states('sensor.bedroom_humidity') | float(0) > 65 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_humidity_high', 'on') %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    bedroom_humidity_low:
+      friendly_name: "Bedroom Humidity Low"
+      device_class: moisture
+      value_template: "{{ states('sensor.bedroom_humidity') | float(0) < 35 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_humidity_low', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water
+        {% endif %}
+
+    bedroom_poor_air_quality:
+      friendly_name: "Bedroom Poor Air Quality"
+      device_class: problem
+      value_template: "{{ states('sensor.bedroom_air_quality') | int(0) > 100 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_poor_air_quality', 'on') %}
+          mdi:biohazard
+        {% else %}
+          mdi:air-filter
+        {% endif %}
+
+    bedroom_too_noisy:
+      friendly_name: "Bedroom Too Noisy"
+      device_class: sound
+      value_template: "{{ states('sensor.bedroom_noise_level') | float(0) > 50 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_too_noisy', 'on') %}
+          mdi:volume-high
+        {% else %}
+          mdi:volume-low
+        {% endif %}
+
+    bedroom_quiet:
+      friendly_name: "Bedroom Quiet"
+      device_class: sound
+      value_template: "{{ states('sensor.bedroom_noise_level') | float(0) < 30 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_quiet', 'on') %}
+          mdi:volume-off
+        {% else %}
+          mdi:volume-low
+        {% endif %}
+
+    bedroom_sleep_ready:
+      friendly_name: "Bedroom Sleep Ready"
+      value_template: >
+        {% set temp = states('sensor.bedroom_temperature') | float(0) %}
+        {% set humidity = states('sensor.bedroom_humidity') | float(0) %}
+        {% set noise = states('sensor.bedroom_noise_level') | float(0) %}
+        {% set aqi = states('sensor.bedroom_air_quality') | int(0) %}
+        {% set lights = is_state('binary_sensor.bedroom_lights_on', 'off') %}
+        {{ temp >= 18 and temp <= 22 and
+           humidity >= 40 and humidity <= 60 and
+           noise < 30 and
+           aqi < 50 and
+           lights }}
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_sleep_ready', 'on') %}
+          mdi:sleep
+        {% else %}
+          mdi:sleep-off
+        {% endif %}
+
+    bedroom_lights_on:
+      friendly_name: "Bedroom Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.bedroom_ceiling', 'on') or
+           is_state('light.bedroom_bedside_left', 'on') or
+           is_state('light.bedroom_bedside_right', 'on') or
+           is_state('light.bedroom_closet', 'on') }}
+
+    bedroom_soft_lights_on:
+      friendly_name: "Bedroom Soft Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.bedroom_bedside_left', 'on') or
+           is_state('light.bedroom_bedside_right', 'on') }}
+
+    bedroom_harsh_lights_on:
+      friendly_name: "Bedroom Harsh Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.bedroom_ceiling', 'on') or
+           is_state('light.bedroom_closet', 'on') }}
+
+    bedroom_comfortable:
+      friendly_name: "Bedroom Comfortable"
+      value_template: >
+        {% set temp = states('sensor.bedroom_temperature') | float(0) %}
+        {% set humidity = states('sensor.bedroom_humidity') | float(0) %}
+        {% set aqi = states('sensor.bedroom_air_quality') | int(0) %}
+        {{ temp >= 18 and temp <= 24 and
+           humidity >= 40 and humidity <= 60 and
+           aqi < 100 }}
+      icon_template: >
+        {% if is_state('binary_sensor.bedroom_comfortable', 'on') %}
+          mdi:emoticon-happy
+        {% else %}
+          mdi:emoticon-sad
+        {% endif %}
+
+    bedroom_occupied:
+      friendly_name: "Bedroom Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.bedroom_motion', 'on') }}"

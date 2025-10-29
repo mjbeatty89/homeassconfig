@@ -1,0 +1,72 @@
+# ═══════════════════════════════════════════════════════════════════
+# Hallway Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    hallway_temperature_high:
+      friendly_name: "Hallway Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.hallway_temperature') | float(0) > 26 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.hallway_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    hallway_temperature_low:
+      friendly_name: "Hallway Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.hallway_temperature') | float(0) < 16 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.hallway_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    hallway_motion_detected:
+      friendly_name: "Hallway Motion"
+      device_class: motion
+      value_template: "{{ is_state('binary_sensor.hallway_motion_sensor', 'on') }}"
+      icon_template: >
+        {% if is_state('binary_sensor.hallway_motion_detected', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    hallway_lights_on:
+      friendly_name: "Hallway Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.hallway_ceiling', 'on') or
+           is_state('light.hallway_night_light', 'on') }}
+
+    hallway_soft_lights_on:
+      friendly_name: "Hallway Soft Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.hallway_night_light', 'on') }}"
+
+    hallway_harsh_lights_on:
+      friendly_name: "Hallway Harsh Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.hallway_ceiling', 'on') }}"
+
+    hallway_occupied:
+      friendly_name: "Hallway Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.hallway_motion_sensor', 'on') }}"
+
+    hallway_night_mode:
+      friendly_name: "Hallway Night Mode Active"
+      value_template: >
+        {% set hour = now().hour %}
+        {{ hour >= 22 or hour < 6 }}
+      icon_template: >
+        {% if is_state('binary_sensor.hallway_night_mode', 'on') %}
+          mdi:weather-night
+        {% else %}
+          mdi:white-balance-sunny
+        {% endif %}

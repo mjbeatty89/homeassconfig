@@ -1,0 +1,109 @@
+# ═══════════════════════════════════════════════════════════════════
+# Bedroom Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    bedroom_temperature:
+      friendly_name: "Bedroom Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.bedroom_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.bedroom_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    bedroom_humidity:
+      friendly_name: "Bedroom Humidity"
+      unit_of_measurement: "%"
+      device_class: humidity
+      value_template: "{{ states('sensor.bedroom_multisensor_humidity') | float(0) }}"
+      availability_template: "{{ states('sensor.bedroom_multisensor_humidity') not in ['unavailable', 'unknown'] }}"
+
+    bedroom_air_quality:
+      friendly_name: "Bedroom Air Quality"
+      unit_of_measurement: "AQI"
+      value_template: "{{ states('sensor.bedroom_air_quality_sensor') | int(0) }}"
+      icon_template: >
+        {% set aqi = states('sensor.bedroom_air_quality_sensor') | int(0) %}
+        {% if aqi < 50 %}
+          mdi:air-filter
+        {% elif aqi < 100 %}
+          mdi:air-filter-outline
+        {% else %}
+          mdi:biohazard
+        {% endif %}
+
+    bedroom_noise_level:
+      friendly_name: "Bedroom Noise Level"
+      unit_of_measurement: "dB"
+      value_template: "{{ states('sensor.bedroom_noise_sensor') | float(0) }}"
+      icon_template: >
+        {% set noise = states('sensor.bedroom_noise_sensor') | float(0) %}
+        {% if noise < 30 %}
+          mdi:volume-low
+        {% elif noise < 50 %}
+          mdi:volume-medium
+        {% else %}
+          mdi:volume-high
+        {% endif %}
+
+    bedroom_sleep_environment:
+      friendly_name: "Bedroom Sleep Quality"
+      value_template: >
+        {% set temp = states('sensor.bedroom_temperature') | float(0) %}
+        {% set humidity = states('sensor.bedroom_humidity') | float(0) %}
+        {% set noise = states('sensor.bedroom_noise_level') | float(0) %}
+        {% set aqi = states('sensor.bedroom_air_quality') | int(0) %}
+        {% if temp >= 18 and temp <= 22 and humidity >= 40 and humidity <= 60 and noise < 30 and aqi < 50 %}
+          Optimal
+        {% elif temp >= 16 and temp <= 24 and humidity >= 30 and humidity <= 70 and noise < 50 and aqi < 100 %}
+          Good
+        {% else %}
+          Poor
+        {% endif %}
+      icon_template: >
+        {% set quality = states('sensor.bedroom_sleep_environment') %}
+        {% if quality == 'Optimal' %}
+          mdi:sleep
+        {% elif quality == 'Good' %}
+          mdi:power-sleep
+        {% else %}
+          mdi:sleep-off
+        {% endif %}
+
+    bedroom_light_state:
+      friendly_name: "Bedroom Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.bedroom_ceiling',
+          'light.bedroom_bedside_left',
+          'light.bedroom_bedside_right',
+          'light.bedroom_closet'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    bedroom_energy_usage:
+      friendly_name: "Bedroom Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.bedroom_ceiling', 'on') %}
+          {% set total = total + 60 %}
+        {% endif %}
+        {% if is_state('light.bedroom_bedside_left', 'on') %}
+          {% set total = total + 10 %}
+        {% endif %}
+        {% if is_state('light.bedroom_bedside_right', 'on') %}
+          {% set total = total + 10 %}
+        {% endif %}
+        {% if is_state('light.bedroom_closet', 'on') %}
+          {% set total = total + 15 %}
+        {% endif %}
+        {{ total }}

@@ -1,0 +1,246 @@
+# ╔═══════════════════════════════════════════════════════════════════╗
+# ║              Entity Customizations - Organized by Room             ║
+# ╚═══════════════════════════════════════════════════════════════════╝
+
+# ═══════════════════════════════════════════════════════════════════
+# Living Room Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.living_room_main:
+  friendly_name: "Living Room Main Light"
+  icon: mdi:ceiling-light
+  room: living_room
+  lighting_type: harsh
+
+light.living_room_lamp_left:
+  friendly_name: "Living Room Left Lamp"
+  icon: mdi:lamp
+  room: living_room
+  lighting_type: soft
+
+light.living_room_lamp_right:
+  friendly_name: "Living Room Right Lamp"
+  icon: mdi:lamp
+  room: living_room
+  lighting_type: soft
+
+light.living_room_led_strip:
+  friendly_name: "Living Room LED Strip"
+  icon: mdi:led-strip-variant
+  room: living_room
+  lighting_type: soft
+
+sensor.living_room_temperature:
+  friendly_name: "Living Room Temperature"
+  icon: mdi:thermometer
+  room: living_room
+
+sensor.living_room_humidity:
+  friendly_name: "Living Room Humidity"
+  icon: mdi:water-percent
+  room: living_room
+
+sensor.living_room_illuminance:
+  friendly_name: "Living Room Light Level"
+  icon: mdi:brightness-6
+  room: living_room
+
+sensor.living_room_air_quality:
+  friendly_name: "Living Room Air Quality"
+  icon: mdi:air-filter
+  room: living_room
+
+# ═══════════════════════════════════════════════════════════════════
+# Kitchen Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.kitchen_ceiling:
+  friendly_name: "Kitchen Ceiling Light"
+  icon: mdi:ceiling-light
+  room: kitchen
+  lighting_type: harsh
+
+light.kitchen_under_cabinet:
+  friendly_name: "Kitchen Under Cabinet"
+  icon: mdi:lightbulb-on
+  room: kitchen
+  lighting_type: soft
+
+light.kitchen_pendant:
+  friendly_name: "Kitchen Pendant Light"
+  icon: mdi:ceiling-light-multiple
+  room: kitchen
+  lighting_type: harsh
+
+sensor.kitchen_temperature:
+  friendly_name: "Kitchen Temperature"
+  icon: mdi:thermometer
+  room: kitchen
+
+sensor.kitchen_humidity:
+  friendly_name: "Kitchen Humidity"
+  icon: mdi:water-percent
+  room: kitchen
+
+sensor.kitchen_gas:
+  friendly_name: "Kitchen Gas Sensor"
+  icon: mdi:gas-cylinder
+  room: kitchen
+
+sensor.kitchen_smoke:
+  friendly_name: "Kitchen Smoke Level"
+  icon: mdi:smoke-detector
+  room: kitchen
+
+# ═══════════════════════════════════════════════════════════════════
+# Bedroom Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.bedroom_ceiling:
+  friendly_name: "Bedroom Ceiling Light"
+  icon: mdi:ceiling-light
+  room: bedroom
+  lighting_type: harsh
+
+light.bedroom_bedside_left:
+  friendly_name: "Bedroom Left Bedside"
+  icon: mdi:lamp
+  room: bedroom
+  lighting_type: soft
+
+light.bedroom_bedside_right:
+  friendly_name: "Bedroom Right Bedside"
+  icon: mdi:lamp
+  room: bedroom
+  lighting_type: soft
+
+light.bedroom_closet:
+  friendly_name: "Bedroom Closet Light"
+  icon: mdi:lightbulb
+  room: bedroom
+  lighting_type: harsh
+
+sensor.bedroom_temperature:
+  friendly_name: "Bedroom Temperature"
+  icon: mdi:thermometer
+  room: bedroom
+
+sensor.bedroom_humidity:
+  friendly_name: "Bedroom Humidity"
+  icon: mdi:water-percent
+  room: bedroom
+
+sensor.bedroom_air_quality:
+  friendly_name: "Bedroom Air Quality"
+  icon: mdi:air-filter
+  room: bedroom
+
+sensor.bedroom_noise_level:
+  friendly_name: "Bedroom Noise Level"
+  icon: mdi:volume-high
+  room: bedroom
+
+# ═══════════════════════════════════════════════════════════════════
+# Bathroom Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.bathroom_ceiling:
+  friendly_name: "Bathroom Ceiling Light"
+  icon: mdi:ceiling-light
+  room: bathroom
+  lighting_type: harsh
+
+light.bathroom_mirror:
+  friendly_name: "Bathroom Mirror Light"
+  icon: mdi:mirror
+  room: bathroom
+  lighting_type: soft
+
+light.bathroom_shower:
+  friendly_name: "Bathroom Shower Light"
+  icon: mdi:lightbulb
+  room: bathroom
+  lighting_type: harsh
+
+sensor.bathroom_temperature:
+  friendly_name: "Bathroom Temperature"
+  icon: mdi:thermometer
+  room: bathroom
+
+sensor.bathroom_humidity:
+  friendly_name: "Bathroom Humidity"
+  icon: mdi:water-percent
+  room: bathroom
+
+sensor.bathroom_water_leak:
+  friendly_name: "Bathroom Water Leak"
+  icon: mdi:water-alert
+  room: bathroom
+
+# ═══════════════════════════════════════════════════════════════════
+# Office Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.office_ceiling:
+  friendly_name: "Office Ceiling Light"
+  icon: mdi:ceiling-light
+  room: office
+  lighting_type: harsh
+
+light.office_desk_lamp:
+  friendly_name: "Office Desk Lamp"
+  icon: mdi:desk-lamp
+  room: office
+  lighting_type: soft
+
+light.office_bookshelf:
+  friendly_name: "Office Bookshelf Light"
+  icon: mdi:bookshelf
+  room: office
+  lighting_type: soft
+
+sensor.office_temperature:
+  friendly_name: "Office Temperature"
+  icon: mdi:thermometer
+  room: office
+
+sensor.office_humidity:
+  friendly_name: "Office Humidity"
+  icon: mdi:water-percent
+  room: office
+
+sensor.office_co2:
+  friendly_name: "Office CO2 Level"
+  icon: mdi:molecule-co2
+  room: office
+
+sensor.office_noise_level:
+  friendly_name: "Office Noise Level"
+  icon: mdi:volume-high
+  room: office
+
+# ═══════════════════════════════════════════════════════════════════
+# Hallway Entities
+# ═══════════════════════════════════════════════════════════════════
+
+light.hallway_ceiling:
+  friendly_name: "Hallway Ceiling Light"
+  icon: mdi:ceiling-light
+  room: hallway
+  lighting_type: harsh
+
+light.hallway_night_light:
+  friendly_name: "Hallway Night Light"
+  icon: mdi:lightbulb-night
+  room: hallway
+  lighting_type: soft
+
+sensor.hallway_temperature:
+  friendly_name: "Hallway Temperature"
+  icon: mdi:thermometer
+  room: hallway
+
+sensor.hallway_motion:
+  friendly_name: "Hallway Motion"
+  icon: mdi:motion-sensor
+  room: hallway

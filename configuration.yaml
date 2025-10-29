@@ -1,0 +1,171 @@
+# ╔═══════════════════════════════════════════════════════════════════╗
+# ║                 Home Assistant Main Configuration                  ║
+# ║                     Beautified & Organized                         ║
+# ╚═══════════════════════════════════════════════════════════════════╝
+
+homeassistant:
+  name: Home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+  unit_system: metric
+  currency: USD
+  time_zone: !secret timezone
+
+  # Customize entities
+  customize: !include customize.yaml
+
+  # Allow lists for external access
+  allowlist_external_dirs:
+    - /config
+
+  # Authentication providers
+  auth_providers:
+    - type: homeassistant
+    - type: trusted_networks
+      trusted_networks:
+        - 192.168.1.0/24
+
+# ═══════════════════════════════════════════════════════════════════
+# Core Components
+# ═══════════════════════════════════════════════════════════════════
+
+# HTTP Configuration
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+
+# Frontend
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Config panel
+config:
+
+# Mobile app support
+mobile_app:
+
+# Text-to-speech
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# System Health
+system_health:
+
+# My Home Assistant
+my:
+
+# ═══════════════════════════════════════════════════════════════════
+# Logbook & History
+# ═══════════════════════════════════════════════════════════════════
+
+logbook:
+  exclude:
+    domains:
+      - updater
+
+recorder:
+  db_url: !secret db_url
+  purge_keep_days: 7
+  commit_interval: 2
+  exclude:
+    domains:
+      - automation
+      - updater
+    entity_globs:
+      - sensor.weather_*
+
+history:
+  exclude:
+    domains:
+      - automation
+      - updater
+
+# ═══════════════════════════════════════════════════════════════════
+# Automation & Scripts
+# ═══════════════════════════════════════════════════════════════════
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# ═══════════════════════════════════════════════════════════════════
+# Sensors & Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+sensor: !include_dir_merge_list sensors/
+binary_sensor: !include_dir_merge_list binary_sensors/
+
+# ═══════════════════════════════════════════════════════════════════
+# Lights & Switches
+# ═══════════════════════════════════════════════════════════════════
+
+light: !include lights.yaml
+switch: !include switches.yaml
+
+# ═══════════════════════════════════════════════════════════════════
+# Climate & Weather
+# ═══════════════════════════════════════════════════════════════════
+
+climate: !include climate.yaml
+weather:
+  - platform: met
+    name: Home Weather
+
+# ═══════════════════════════════════════════════════════════════════
+# Input Helpers
+# ═══════════════════════════════════════════════════════════════════
+
+input_boolean: !include input_boolean.yaml
+input_select: !include input_select.yaml
+input_number: !include input_number.yaml
+input_text: !include input_text.yaml
+input_datetime: !include input_datetime.yaml
+
+# ═══════════════════════════════════════════════════════════════════
+# Zones & Device Tracking
+# ═══════════════════════════════════════════════════════════════════
+
+zone: !include zones.yaml
+
+# ═══════════════════════════════════════════════════════════════════
+# Lovelace Dashboards
+# ═══════════════════════════════════════════════════════════════════
+
+lovelace:
+  mode: yaml
+  resources: !include lovelace/resources.yaml
+  dashboards:
+    lovelace-simple:
+      mode: yaml
+      title: Simple View
+      icon: mdi:view-dashboard
+      show_in_sidebar: true
+      filename: lovelace/dashboards_simple.yaml
+    lovelace-complex:
+      mode: yaml
+      title: Complex View
+      icon: mdi:view-dashboard-variant
+      show_in_sidebar: true
+      filename: lovelace/dashboards_complex.yaml
+
+# ═══════════════════════════════════════════════════════════════════
+# Notifications
+# ═══════════════════════════════════════════════════════════════════
+
+notify:
+  - name: home_assistant
+    platform: persistent_notification
+
+# ═══════════════════════════════════════════════════════════════════
+# Logger
+# ═══════════════════════════════════════════════════════════════════
+
+logger:
+  default: info
+  logs:
+    homeassistant.core: warning
+    homeassistant.components.mqtt: warning

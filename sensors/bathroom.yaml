@@ -1,0 +1,98 @@
+# ═══════════════════════════════════════════════════════════════════
+# Bathroom Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    bathroom_temperature:
+      friendly_name: "Bathroom Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.bathroom_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.bathroom_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    bathroom_humidity:
+      friendly_name: "Bathroom Humidity"
+      unit_of_measurement: "%"
+      device_class: humidity
+      value_template: "{{ states('sensor.bathroom_multisensor_humidity') | float(0) }}"
+      availability_template: "{{ states('sensor.bathroom_multisensor_humidity') not in ['unavailable', 'unknown'] }}"
+
+    bathroom_water_leak:
+      friendly_name: "Bathroom Water Leak Status"
+      value_template: "{{ states('binary_sensor.bathroom_leak_sensor') }}"
+      icon_template: >
+        {% if is_state('binary_sensor.bathroom_leak_sensor', 'on') %}
+          mdi:water-alert
+        {% else %}
+          mdi:water-check
+        {% endif %}
+
+    bathroom_humidity_status:
+      friendly_name: "Bathroom Humidity Status"
+      value_template: >
+        {% set humidity = states('sensor.bathroom_humidity') | float(0) %}
+        {% if humidity > 80 %}
+          Very High - Ventilate
+        {% elif humidity > 65 %}
+          High
+        {% elif humidity > 40 %}
+          Normal
+        {% else %}
+          Low
+        {% endif %}
+      icon_template: >
+        {% set humidity = states('sensor.bathroom_humidity') | float(0) %}
+        {% if humidity > 80 %}
+          mdi:water-alert
+        {% elif humidity > 65 %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    bathroom_ventilation_needed:
+      friendly_name: "Bathroom Ventilation"
+      value_template: >
+        {% set humidity = states('sensor.bathroom_humidity') | float(0) %}
+        {% if humidity > 70 %}
+          Required
+        {% elif humidity > 60 %}
+          Recommended
+        {% else %}
+          Not Needed
+        {% endif %}
+
+    bathroom_light_state:
+      friendly_name: "Bathroom Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.bathroom_ceiling',
+          'light.bathroom_mirror',
+          'light.bathroom_shower'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    bathroom_energy_usage:
+      friendly_name: "Bathroom Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.bathroom_ceiling', 'on') %}
+          {% set total = total + 50 %}
+        {% endif %}
+        {% if is_state('light.bathroom_mirror', 'on') %}
+          {% set total = total + 15 %}
+        {% endif %}
+        {% if is_state('light.bathroom_shower', 'on') %}
+          {% set total = total + 25 %}
+        {% endif %}
+        {{ total }}

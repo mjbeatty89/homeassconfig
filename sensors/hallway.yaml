@@ -1,0 +1,52 @@
+# ═══════════════════════════════════════════════════════════════════
+# Hallway Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    hallway_temperature:
+      friendly_name: "Hallway Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.hallway_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.hallway_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    hallway_motion:
+      friendly_name: "Hallway Motion Status"
+      value_template: "{{ states('binary_sensor.hallway_motion_sensor') }}"
+      icon_template: >
+        {% if is_state('binary_sensor.hallway_motion_sensor', 'on') %}
+          mdi:motion-sensor
+        {% else %}
+          mdi:motion-sensor-off
+        {% endif %}
+
+    hallway_light_state:
+      friendly_name: "Hallway Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.hallway_ceiling',
+          'light.hallway_night_light'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    hallway_energy_usage:
+      friendly_name: "Hallway Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.hallway_ceiling', 'on') %}
+          {% set total = total + 40 %}
+        {% endif %}
+        {% if is_state('light.hallway_night_light', 'on') %}
+          {% set total = total + 5 %}
+        {% endif %}
+        {{ total }}

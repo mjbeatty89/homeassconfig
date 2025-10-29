@@ -1,0 +1,99 @@
+# ═══════════════════════════════════════════════════════════════════
+# Kitchen Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    kitchen_temperature:
+      friendly_name: "Kitchen Temperature"
+      unit_of_measurement: "°C"
+      device_class: temperature
+      value_template: "{{ states('sensor.kitchen_multisensor_temperature') | float(0) }}"
+      availability_template: "{{ states('sensor.kitchen_multisensor_temperature') not in ['unavailable', 'unknown'] }}"
+
+    kitchen_humidity:
+      friendly_name: "Kitchen Humidity"
+      unit_of_measurement: "%"
+      device_class: humidity
+      value_template: "{{ states('sensor.kitchen_multisensor_humidity') | float(0) }}"
+      availability_template: "{{ states('sensor.kitchen_multisensor_humidity') not in ['unavailable', 'unknown'] }}"
+
+    kitchen_gas:
+      friendly_name: "Kitchen Gas Level"
+      unit_of_measurement: "ppm"
+      value_template: "{{ states('sensor.kitchen_gas_sensor') | float(0) }}"
+      icon_template: >
+        {% set gas = states('sensor.kitchen_gas_sensor') | float(0) %}
+        {% if gas > 100 %}
+          mdi:gas-cylinder-alert
+        {% else %}
+          mdi:gas-cylinder
+        {% endif %}
+
+    kitchen_smoke:
+      friendly_name: "Kitchen Smoke Level"
+      unit_of_measurement: "%"
+      value_template: "{{ states('sensor.kitchen_smoke_detector') | float(0) }}"
+      icon_template: >
+        {% set smoke = states('sensor.kitchen_smoke_detector') | float(0) %}
+        {% if smoke > 10 %}
+          mdi:smoke-detector-alert
+        {% else %}
+          mdi:smoke-detector
+        {% endif %}
+
+    kitchen_safety_status:
+      friendly_name: "Kitchen Safety Status"
+      value_template: >
+        {% set gas = states('sensor.kitchen_gas') | float(0) %}
+        {% set smoke = states('sensor.kitchen_smoke') | float(0) %}
+        {% if gas > 100 or smoke > 10 %}
+          Alert
+        {% elif gas > 50 or smoke > 5 %}
+          Warning
+        {% else %}
+          Safe
+        {% endif %}
+      icon_template: >
+        {% set status = states('sensor.kitchen_safety_status') %}
+        {% if status == 'Alert' %}
+          mdi:alert-circle
+        {% elif status == 'Warning' %}
+          mdi:alert
+        {% else %}
+          mdi:shield-check
+        {% endif %}
+
+    kitchen_light_state:
+      friendly_name: "Kitchen Lights Status"
+      value_template: >
+        {% set lights = [
+          'light.kitchen_ceiling',
+          'light.kitchen_under_cabinet',
+          'light.kitchen_pendant'
+        ] %}
+        {% set on_count = lights | select('is_state', 'on') | list | count %}
+        {% if on_count == 0 %}
+          All Off
+        {% elif on_count == lights | count %}
+          All On
+        {% else %}
+          {{ on_count }} of {{ lights | count }} On
+        {% endif %}
+
+    kitchen_energy_usage:
+      friendly_name: "Kitchen Energy Usage"
+      unit_of_measurement: "W"
+      device_class: power
+      value_template: >
+        {% set total = 0 %}
+        {% if is_state('light.kitchen_ceiling', 'on') %}
+          {% set total = total + 75 %}
+        {% endif %}
+        {% if is_state('light.kitchen_under_cabinet', 'on') %}
+          {% set total = total + 20 %}
+        {% endif %}
+        {% if is_state('light.kitchen_pendant', 'on') %}
+          {% set total = total + 40 %}
+        {% endif %}
+        {{ total }}

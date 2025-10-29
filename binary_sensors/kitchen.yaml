@@ -1,0 +1,134 @@
+# ═══════════════════════════════════════════════════════════════════
+# Kitchen Binary Sensors
+# ═══════════════════════════════════════════════════════════════════
+
+- platform: template
+  sensors:
+    kitchen_temperature_high:
+      friendly_name: "Kitchen Temperature High"
+      device_class: heat
+      value_template: "{{ states('sensor.kitchen_temperature') | float(0) > 28 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_temperature_high', 'on') %}
+          mdi:thermometer-alert
+        {% else %}
+          mdi:thermometer
+        {% endif %}
+
+    kitchen_temperature_low:
+      friendly_name: "Kitchen Temperature Low"
+      device_class: cold
+      value_template: "{{ states('sensor.kitchen_temperature') | float(0) < 16 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_temperature_low', 'on') %}
+          mdi:snowflake-alert
+        {% else %}
+          mdi:snowflake
+        {% endif %}
+
+    kitchen_humidity_high:
+      friendly_name: "Kitchen Humidity High"
+      device_class: moisture
+      value_template: "{{ states('sensor.kitchen_humidity') | float(0) > 70 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_humidity_high', 'on') %}
+          mdi:water-percent-alert
+        {% else %}
+          mdi:water-percent
+        {% endif %}
+
+    kitchen_gas_detected:
+      friendly_name: "Kitchen Gas Detected"
+      device_class: gas
+      value_template: "{{ states('sensor.kitchen_gas') | float(0) > 100 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_gas_detected', 'on') %}
+          mdi:gas-cylinder-alert
+        {% else %}
+          mdi:gas-cylinder
+        {% endif %}
+
+    kitchen_gas_warning:
+      friendly_name: "Kitchen Gas Warning"
+      device_class: gas
+      value_template: "{{ states('sensor.kitchen_gas') | float(0) > 50 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_gas_warning', 'on') %}
+          mdi:alert
+        {% else %}
+          mdi:gas-cylinder
+        {% endif %}
+
+    kitchen_smoke_detected:
+      friendly_name: "Kitchen Smoke Detected"
+      device_class: smoke
+      value_template: "{{ states('sensor.kitchen_smoke') | float(0) > 10 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_smoke_detected', 'on') %}
+          mdi:smoke-detector-alert
+        {% else %}
+          mdi:smoke-detector
+        {% endif %}
+
+    kitchen_smoke_warning:
+      friendly_name: "Kitchen Smoke Warning"
+      device_class: smoke
+      value_template: "{{ states('sensor.kitchen_smoke') | float(0) > 5 }}"
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_smoke_warning', 'on') %}
+          mdi:alert
+        {% else %}
+          mdi:smoke-detector
+        {% endif %}
+
+    kitchen_safety_alert:
+      friendly_name: "Kitchen Safety Alert"
+      device_class: safety
+      value_template: >
+        {{ is_state('binary_sensor.kitchen_gas_detected', 'on') or
+           is_state('binary_sensor.kitchen_smoke_detected', 'on') }}
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_safety_alert', 'on') %}
+          mdi:alert-circle
+        {% else %}
+          mdi:shield-check
+        {% endif %}
+
+    kitchen_lights_on:
+      friendly_name: "Kitchen Any Light On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.kitchen_ceiling', 'on') or
+           is_state('light.kitchen_under_cabinet', 'on') or
+           is_state('light.kitchen_pendant', 'on') }}
+
+    kitchen_soft_lights_on:
+      friendly_name: "Kitchen Soft Lights On"
+      device_class: light
+      value_template: "{{ is_state('light.kitchen_under_cabinet', 'on') }}"
+
+    kitchen_harsh_lights_on:
+      friendly_name: "Kitchen Harsh Lights On"
+      device_class: light
+      value_template: >
+        {{ is_state('light.kitchen_ceiling', 'on') or
+           is_state('light.kitchen_pendant', 'on') }}
+
+    kitchen_safe:
+      friendly_name: "Kitchen Safe"
+      device_class: safety
+      value_template: >
+        {% set gas = states('sensor.kitchen_gas') | float(0) %}
+        {% set smoke = states('sensor.kitchen_smoke') | float(0) %}
+        {{ gas < 50 and smoke < 5 }}
+      icon_template: >
+        {% if is_state('binary_sensor.kitchen_safe', 'on') %}
+          mdi:shield-check
+        {% else %}
+          mdi:shield-alert
+        {% endif %}
+
+    kitchen_occupied:
+      friendly_name: "Kitchen Occupied"
+      device_class: occupancy
+      value_template: "{{ is_state('binary_sensor.kitchen_motion', 'on') }}"
