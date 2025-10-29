@@ -16,10 +16,13 @@ if ! git diff-index --quiet HEAD --; then
     git commit -m "Auto-sync: $TIMESTAMP"
 fi
 
+# Get current branch
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+
 # Pull latest changes and rebase
-git pull --rebase origin main
+git pull --rebase origin $CURRENT_BRANCH
 
 # Push to GitHub
-git push origin main
+git push origin $CURRENT_BRANCH
 
 echo "Successfully synced at $(date '+%Y-%m-%d %H:%M:%S')"
