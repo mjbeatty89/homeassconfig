@@ -1,0 +1,18 @@
+{
+	"domain": "switchbotremote",
+	"name": "SwitchBot Remote IR",
+	"codeowners": [
+		"@KiraPC",
+		"@joshepw"
+	],
+	"config_flow": true,
+	"dependencies": [],
+	"documentation": "https://github.com/KiraPC/ha-switchbot-remote#readme",
+	"integration_type": "hub",
+	"iot_class": "cloud_push",
+	"issue_tracker": "https://github.com/KiraPC/ha-switchbot-remote/issues",
+	"requirements": [
+		"pyhumps"
+	],
+	"version": "1.0.0"
+}

@@ -1,0 +1,298 @@
+{
+  "config": {
+    "step": {
+      "provider": {
+        "title": "Wählen Sie AI-Anbieter",
+        "description": "Wählen Sie, welchen AI-Dienstanbieter Sie für diese Instanz verwenden möchten.",
+        "data": {
+          "api_provider": "API-Anbieter",
+          "context_messages": "Anzahl der zu behaltenden Kontextnachrichten (1-20)",
+          "max_history_size": "Maximale Größe des Gesprächsverlaufs (1-100)"
+        }
+      },
+      "provider": {
+        "title": "Anbieter-Einstellungen",
+        "description": "Geben Sie die Verbindungsdetails für Ihren gewählten AI-Anbieter an.",
+        "data": {
+          "name": "Instanzname (z. B. 'GPT Assistant', 'Claude Helper')",
+          "api_key": "API-Schlüssel zur Authentifizierung",
+          "model": "Zu verwendendes AI-Modell",
+          "api_endpoint": "Benutzerdefinierte API-Endpunkt-URL (optional)",
+          "temperature": "Kreativität der Antwort (0-2, niedriger = fokussierter)",
+          "max_tokens": "Maximale Länge der Antwort (1-100000 Token)",
+          "request_interval": "Minimale Zeit zwischen Anfragen (0,1-60 Sekunden)",
+          "context_messages": "Anzahl der zu behaltenden Kontextnachrichten (1-20)",
+          "max_history_size": "Maximale Größe des Gesprächsverlaufs (1-100)"
+        }
+      },
+      "user": {
+        "title": "HA Text AI Instanz konfigurieren",
+        "description": "Richten Sie eine neue AI-Assistenteninstanz mit Ihrem ausgewählten Anbieter ein.",
+        "data": {
+          "name": "Instanzname (z. B. 'GPT Assistant', 'Claude Helper')",
+          "api_key": "API-Schlüssel zur Authentifizierung",
+          "model": "Zu verwendendes AI-Modell",
+          "temperature": "Kreativität der Antwort (0-2, niedriger = fokussierter)",
+          "max_tokens": "Maximale Länge der Antwort (1-100000 Token)",
+          "api_endpoint": "Benutzerdefinierte API-Endpunkt-URL (optional)",
+          "api_provider": "API-Anbieter",
+          "request_interval": "Minimale Zeit zwischen Anfragen (0,1-60 Sekunden)",
+          "context_messages": "Anzahl der zu behaltenden Kontextnachrichten (1-20)",
+          "max_history_size": "Maximale Größe des Gesprächsverlaufs (1-100)"
+        }
+      }
+    },
+    "error": {
+      "history_storage_error": "Fehler beim Initialisieren des Verlaufspeichers. Überprüfen Sie die Berechtigungen.",
+      "history_rotation_error": "Fehler beim Drehen der Verlaufsdatei.",
+      "history_file_access_error": "Zugriff auf das Verzeichnis für den Verlaufsspeicher nicht möglich.",
+      "name_exists": "Eine Instanz mit diesem Namen existiert bereits",
+      "invalid_name": "Ungültiger Instanzname",
+      "invalid_auth": "Authentifizierung fehlgeschlagen - überprüfen Sie Ihren API-Schlüssel",
+      "invalid_api_key": "Ungültiger API-Schlüssel - bitte überprüfen Sie Ihre Anmeldeinformationen",
+      "cannot_connect": "Verbindung zum API-Dienst fehlgeschlagen",
+      "invalid_model": "Ausgewähltes Modell ist nicht verfügbar",
+      "rate_limit": "Rate-Limit überschritten",
+      "context_length": "Kontextlänge überschritten",
+      "rate_limit_exceeded": "API-Rate-Limit überschritten",
+      "maintenance": "Dienst ist in Wartung",
+      "invalid_response": "Ungültige API-Antwort erhalten",
+      "api_error": "Ein Fehler im API-Dienst ist aufgetreten",
+      "timeout": "Zeitüberschreitung bei der Anfrage",
+      "invalid_instance": "Ungültige Instanz angegeben",
+      "unknown": "Unerwarteter Fehler aufgetreten",
+      "empty": "Name darf nicht leer sein",
+      "invalid_characters": "Name darf nur Buchstaben, Zahlen, Leerzeichen, Unterstriche und Bindestriche enthalten",
+      "name_too_long": "Name darf höchstens 50 Zeichen lang sein"
+    },
+    "abort": {
+      "already_configured": "Instanz bereits konfiguriert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Instanzeinstellungen aktualisieren",
+        "description": "Ändern Sie die Einstellungen für diese AI-Assistenteninstanz.",
+        "data": {
+          "model": "AI-Modell",
+          "temperature": "Kreativität der Antwort (0-2)",
+          "max_tokens": "Maximale Länge der Antwort (1-100000)",
+          "request_interval": "Minimale Anfrageintervall (0,1-60 Sekunden)",
+          "context_messages": "Anzahl der vorherigen Nachrichten, die im Kontext enthalten sein sollen (1-20)",
+          "max_history_size": "Maximale Größe des Gesprächsverlaufs (1-100)"
+        }
+      }
+    }
+  },
+  "selector": {
+    "api_provider": {
+      "options": {
+        "openai": "OpenAI (compatible)",
+        "anthropic": "Anthropic (compatible)",
+        "deepseek": "DeepSeek",
+        "gemini": "Google Gemini"
+      }
+    }
+  },
+  "services": {
+    "ask_question": {
+      "name": "Frage stellen (HA Text AI)",
+      "description": "Stellen Sie eine Frage an das AI-Modell und erhalten Sie eine detaillierte Antwort. Dieser Service gibt jetzt Antwortdaten direkt zurück, wodurch separate Textsensoren und die 255-Zeichen-Begrenzung überflüssig werden. Die Antwort wird auch im Gesprächsverlauf gespeichert.",
+      "fields": {
+        "instance": {
+          "name": "Instanz",
+          "description": "Name der zu verwendenden HA Text AI-Instanz"
+        },
+        "question": {
+          "name": "Frage",
+          "description": "Ihre Frage oder Aufforderung für den AI-Assistenten"
+        },
+        "context_messages": {
+          "name": "Kontextnachrichten",
+          "description": "Anzahl der vorherigen Nachrichten, die im Kontext enthalten sein sollen (1-20)"
+        },
+        "system_prompt": {
+          "name": "Systemaufforderung",
+          "description": "Optionale Systemaufforderung zur Festlegung des Kontexts für diese spezifische Frage"
+        },
+        "model": {
+          "name": "Modell",
+          "description": "Wählen Sie das zu verwendende AI-Modell (optional, überschreibt die Standardeinstellung)"
+        },
+        "temperature": {
+          "name": "Temperatur",
+          "description": "Steuert die Kreativität der Antwort (0,0-2,0)"
+        },
+        "max_tokens": {
+          "name": "Max Tokens",
+          "description": "Maximale Länge der Antwort (1-100000 Token)"
+        }
+      }
+    },
+    "clear_history": {
+      "name": "Verlauf löschen",
+      "description": "Löschen Sie alle gespeicherten Fragen und Antworten aus dem Gesprächsverlauf",
+      "fields": {
+        "instance": {
+          "name": "Instanz",
+          "description": "Name der HA Text AI-Instanz, für die der Verlauf gelöscht werden soll"
+        }
+      }
+    },
+    "get_history": {
+      "name": "Verlauf abrufen",
+      "description": "Rufen Sie den Gesprächsverlauf mit optionaler Filterung und Sortierung ab",
+      "fields": {
+        "instance": {
+          "name": "Instanz",
+          "description": "Name der HA Text AI-Instanz, von der der Verlauf abgerufen werden soll"
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "Anzahl der zurückzugebenden Gespräche (1-100)"
+        },
+        "filter_model": {
+          "name": "Modell filtern",
+          "description": "Gespräche nach spezifischem AI-Modell filtern"
+        },
+        "start_date": {
+          "name": "Startdatum",
+          "description": "Gespräche ab diesem Datum/Zeit filtern"
+        },
+        "include_metadata": {
+          "name": "Metadaten einbeziehen",
+          "description": "Zusätzliche Informationen wie verwendete Tokens, Antwortzeit usw. einbeziehen"
+        },
+        "sort_order": {
+          "name": "Sortierreihenfolge",
+          "description": "Sortierreihenfolge für die Ergebnisse (neueste oder älteste zuerst)"
+        }
+      }
+    },
+    "set_system_prompt": {
+      "name": "Systemaufforderung festlegen",
+      "description": "Standardverhaltensanweisungen für alle zukünftigen Gespräche festlegen",
+      "fields": {
+        "instance": {
+          "name": "Instanz",
+          "description": "Name der HA Text AI-Instanz, für die die Systemaufforderung festgelegt werden soll"
+        },
+        "prompt": {
+          "name": "Systemaufforderung",
+          "description": "Anweisungen, die definieren, wie die AI sich verhalten und antworten soll"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "ha_text_ai": {
+        "name": "{name}",
+        "state": {
+          "ready": "Bereit",
+          "processing": "Verarbeitung",
+          "error": "Fehler",
+          "disconnected": "Getrennt",
+          "rate_limited": "Rate limitiert",
+          "maintenance": "Wartung",
+          "initializing": "Initialisierung",
+          "retrying": "Wiederholen",
+          "queued": "In der Warteschlange"
+        },
+        "state_attributes": {
+          "question": {
+            "name": "Letzte Frage"
+          },
+          "response": {
+            "name": "Letzte Antwort"
+          },
+          "model": {
+            "name": "Aktuelles Modell"
+          },
+          "temperature": {
+            "name": "Temperatur"
+          },
+          "max_tokens": {
+            "name": "Max Tokens"
+          },
+          "system_prompt": {
+            "name": "Systemaufforderung"
+          },
+          "response_time": {
+            "name": "Letzte Antwortzeit"
+          },
+          "total_responses": {
+            "name": "Gesamtantworten"
+          },
+          "error_count": {
+            "name": "Fehleranzahl"
+          },
+          "last_error": {
+            "name": "Letzter Fehler"
+          },
+          "api_status": {
+            "name": "API-Status"
+          },
+          "tokens_used": {
+            "name": "Gesamte verwendete Tokens"
+          },
+          "average_response_time": {
+            "name": "Durchschnittliche Antwortzeit"
+          },
+          "last_request_time": {
+            "name": "Letzte Anfragezeit"
+          },
+          "is_processing": {
+            "name": "Verarbeitungsstatus"
+          },
+          "is_rate_limited": {
+            "name": "Rate-limitiert Status"
+          },
+          "is_maintenance": {
+            "name": "Wartungsstatus"
+          },
+          "api_version": {
+            "name": "API-Version"
+          },
+          "endpoint_status": {
+            "name": "Endpunktstatus"
+          },
+          "performance_metrics": {
+            "name": "Leistungskennzahlen"
+          },
+          "history_size": {
+            "name": "Größe des Verlaufs"
+          },
+          "uptime": {
+            "name": "Betriebszeit"
+          },
+          "total_tokens": {
+            "name": "Gesamte Tokens"
+          },
+          "prompt_tokens": {
+            "name": "Eingabe Tokens"
+          },
+          "completion_tokens": {
+            "name": "Vervollständigungs Tokens"
+          },
+          "successful_requests": {
+            "name": "Erfolgreiche Anfragen"
+          },
+          "failed_requests": {
+            "name": "Fehlgeschlagene Anfragen"
+          },
+          "average_latency": {
+            "name": "Durchschnittliche Latenz"
+          },
+          "max_latency": {
+            "name": "Maximale Latenz"
+          },
+          "min_latency": {
+            "name": "Minimale Latenz"
+          }
+        }
+      }
+    }
+  }
+}

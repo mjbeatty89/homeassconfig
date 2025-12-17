@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Remote Assistant",
+        "description": "Please enter the name under which this Home Assistant installation should be listed in the app. Also, select the region of the server to be used for the remote connection.",
+        "data": {
+          "name": "Display Name",
+          "region": "Server Location",
+          "tosaccepted": "I agree to the terms of service."
+        },
+        "data_description": {
+          "tosaccepted": "[Terms of Service](https://www.remote-red.com/en/terms/)"
+        }
+      },
+      "qr_display": {
+        "description": "Install the 'Remote Assistant' app on your device.\n[Remote Assistant on the Apple AppStore](https://apps.apple.com/app/remote-red/id6744168463)\n[Remote Assistant on the Google PlayStore](http://play.google.com/store/apps/details?id=com.looking4cache.rrha.android)\n\nThen use 'Add Home Asstistant Instance' and scan this QR code:\n{qr_code}\n\nAlternatively, you can copy this link and open it on the device after installing the app:\n{link}"
+      }
+    },
+    "error": {
+      "api_error": "Failed to connect to the server.",
+      "tos_not_accepted": "The terms of service must be accepted."
+    }      
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Remote Assistant",
+        "description": "You can generate another QR code to add more app connections. Check 'Generate new QR code' and click 'OK'.",
+        "data": {
+          "reconnect": "Generate new QR code"
+        }
+      },
+      "qr_display": {
+        "title": "Remote Assistant",
+        "description": "Install the 'Remote Assistant' app on your device.\n[Remote Assistant on the Apple AppStore](https://apps.apple.com/app/remote-red/id6744168463)\n[Remote Assistant on the Google PlayStore](http://play.google.com/store/apps/details?id=com.looking4cache.rrha.android)\n\nThen use 'Add Instance' and scan this QR code:\n{qr_code}\n\nAlternatively, you can copy this link and open it on the device after installing the app:\n{link}"
+      }
+    },
+    "error": {
+      "api_error": "Failed to connect to the server."
+    }      
+  },
+  "selector": {
+    "region" : {
+      "options": {
+        "us": "America (USA)",
+        "de": "Europe (Germany)",
+        "sg": "Asia (Singapore)",
+        "dev": "Development"
+      }
+    }
+  }
+}

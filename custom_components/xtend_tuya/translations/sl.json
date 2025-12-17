@@ -1,0 +1,650 @@
+{
+    "config": {
+        "abort": {
+            "reauth_successful": "Ponovna avtentikacija je bila uspe\u0161na"
+        },
+        "error": {
+            "invalid_auth": "Neveljavna avtentikacija",
+            "login_error": "Napaka pri prijavi ({code}): {msg}"
+        },
+        "step": {
+            "reauth_user_code": {
+                "data": {
+                    "user_code": "Uporabni\u0161ka koda"
+                },
+                "description": "Integracija Tuya zdaj uporablja izbolj\u0161an na\u010din prijave. Za ponovno avtentikacijo s svojim ra\u010dunom Smart Life ali Tuya Smart morate vnesti svojo uporabni\u0161ko kodo.\n\nTo kodo najdete v aplikaciji Smart Life ali aplikaciji Tuya Smart na zaslonu **Nastavitve** > **Ra\u010dun in varnost** in vnesite kodo, prikazano v polju **Uporabni\u0161ka koda**. Uporabni\u0161ka koda razlikuje med velikimi in malimi \u010drkami, zato jo vnesite to\u010dno tako, kot je prikazano v aplikaciji."
+            },
+            "scan": {
+                "description": "Za dokon\u010danje prijave uporabite aplikacijo Smart Life ali aplikacijo Tuya Smart za skeniranje naslednje kode QR.\n\nKo kon\u010date ta korak v aplikaciji, nadaljujte z naslednjim korakom."
+            },
+            "user": {
+                "data": {
+                    "user_code": "Uporabni\u0161ka koda"
+                },
+                "description": "Vnesite svojo uporabni\u0161ko kodo za Smart Life ali Tuya Smart.\n\nTo kodo najdete v aplikaciji Smart Life ali Tuya Smart na zaslonu **Nastavitve** > **Ra\u010dun in varnost** in vnesite kodo, prikazano v polju **Uporabni\u0161ka koda**. Uporabni\u0161ka koda razlikuje med velikimi in malimi \u010drkami, zato jo vnesite natan\u010dno tako, kot je prikazano v aplikaciji."
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "carbon_dioxide": {
+                "name": "Ogljikov dioksid"
+            },
+            "carbon_monoxide": {
+                "name": "Ogljikov monoksid"
+            },
+            "formaldehyde": {
+                "name": "Formaldehid"
+            },
+            "methane": {
+                "name": "Metan"
+            },
+            "pm25": {
+                "name": "PM2.5"
+            },
+            "pressure": {
+                "name": "Pritisk"
+            },
+            "tilt": {
+                "name": "Nagib"
+            },
+            "valve": {
+                "name": "Ventil"
+            },
+            "voc": {
+                "name": "Hlapne organske spojine"
+            }
+        },
+        "cover": {
+            "blind": {
+                "name": "\u017daluzija"
+            },
+            "curtain": {
+                "name": "Zavesa"
+            }
+        },
+        "event": {
+            "numbered_button": {
+                "name": "Gumb {button_number}",
+                "state_attributes": {
+                    "event_type": {
+                        "state": {
+                            "click": "Kliknjeno",
+                            "double_click": "Dvakrat kliknjeno",
+                            "press": "Dolgo pritisnjeno"
+                        }
+                    }
+                }
+            }
+        },
+        "number": {
+            "alarm_duration": {
+                "name": "Trajanje alarma"
+            },
+            "cook_temperature": {
+                "name": "Temperatura kuhanja"
+            },
+            "cook_time": {
+                "name": "\u010cas kuhanja"
+            },
+            "heat_preservation_time": {
+                "name": "\u010cas ohranjanja toplote"
+            },
+            "maximum_brightness": {
+                "name": "Najmanj\u0161a svetlost"
+            },
+            "maximum_liquid_depth": {
+                "name": "Najve\u010dja globina teko\u010dine"
+            },
+            "minimum_brightness": {
+                "name": "Najmanj\u0161a svetlost"
+            },
+            "move_down": {
+                "name": "Premakni dol"
+            },
+            "move_up": {
+                "name": "Premakni gor"
+            },
+            "sensitivity": {
+                "name": "Ob\u010dutljivost"
+            },
+            "temperature": {
+                "name": "Temperatura"
+            },
+            "temperature_after_boiling": {
+                "name": "Temperatura po vrenju"
+            },
+            "time": {
+                "name": "\u010cas"
+            },
+            "water_level": {
+                "name": "Nivo vode"
+            }
+        },
+        "select": {
+            "basic_anti_flicker": {
+                "name": "Proti utripanju",
+                "state": {
+                    "0": "Onemogo\u010deno",
+                    "1": "50 Hz",
+                    "2": "60 Hz"
+                }
+            },
+            "basic_nightvision": {
+                "name": "No\u010dni vid",
+                "state": {
+                    "0": "Samodejno",
+                    "1": "Izklopljeno",
+                    "2": "Vklopljeno"
+                }
+            },
+            "blanket_level": {
+                "name": "Nivo",
+                "state": {
+                    "level_1": "Nizko",
+                    "level_10": "Visoko",
+                    "level_2": "Nivo 2",
+                    "level_3": "Nivo 3",
+                    "level_4": "Nivo 4",
+                    "level_5": "Nivo 5",
+                    "level_6": "Nivo 6",
+                    "level_7": "Nivo 7",
+                    "level_8": "Nivo 8",
+                    "level_9": "Nivo 9"
+                }
+            },
+            "brightness": {
+                "name": "Svetlost"
+            },
+            "concentration": {
+                "name": "Koncentracija"
+            },
+            "countdown": {
+                "name": "Od\u0161tevanje",
+                "state": {
+                    "1h": "1 ura",
+                    "2h": "2 uri",
+                    "3h": "3 ure",
+                    "4h": "4 ure",
+                    "5h": "5 ur",
+                    "6h": "6 ur",
+                    "cancel": "Prekini"
+                }
+            },
+            "curtain_mode": {
+                "name": "Na\u010din",
+                "state": {
+                    "morning": "Jutro",
+                    "night": "No\u010d"
+                }
+            },
+            "curtain_motor_mode": {
+                "state": {
+                    "back": "Nazaj",
+                    "forward": "Naprej"
+                }
+            },
+            "decibel_sensitivity": {
+                "name": "Ob\u010dutljivost zaznavanja zvoka",
+                "state": {
+                    "0": "Nizka ob\u010dutljivost",
+                    "1": "Visoka ob\u010dutljivost"
+                }
+            },
+            "desk_level": {
+                "name": "Nivo",
+                "state": {
+                    "level_1": "Nivo 1",
+                    "level_2": "Nivo 2",
+                    "level_3": "Nivo 3",
+                    "level_4": "Nivo 4"
+                }
+            },
+            "fingerbot_mode": {
+                "name": "Na\u010din"
+            },
+            "horizontal_fan_angle": {
+                "state": {
+                    "30": "30\u00b0",
+                    "60": "60\u00b0",
+                    "90": "90\u00b0"
+                }
+            },
+            "humidifier_level": {
+                "name": "Nivo pr\u0161enja",
+                "state": {
+                    "level_1": "Nivo 1",
+                    "level_10": "Nivo 10",
+                    "level_2": "Nivo 2",
+                    "level_3": "Nivo 3",
+                    "level_4": "Nivo 4",
+                    "level_5": "Nivo 5",
+                    "level_6": "Nivo 6",
+                    "level_7": "Nivo 7",
+                    "level_8": "Nivo 8",
+                    "level_9": "Nivo 9"
+                }
+            },
+            "humidifier_spray_mode": {
+                "name": "Na\u010din pr\u0161enja",
+                "state": {
+                    "auto": "Samodejno",
+                    "health": "Zdravje",
+                    "humidity": "Vla\u017enost",
+                    "sleep": "Spanje",
+                    "work": "Delo"
+                }
+            },
+            "indexed_blanket_level": {
+                "name": "Nivo {index}",
+                "state": {
+                    "level_1": "Nizko",
+                    "level_10": "Visoko",
+                    "level_2": "Nivo 2",
+                    "level_3": "Nivo 3",
+                    "level_4": "Nivo 4",
+                    "level_5": "Nivo 5",
+                    "level_6": "Nivo 6",
+                    "level_7": "Nivo 7",
+                    "level_8": "Nivo 8",
+                    "level_9": "Nivo 9"
+                }
+            },
+            "indexed_led_type": {
+                "state": {
+                    "halogen": "Halogenska \u017earnica",
+                    "incandescent": "\u017darnica z \u017earilno nitko",
+                    "led": "LED"
+                }
+            },
+            "ipc_work_mode": {
+                "name": "Na\u010din IPC",
+                "state": {
+                    "0": "Na\u010din nizke porabe",
+                    "1": "Neprekinjen na\u010din dela"
+                }
+            },
+            "led_type": {
+                "name": "Vrsta vira svetlobe",
+                "state": {
+                    "halogen": "Halogenska \u017earnica",
+                    "incandescent": "\u017darnica z \u017earilno nitko",
+                    "led": "LED"
+                }
+            },
+            "light_mode": {
+                "name": "Na\u010din delovanja indikatorske lu\u010dke",
+                "state": {
+                    "none": "Izklju\u010deno"
+                }
+            },
+            "material": {
+                "name": "Material"
+            },
+            "mode": {
+                "name": "Na\u010din"
+            },
+            "motion_sensitivity": {
+                "name": "Ob\u010dutljivost zaznavanja gibanja",
+                "state": {
+                    "0": "Nizka ob\u010dutljivost",
+                    "1": "Srednja ob\u010dutljivost",
+                    "2": "Visoka ob\u010dutljivost"
+                }
+            },
+            "record_mode": {
+                "name": "Na\u010din snemanja",
+                "state": {
+                    "1": "Samo snemanje dogodkov",
+                    "2": "Neprekinjeno snemanje"
+                }
+            },
+            "relay_status": {
+                "name": "Obna\u0161anje pri vklopu",
+                "state": {
+                    "last": "Zapomni si zadnje stanje",
+                    "memory": "Zapomni si zadnje stanje",
+                    "off": "Izklju\u010deno",
+                    "on": "Vklopljeno",
+                    "power_off": "Izklopljeno",
+                    "power_on": "Vklopljeno"
+                }
+            },
+            "target_humidity": {
+                "name": "Ciljna vla\u017enost"
+            },
+            "vacuum_cistern": {
+                "name": "Nastavitev rezervoarja za vodo",
+                "state": {
+                    "closed": "Zaprto",
+                    "high": "Visoko",
+                    "low": "Nizko"
+                }
+            },
+            "vacuum_collection": {
+                "name": "Na\u010din zbiranja prahu"
+            },
+            "vacuum_mode": {
+                "name": "Na\u010din",
+                "state": {
+                    "standby": "V pripravljenosti",
+                    "zone": "Cona"
+                }
+            },
+            "vertical_fan_angle": {
+                "state": {
+                    "30": "30\u00b0",
+                    "60": "60\u00b0",
+                    "90": "90\u00b0"
+                }
+            },
+            "weather_delay": {
+                "state": {
+                    "120h": "120h",
+                    "144h": "144h",
+                    "168h": "168h",
+                    "24h": "24h",
+                    "48h": "48h",
+                    "72h": "72h",
+                    "96h": "96h"
+                }
+            }
+        },
+        "sensor": {
+            "air_pressure": {
+                "name": "Zra\u010dni pritisk"
+            },
+            "air_quality": {
+                "name": "Kakovost zraka"
+            },
+            "air_quality_index": {
+                "name": "Indeks kakovosti zraka",
+                "state": {
+                    "level_1": "Nivo 1",
+                    "level_2": "Nivo 2",
+                    "level_3": "Nivo 3",
+                    "level_4": "Nivo 4",
+                    "level_5": "Nivo 5",
+                    "level_6": "Nivo 6"
+                }
+            },
+            "battery": {
+                "name": "Baterija"
+            },
+            "battery_state": {
+                "name": "Stanje baterije"
+            },
+            "carbon_dioxide": {
+                "name": "Ogljikov dioksid"
+            },
+            "carbon_monoxide": {
+                "name": "Ogljikov monoksid"
+            },
+            "cleaning_area": {
+                "name": "Povr\u0161ina \u010di\u0161\u010denja"
+            },
+            "cleaning_time": {
+                "name": "\u010cas \u010di\u0161\u010denja"
+            },
+            "concentration_carbon_dioxide": {
+                "name": "Koncentracija ogljikovega dioksida"
+            },
+            "current": {
+                "name": "Elektri\u010dni tok"
+            },
+            "current_temperature": {
+                "name": "Trenutna temperatura"
+            },
+            "filter_duration": {
+                "name": "Trajanje filtra"
+            },
+            "filter_life": {
+                "name": "\u017divljenjska doba filtra"
+            },
+            "filter_utilization": {
+                "name": "Izkori\u0161\u010denost filtra"
+            },
+            "formaldehyde": {
+                "name": "Formaldehid"
+            },
+            "gas": {
+                "name": "Plin"
+            },
+            "humidity": {
+                "name": "Vla\u017enost"
+            },
+            "humidity_outdoor": {
+                "name": "Zunanja vla\u017enost"
+            },
+            "illuminance": {
+                "name": "Osvetljenost"
+            },
+            "liquid_depth": {
+                "name": "Globina teko\u010dine"
+            },
+            "liquid_level": {
+                "name": "Nivo teko\u010dine"
+            },
+            "liquid_state": {
+                "name": "Stanje teko\u010dine",
+                "state": {
+                    "lower_alarm": "Nizko",
+                    "normal": "Normalno",
+                    "upper_alarm": "Visoko"
+                }
+            },
+            "luminosity": {
+                "name": "Svetilnost"
+            },
+            "methane": {
+                "name": "Metan"
+            },
+            "pm1": {
+                "name": "PM1"
+            },
+            "pm10": {
+                "name": "PM10"
+            },
+            "pm25": {
+                "name": "PM2.5"
+            },
+            "power": {
+                "name": "Mo\u010d"
+            },
+            "pump_time": {
+                "name": "Trajanje vodne \u010drpalke"
+            },
+            "remaining_time": {
+                "name": "Preostali \u010das"
+            },
+            "rolling_brush_life": {
+                "name": "\u017divljenjska doba valj\u010dne krta\u010de"
+            },
+            "side_brush_life": {
+                "name": "\u017divljenjska doba stranske krta\u010de"
+            },
+            "smoke_amount": {
+                "name": "Koli\u010dina dima"
+            },
+            "sous_vide_status": {
+                "name": "Stanje",
+                "state": {
+                    "boiling_temp": "Temperatura vrenja",
+                    "cooling": "Ohlajanje",
+                    "heating": "Pogrevanje",
+                    "heating_temp": "Temperatura pogrevanja",
+                    "standby": "V pripravljenosti",
+                    "warm": "Ohranjanje toplote"
+                }
+            },
+            "status": {
+                "name": "Stanje"
+            },
+            "temperature": {
+                "name": "Temperatura"
+            },
+            "temperature_external": {
+                "name": "Temperatura sonde"
+            },
+            "total_cleaning_area": {
+                "name": "Skupna povr\u0161ina \u010di\u0161\u010denja"
+            },
+            "total_cleaning_time": {
+                "name": "Skupni \u010das \u010di\u0161\u010denja"
+            },
+            "total_operating_time": {
+                "name": "Skupni \u010das delovanja"
+            },
+            "total_production": {
+                "name": "Skupna proizvodnja"
+            },
+            "total_volatile_organic_compound": {
+                "name": "Skupaj hlapnih organskih spojin"
+            },
+            "total_watering_time": {
+                "name": "Skupni \u010das zalivanja"
+            },
+            "uv_runtime": {
+                "name": "\u010cas delovanja UV-ja"
+            },
+            "voc": {
+                "name": "Hlapne organske spojine"
+            },
+            "voltage": {
+                "name": "Napetost"
+            },
+            "water_level": {
+                "name": "Nivo vode"
+            },
+            "water_level_state": {
+                "name": "Nivo vode",
+                "state": {
+                    "level_1": "Nizko",
+                    "level_2": "Srednje"
+                }
+            },
+            "water_time": {
+                "name": "Trajanje porabe vode"
+            }
+        },
+        "switch": {
+            "anion": {
+                "name": "Anion"
+            },
+            "battery_lock": {
+                "name": "Battery lock"
+            },
+            "child_lock": {
+                "name": "Otro\u0161ka klju\u010davnica"
+            },
+            "cry_detection": {
+                "name": "Zaznavanje joka"
+            },
+            "disinfection": {
+                "name": "Dezinfekcija"
+            },
+            "do_not_disturb": {
+                "name": "Ne motite"
+            },
+            "energy_saving": {
+                "name": "Var\u010devanje z energijo"
+            },
+            "filter_cartridge_reset": {
+                "name": "Ponastavitev filtrskega vlo\u017eka"
+            },
+            "filter_reset": {
+                "name": "Ponastavitev filtra"
+            },
+            "flip": {
+                "name": "Obrni sliko"
+            },
+            "frost_protection": {
+                "name": "Za\u0161\u010dita pred zmrzaljo"
+            },
+            "heat_preservation": {
+                "name": "Ohranjanje toplote"
+            },
+            "humidification": {
+                "name": "Vla\u017eenje"
+            },
+            "indexed_switch": {
+                "name": "Stikalo {index}"
+            },
+            "indexed_usb": {
+                "name": "USB {index}"
+            },
+            "ionizer": {
+                "name": "Ionizator"
+            },
+            "motion_alarm": {
+                "name": "Alarm gibanja"
+            },
+            "motion_recording": {
+                "name": "Snemanje gibanja"
+            },
+            "motion_tracking": {
+                "name": "Sledenje gibanju"
+            },
+            "mute": {
+                "name": "Uti\u0161aj"
+            },
+            "mute_voice": {
+                "name": "Uti\u0161aj glas"
+            },
+            "natural_wind": {
+                "name": "Naravni veter"
+            },
+            "open_window_detection": {
+                "name": "Zaznavanje odprtega okna"
+            },
+            "power": {
+                "name": "Mo\u010d"
+            },
+            "privacy_mode": {
+                "name": "Zasebni na\u010din"
+            },
+            "pump": {
+                "name": "\u010crpalka"
+            },
+            "radio": {
+                "name": "Radio"
+            },
+            "reset_of_water_usage_days": {
+                "name": "Ponastavitev dni porabe vode"
+            },
+            "socket": {
+                "name": "Vti\u010dnica"
+            },
+            "sound": {
+                "name": "Zvok"
+            },
+            "sound_detection": {
+                "name": "Zaznavanje zvoka"
+            },
+            "sterilization": {
+                "name": "Sterilizacija"
+            },
+            "switch": {
+                "name": "Stikalo"
+            },
+            "uv_sterilization": {
+                "name": "UV sterilizacija"
+            },
+            "video_recording": {
+                "name": "Snemanje videa"
+            },
+            "voice": {
+                "name": "Glas"
+            },
+            "water": {
+                "name": "Voda"
+            },
+            "water_pump_reset": {
+                "name": "Ponastavitev vodne \u010drpalke"
+            },
+            "wide_dynamic_range": {
+                "name": "\u0160irok dinami\u010dni razpon"
+            }
+        }
+    }
+}

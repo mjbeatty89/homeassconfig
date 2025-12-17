@@ -1,0 +1,27 @@
+{
+    "entity": {
+        "select": {
+            "basic_anti_flicker": {
+                "state": {
+                    "0": "Deaktiviert"
+                }
+            },
+            "basic_nightvision": {
+                "state": {
+                    "2": "Anne"
+                }
+            },
+            "relay_status": {
+                "state": {
+                    "on": "Anne",
+                    "power_on": "Anne"
+                }
+            },
+            "vacuum_cistern": {
+                "state": {
+                    "closed": "Zue"
+                }
+            }
+        }
+    }
+}

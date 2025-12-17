@@ -1,0 +1,173 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "This device is already configured."
+    },
+    "error": {
+      "not_float": "Needs to be a number"
+    },
+    "flow_title": "Setup new simulated battery",
+    "step": {
+      "user": {
+        "title": "Select battery",
+        "data": {
+          "battery": "Battery model"
+        },
+        "description": "Select a battery model to simulate from the list or select Custom to create one."
+      },
+      "custom": {
+        "title": "Custom Battery",
+        "data": {
+          "unique_name": "Unique name",
+          "size_kwh": "Battery size in kWh",
+          "max_discharge_rate_kw": "Maximum discharge rate in kW",
+          "max_charge_rate_kw": "Maximum charging rate in kW",
+          "efficiency": "Round trip efficiency (0 to 1)"
+        },
+        "description": "Set the specifications of the battery. Please consider posting details of the battery you are simulating on our github so we can add it to the template list."
+      },
+      "meter_menu": {
+        "title": "Add Meters",
+        "menu_options": {
+          "add_import_meter": "Add import meter (measuring energy coming into home from the grid)",
+          "add_export_meter": "Add export meter (measuring energy leaving into home to the grid)",
+          "all_done": "All finished"
+        },
+        "description": "At least one import and one export meter are required. Meters monitoring solar generation directly shouldn't be added."
+      },
+      "tariff_menu": {
+        "title": "Select Tariff Type",
+        "menu_options": {
+          "no_tariff_info": "No tariff for this meter",
+          "fixed_tariff": "A constant fixed number for the tariff",
+          "tariff_sensor": "A sensor that contains the value of a tariff varying over time"
+        },
+        "description": ""
+      },
+      "add_import_meter": {
+        "title": "Add Import Meter To Battery",
+        "data": {
+          "sensor_id": "Energy meter sensor"
+        },
+        "description": "Select meter sensor"
+      },
+      "add_export_meter": {
+        "title": "Add Export Meter To Battery",
+        "data": {
+          "sensor_id": "Energy meter sensor"
+        },
+        "description": "Select meter sensor"
+      },
+      "fixed_tariff": {
+        "title": "Add Fixed Tariff Details",
+        "data": {
+          "fixed_tariff": "Fixed tariff value (if applicable)"
+        },
+        "description": ""
+      },
+      "tariff_sensor": {
+        "title": "Add Tariff Sensor Details",
+        "data": {
+          "tariff_sensor": "Sensor that shows current tariff (if applicable)"
+        },
+        "description": ""
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Battery Options",
+        "description": "Select parameters to amend",
+        "menu_options": {
+          "main_params": "Main Parameters",
+          "input_sensors": "Edit Meters/Sensors",
+          "all_done": "All done"
+        }
+      },
+      "main_params": {
+        "title": "Main Battery Options",
+        "description": "Main Parameters",
+        "data": {
+          "size_kwh": "Battery size in kWh",
+          "max_discharge_rate_kw": "Maximum discharge rate in kW",
+          "max_charge_rate_kw": "Maximum charging rate in kW",
+          "efficiency": "Round trip efficiency (0 to 1)"
+        }
+      },
+      "input_sensors": {
+        "title": "Edit Meters/Sensors",
+        "menu_options": {
+          "add_import_meter": "Add import meter (measuring energy coming into home from the grid)",
+          "add_export_meter": "Add export meter (measuring energy leaving home to the grid)",
+          "edit_input_tariff": "Edit tariff details for a meter",
+          "delete_input": "Delete a meter"
+          },
+        "description": "At least one import and one export meter are required. Meters monitoring solar generation directly shouldn't be used."
+      },
+      "tariff_menu": {
+        "title": "Select Tariff Type",
+        "menu_options": {
+          "no_tariff_info": "No tariff for this meter",
+          "fixed_tariff": "A constant fixed price for the tariff",
+          "tariff_sensor": "A sensor that represents the value of a tariff varying over time"
+        },
+        "description": ""
+      },
+      "add_import_meter": {
+        "title": "Add Import Meter To Battery",
+        "data": {
+          "sensor_id": "Energy meter sensor"
+        },
+        "description": "Select meter sensor"
+      },
+      "add_export_meter": {
+        "title": "Add Export Meter To Battery",
+        "data": {
+          "sensor_id": "Energy meter sensor"
+        },
+        "description": "Select meter sensor"
+      },
+      "delete_input": {
+        "title": "Select Meter To Delete",
+        "data": {},
+        "description": ""
+      },
+      "edit_input_tariff": {
+        "title": "Select Meter To Edit Tariff For",
+        "data": {},
+        "description": ""
+      },
+      "fixed_tariff": {
+        "title": "Add Fixed Tariff",
+        "data": {
+          "fixed_tariff": "Fixed tariff value"
+        },
+        "description": ""
+      },
+      "tariff_sensor": {
+        "title": "Add Tariff Sensor",
+        "data": {
+          "tariff_sensor": "Sensor that shows current tariff"
+        },
+        "description": ""
+      }
+    }
+  },
+  "services": {
+    "set_battery_charge_state": {
+      "name": "Set Battery Charge",
+      "description": "Set the battery charge state for a specific simulated battery",
+      "fields": {
+        "device_id": {
+          "name": "Target Battery Device",
+          "description": "Device to set battery charge for"
+        },
+        "charge_state": {
+          "name": "Charge State",
+          "description": "Value of charge in kWh"
+        }
+      }
+    }
+  }
+}

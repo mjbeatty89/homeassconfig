@@ -1,0 +1,15 @@
+{
+  "domain": "pipeless",
+  "name": "Pipeless Agents",
+  "codeowners": ["@pipeless_ai", "@miguelaeh"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/pipeless-ai/home-assistant-custom-component",
+  "homekit": {},
+  "iot_class": "assumed_state",
+  "issue_tracker": "https://github.com/pipeless-ai/home-assistant-custom-component/issues",
+  "requirements": [],
+  "ssdp": [],
+  "version": "1.0.1",
+  "zeroconf": []
+}

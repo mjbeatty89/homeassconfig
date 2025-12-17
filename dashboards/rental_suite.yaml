@@ -1,0 +1,286 @@
+title: Guest Suite
+views:
+  - title: Home
+    path: home
+    icon: mdi:home
+    theme: Backend-selected=clear
+    badges: []
+    cards:
+      # Welcome Header
+      - type: markdown
+        content: |
+          # Welcome to Your Suite
+          Control your lights, temperature, and comfort settings below.
+
+      # Climate Control Section
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🌡️ Temperature & Climate
+
+          - type: thermostat
+            entity: climate.suite_thermostat
+            name: Suite Thermostat
+            features:
+              - type: climate-hvac-modes
+                hvac_modes:
+                  - 'off'
+                  - heat
+                  - cool
+                  - auto
+              - type: climate-preset-modes
+
+          - type: horizontal-stack
+            cards:
+              - type: sensor
+                entity: sensor.suite_thermostat_current_temperature
+                name: Temperature
+                graph: line
+                detail: 1
+                hours_to_show: 24
+
+              - type: sensor
+                entity: sensor.suite_thermostat_current_humidity
+                name: Humidity
+                graph: line
+                detail: 1
+                hours_to_show: 24
+
+      # Suite Bedroom Lighting & Comfort
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 💡 Suite Bedroom
+
+          - type: light
+            entity: light.suite_bedroom_scones
+            name: Bedside Lamps
+            icon: mdi:lamp
+            features:
+              - type: light-brightness
+
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: light.suite_bedroom_scones
+                name: 100%
+                icon: mdi:brightness-7
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    entity_id: light.suite_bedroom_scones
+                    brightness_pct: 100
+
+              - type: button
+                entity: light.suite_bedroom_scones
+                name: 50%
+                icon: mdi:brightness-5
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    entity_id: light.suite_bedroom_scones
+                    brightness_pct: 50
+
+              - type: button
+                entity: light.suite_bedroom_scones
+                name: 10%
+                icon: mdi:brightness-2
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    entity_id: light.suite_bedroom_scones
+                    brightness_pct: 10
+
+      # Den Area Lighting & Comfort
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🛋️ Den Area
+
+          - type: horizontal-stack
+            cards:
+              - type: light
+                entity: light.unnamed_ks240_den_fanlight
+                name: Ceiling Light
+                icon: mdi:ceiling-light
+                features:
+                  - type: light-brightness
+
+              - type: light
+                entity: light.den_smart_diffuser
+                name: Diffuser
+                icon: mdi:air-humidifier
+                features:
+                  - type: light-brightness
+
+          - type: entities
+            entities:
+              - entity: fan.den_ceiling_fan
+                name: Ceiling Fan
+                icon: mdi:fan
+
+      # Outside Lighting
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## 🌙 Outdoor Lights
+              Control exterior lights for late arrivals or evening walks
+
+          - type: entities
+            entities:
+              - entity: switch.patio_outlets_outlet_1
+                name: Patio Lights
+                icon: mdi:outdoor-lamp
+              - entity: switch.aux_patio_cord_outlet_1
+                name: Additional Patio Outlet
+                icon: mdi:power-socket-us
+              - entity: switch.basement_lights
+                name: Basement Exterior Lights
+                icon: mdi:lightbulb
+
+      # Quick Actions
+      - type: vertical-stack
+        cards:
+          - type: markdown
+            content: |
+              ## ⚡ Quick Actions
+
+          - type: horizontal-stack
+            cards:
+              - type: button
+                name: All Lights On
+                icon: mdi:lightbulb-on
+                tap_action:
+                  action: call-service
+                  service: light.turn_on
+                  service_data:
+                    entity_id:
+                      - light.suite_bedroom_scones
+                      - light.unnamed_ks240_den_fanlight
+                      - light.den_smart_diffuser
+
+              - type: button
+                name: All Lights Off
+                icon: mdi:lightbulb-off
+                tap_action:
+                  action: call-service
+                  service: light.turn_off
+                  service_data:
+                    entity_id:
+                      - light.suite_bedroom_scones
+                      - light.unnamed_ks240_den_fanlight
+                      - light.den_smart_diffuser
+
+              - type: button
+                name: Goodnight
+                icon: mdi:weather-night
+                tap_action:
+                  action: call-service
+                  service: script.rental_goodnight_scene
+
+          - type: horizontal-stack
+            cards:
+              - type: button
+                name: Outside On
+                icon: mdi:lightbulb-on-outline
+                tap_action:
+                  action: call-service
+                  service: switch.turn_on
+                  service_data:
+                    entity_id:
+                      - switch.patio_outlets_outlet_1
+                      - switch.aux_patio_cord_outlet_1
+                      - switch.basement_lights
+
+              - type: button
+                name: Outside Off
+                icon: mdi:lightbulb-off-outline
+                tap_action:
+                  action: call-service
+                  service: switch.turn_off
+                  service_data:
+                    entity_id:
+                      - switch.patio_outlets_outlet_1
+                      - switch.aux_patio_cord_outlet_1
+                      - switch.basement_lights
+
+              - type: button
+                name: Morning
+                icon: mdi:weather-sunny
+                tap_action:
+                  action: call-service
+                  service: script.rental_good_morning
+
+          - type: markdown
+            content: |
+              ---
+              **Need Help?** Contact your host anytime.
+
+              *Enjoy your stay!*
+
+  # Settings View (Advanced controls)
+  - title: Settings
+    path: settings
+    icon: mdi:cog
+    badges: []
+    cards:
+      - type: markdown
+        content: |
+          ## ⚙️ Advanced Settings
+
+      - type: entities
+        title: Den Climate Sensor
+        entities:
+          - entity: binary_sensor.den_motion
+            name: Motion Detected
+          - entity: binary_sensor.den_occupancy
+            name: Room Occupied
+          - entity: sensor.den_temperature
+            name: Temperature
+          - entity: sensor.den_battery
+            name: Sensor Battery
+
+      - type: entities
+        title: Thermostat Controls
+        entities:
+          - entity: select.suite_thermostat_temperature_display_units
+            name: Temperature Units
+          - entity: select.suite_thermostat_current_mode
+            name: Current Mode
+
+      - type: entities
+        title: Den TV & Media
+        show_header_toggle: false
+        entities:
+          - entity: media_player.den_tv
+            name: TV
+          - entity: media_player.den_bt_speaker
+            name: Bluetooth Speaker
+          - entity: media_player.den_chrome_audio
+            name: Chromecast Audio
+
+      - type: entities
+        title: Suite Bedroom Media
+        show_header_toggle: false
+        entities:
+          - entity: media_player.suite_bedroom_tv
+            name: TV
+
+      - type: markdown
+        content: |
+          ---
+          ### Outdoor Camera Access
+          For security, exterior cameras are available below.
+
+      - type: picture-entity
+        entity: camera.tapo_rear_driveway_cam_live_view
+        name: Rear Driveway Camera
+        show_state: false
+        show_name: true

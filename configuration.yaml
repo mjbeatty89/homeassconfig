@@ -1,0 +1,212 @@
+# Home Assistant Configuration
+# Multi-Agent Smart Home Architecture
+# See architecture.md for design philosophy
+
+# ============================================================================
+# CORE HOMEASSISTANT SETTINGS
+# ============================================================================
+
+homeassistant:
+  name: Miller Smart Home
+  latitude: !secret ha_latitude
+  longitude: !secret ha_longitude
+  elevation: !secret ha_elevation
+  unit_system: metric
+  time_zone: America/Detroit
+  currency: USD
+  country: US
+
+  # Internal and external URLs
+  internal_url: !secret internal_url
+  external_url: !secret external_url
+
+  # Allowlist for external directories (if needed)
+  allowlist_external_dirs:
+    - /config
+    - /media
+    - /share
+
+# ============================================================================
+# DEFAULT INTEGRATIONS
+# ============================================================================
+# Loads default set of integrations including:
+# - automation, script, scene
+# - history, logbook, map
+# - person, zone, sun
+# - mobile_app, my, dhcp, ssdp, zeroconf, usb, bluetooth
+# - frontend, config, system_health
+
+default_config:
+
+# ============================================================================
+# HTTP / SSL CONFIGURATION
+# ============================================================================
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 127.0.0.1
+    - ::1
+    - 10.1.30.0/24  # Your local network
+  # Uncomment if using SSL
+  # ssl_certificate: !secret ssl_cert
+  # ssl_key: !secret ssl_key
+
+# ============================================================================
+# RECORDER & HISTORY
+# ============================================================================
+
+recorder:
+  # Purge old data to keep database size manageable
+  purge_keep_days: 30
+  commit_interval: 1
+
+  # Exclude noisy sensors
+  exclude:
+    entity_globs:
+      - sensor.sun_*
+      - sensor.*_signal_strength
+      - sensor.*_rssi
+      - sensor.*_wifi_*
+    domains:
+      - update
+      - automation
+      - script
+
+# ============================================================================
+# LOGGER
+# ============================================================================
+
+logger:
+  default: info
+  logs:
+    # Set specific components to debug when needed
+    # homeassistant.components.automation: debug
+    # homeassistant.components.script: debug
+    custom_components.spook: warning
+
+# ============================================================================
+# FRONTEND & THEMES
+# ============================================================================
+
+frontend:
+  themes: !include_dir_merge_named themes
+  # Extra module URLs (if using custom cards)
+  # extra_module_url:
+  #   - /local/community/button-card/button-card.js
+
+# ============================================================================
+# LOVELACE DASHBOARDS
+# ============================================================================
+
+lovelace:
+  mode: storage
+  # Add YAML dashboards alongside UI-managed dashboards
+  dashboards:
+    rental-suite:
+      mode: yaml
+      title: Rental Suite
+      icon: mdi:home-variant
+      show_in_sidebar: true
+      filename: dashboards/rental_suite.yaml
+      require_admin: false
+
+# ============================================================================
+# CONFIGURATION INCLUDES
+# ============================================================================
+
+# Core configuration files
+automation: !include automations.yaml
+script: !include scripts/rental_scenes.yaml
+scene: !include scenes.yaml
+
+# Template sensors and helpers
+template: !include templates.yaml
+
+# Additional configuration splits (create these as needed)
+# light: !include lights.yaml
+# sensor: !include sensors.yaml
+# binary_sensor: !include binary_sensors.yaml
+# switch: !include switches.yaml
+
+# ============================================================================
+# MQTT
+# ============================================================================
+
+mqtt:
+ # broker: !secret mqtt_server
+ # port: 1883
+  # username: !secret mqtt_user
+  # password: !secret mqtt_password
+ # discovery: true
+ # discovery_prefix: homeassistant
+
+# ============================================================================
+# TEXT-TO-SPEECH
+# ============================================================================
+
+tts:
+  - platform: google_translate
+    service_name: google_say
+
+# ============================================================================
+# CLOUD & REMOTE ACCESS
+# ============================================================================
+
+# Nabu Casa Cloud (if subscribed)
+# cloud:
+
+# ============================================================================
+# ENERGY MONITORING (if configured)
+# ============================================================================
+
+# energy:
+
+# ============================================================================
+# NOTIFICATIONS
+# ============================================================================
+
+notify:
+  - name: all_devices
+    platform: group
+    services:
+      - service: mobile_app_mjb_iphone
+      # Add more notification services as needed
+
+# ============================================================================
+# ADDITIONAL INTEGRATIONS
+# ============================================================================
+
+# Spotify Integration
+#spotify:
+#  client_id: !secret spotify_client_id
+#  client_secret: !secret spotify_client_secret
+
+# Wake on LAN
+# wake_on_lan:
+
+# Stream (for camera feeds)
+stream:
+
+# ============================================================================
+# PACKAGES (Advanced modular organization)
+# ============================================================================
+# Uncomment to enable packages for better organization
+# See: https://www.home-assistant.io/docs/configuration/packages/
+
+# homeassistant:
+#   packages: !include_dir_named packages/
+
+# ============================================================================
+# NOTES & MAINTENANCE
+# ============================================================================
+
+# Last Updated: 2025-11-26
+# Architecture: Multi-Agent Collaborative System
+# See architecture.md for system design philosophy
+#
+# To validate configuration:
+#   Settings > System > Restart > Check Configuration
+#
+# To reload without restart (when possible):
+#   Settings > System > Restart > Quick reload

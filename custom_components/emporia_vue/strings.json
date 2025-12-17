@@ -1,0 +1,42 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "email": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]",
+          "enable_1m": "Power Minute Average Sensor",
+          "enable_1d": "Energy Today Sensor",
+          "enable_1mon": "Energy This Month Sensor",
+          "solar_invert": "Invert Values for Solar Circuits"
+        }
+      },
+      "reconfigure": {
+        "data": {
+          "enable_1m": "[%key:component::emporia_vue::config::step::user::data::enable_1m%]",
+          "enable_1d": "[%key:component::emporia_vue::config::step::user::data::enable_1d%]",
+          "enable_1mon": "[%key:component::emporia_vue::config::step::user::data::enable_1mon%]",
+          "solar_invert": "[%key:component::emporia_vue::config::step::user::data::solar_invert%]"
+        }
+      },
+      "reauth_confirm": {
+        "title": "[%key:common::config_flow::title::reauth%]",
+        "description": "The Emporia Vue integration needs to re-authenticate your account",
+        "data": {
+          "email": "[%key:common::config_flow::data::email%]",
+          "password": "[%key:common::config_flow::data::password%]"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "[%key:common::config_flow::error::cannot_connect%]",
+      "invalid_auth": "[%key:common::config_flow::error::invalid_auth%]",
+      "unknown": "[%key:common::config_flow::error::unknown%]"
+    },
+    "abort": {
+      "already_configured": "[%key:common::config_flow::abort::already_configured_device%]",
+      "reauth_successful": "[%key:common::config_flow::abort::reauth_successful%]",
+      "reconfigure_successful": "[%key:common::config_flow::abort::reconfigure_successful%]"
+    }
+  }
+}

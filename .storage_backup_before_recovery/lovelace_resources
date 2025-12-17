@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_resources",
+  "data": {
+    "items": [
+      {
+        "id": "72d6757fe230459a8b50de10f94976bc",
+        "url": "/hacsfiles/mini-media-player/mini-media-player-bundle.js?hacstag=14852083811610",
+        "type": "module"
+      },
+      {
+        "id": "fa1f50270127417a9b081ba36b61eee3",
+        "url": "/hacsfiles/Bubble-Card/bubble-card.js?hacstag=680112919304",
+        "type": "module"
+      },
+      {
+        "id": "dba8b3bffb5740bca427d36a9cbea117",
+        "url": "/hacsfiles/lovelace-mushroom/mushroom.js?hacstag=444350375508",
+        "type": "module"
+      },
+      {
+        "id": "e77b753095de47a2a485df748b791d24",
+        "url": "/hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js?hacstag=142051833101",
+        "type": "module"
+      },
+      {
+        "id": "ddfcddf34d1a42eebcae460e6d80e0c1",
+        "url": "/hacsfiles/lovelace-auto-entities/auto-entities.js?hacstag=1677445841161",
+        "type": "module"
+      },
+      {
+        "id": "accaa915d13c4ef79e2c3a0fd6e17540",
+        "url": "/hacsfiles/vacuum-card/vacuum-card.js?hacstag=2612912952110",
+        "type": "module"
+      },
+      {
+        "id": "a7bec5de8e43432cba9228c51c04beed",
+        "url": "/hacsfiles/button-card/button-card.js?hacstag=146194325600",
+        "type": "module"
+      },
+      {
+        "id": "6b39f5c0020345cabef0be0f5f34d06d",
+        "url": "/hacsfiles/lovelace-layout-card/layout-card.js?hacstag=156434866247",
+        "type": "module"
+      },
+      {
+        "id": "ca70eeb2fd214f55b5bbdfc1c1b4e115",
+        "url": "/hacsfiles/mushroom-strategy/mushroom-strategy.js?hacstag=619284862250",
+        "type": "module"
+      },
+      {
+        "id": "eec3d410442740ae976af4d3fc5c2edd",
+        "url": "/hacsfiles/apexcharts-card/apexcharts-card.js?hacstag=331701152223",
+        "type": "module"
+      },
+      {
+        "id": "530f104029074c7885aef42d0e4da39b",
+        "url": "/hacsfiles/stack-in-card/stack-in-card.js?hacstag=248954055020",
+        "type": "module"
+      },
+      {
+        "id": "eaa980b61a844c7ebadf2abdd8228eff",
+        "url": "/hacsfiles/config-template-card/config-template-card.js?hacstag=172177543136",
+        "type": "module"
+      },
+      {
+        "id": "dc47b54b11f34bedbd6d1ec5e9bf4d03",
+        "url": "/hacsfiles/mini-graph-card/mini-graph-card-bundle.js?hacstag=1512800620130",
+        "type": "module"
+      },
+      {
+        "id": "764ad6f430eb487a98ae06f7baf0a68a",
+        "url": "/hacsfiles/battery-state-card/battery-state-card.js?hacstag=256292682321",
+        "type": "module"
+      },
+      {
+        "id": "0b63cf115a1f47a0b9bdd7f991981429",
+        "url": "/hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js?hacstag=178921037451",
+        "type": "module"
+      },
+      {
+        "id": "5d1b3e0150f14c1aab362bcdf627b546",
+        "url": "/hacsfiles/power-flow-card-plus/power-flow-card-plus.js?hacstag=618081815025",
+        "type": "module"
+      },
+      {
+        "id": "8cd902fd843144cfa88e6aa683322451",
+        "url": "/hacsfiles/simple-weather-card/simple-weather-card-bundle.js?hacstag=172998062085",
+        "type": "module"
+      },
+      {
+        "id": "fbe96c4275de4d399b00ebf495b9d235",
+        "url": "/hacsfiles/banner-card/banner-card.js?hacstag=1867657040130",
+        "type": "module"
+      },
+      {
+        "id": "d2663cda91ad468f86c76469753a83e8",
+        "url": "/hacsfiles/lovelace-horizon-card/lovelace-horizon-card.js?hacstag=614083491131",
+        "type": "module"
+      },
+      {
+        "id": "795be2df17dc4efa9a3ac78a6e95e8fe",
+        "url": "/hacsfiles/slider-button-card/slider-button-card.js?hacstag=4987940331130",
+        "type": "module"
+      },
+      {
+        "id": "7535ea5e7eb842cdb25db99193e67870",
+        "url": "/hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=497319128900",
+        "type": "module"
+      },
+      {
+        "id": "2502a1b342c9406fb23e433aa37c6574",
+        "url": "/hacsfiles/light-entity-card/light-entity-card.js?hacstag=168744428613",
+        "type": "module"
+      },
+      {
+        "id": "297dbfdf46b54a5f9868f35b811d760f",
+        "url": "/hacsfiles/clock-weather-card/clock-weather-card.js?hacstag=522634019291",
+        "type": "module"
+      },
+      {
+        "id": "8782cb27b66a4a6bad307289b6ead87c",
+        "url": "/hacsfiles/lovelace-rpi-monitor-card/rpi-monitor-card.js?hacstag=281214271142",
+        "type": "module"
+      },
+      {
+        "id": "4ac5054b084c4cb0b11b367903d61f05",
+        "url": "/hacsfiles/rgb-light-card/card.js?hacstag=2153271951130",
+        "type": "module"
+      },
+      {
+        "id": "823300bfaf34470c8aefa3a505b4c426",
+        "url": "/hacsfiles/ha-sankey-chart/ha-sankey-chart.js?hacstag=4558460883100",
+        "type": "module"
+      },
+      {
+        "id": "1a21c36b4b1d41d28c7c49bb164a5153",
+        "url": "/hacsfiles/hass-hue-icons/hass-hue-icons.js?hacstag=3844345221253",
+        "type": "module"
+      },
+      {
+        "id": "5da35e7db5674317bd93eb8927930c3c",
+        "url": "/hacsfiles/homed-zigbee-networkmap/homed-zigbee-networkmap.js?hacstag=761188804014",
+        "type": "module"
+      },
+      {
+        "id": "99eb4d53e62d44de8a52ab99360f01d3",
+        "url": "/hacsfiles/ha-floorplan/floorplan.js?hacstag=188323494114",
+        "type": "module"
+      },
+      {
+        "id": "7c3ab582f3174fcb941110380f7d5c2b",
+        "url": "/browser_mod.js?automatically-added&2.6.3",
+        "type": "module"
+      },
+      {
+        "id": "c1f7a570e739460595a6747c31b22d40",
+        "url": "/hacsfiles/Ultra-Card/ultra-card.js?hacstag=1018230174200",
+        "type": "module"
+      },
+      {
+        "id": "f8cb84ec3fa3414db091fceb5e04047d",
+        "url": "/hacsfiles/mass-player-card/mass-player-card.js?hacstag=1043277514202",
+        "type": "module"
+      },
+      {
+        "id": "fe1a9b4372804db48c55609398d4ab02",
+        "url": "/hacsfiles/Strip-Card/strip-card.js?hacstag=1020654222111",
+        "type": "module"
+      },
+      {
+        "id": "605032c57d4345649170102526dca692",
+        "url": "/hacsfiles/lovelace-material-components/material-components.js?hacstag=1067817636209",
+        "type": "module"
+      },
+      {
+        "id": "8b6834f553c14639bd414125709c9bc5",
+        "url": "/hacsfiles/status-card/status-card.js?hacstag=878557286304",
+        "type": "module"
+      },
+      {
+        "id": "ef1ac476eaa4483c8fa8a28596466852",
+        "url": "/hacsfiles/lovelace-solar-card/solar-card.js?hacstag=1050656026080",
+        "type": "module"
+      },
+      {
+        "id": "3dff6d7841f84206ba609d7d217feb90",
+        "url": "/webrtc/webrtc-camera.js?v=v3.6.1",
+        "type": "module"
+      }
+    ]
+  }
+}

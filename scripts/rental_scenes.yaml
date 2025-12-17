@@ -1,0 +1,96 @@
+# Rental Suite Scripts
+# Simple automation scripts for guest comfort
+
+rental_goodnight_scene:
+  alias: "Rental: Goodnight Scene"
+  icon: mdi:weather-night
+  sequence:
+    # Dim bedroom lamps to 5% for nightlight
+    - service: light.turn_on
+      target:
+        entity_id: light.suite_bedroom_scones
+      data:
+        brightness_pct: 5
+
+    # Turn off den lights
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.unnamed_ks240_den_fanlight
+          - light.den_smart_diffuser
+
+    # Turn off den fan
+    - service: fan.turn_off
+      target:
+        entity_id: fan.den_ceiling_fan
+
+    # Turn off outside lights
+    - service: switch.turn_off
+      target:
+        entity_id:
+          - switch.patio_outlets_outlet_1
+          - switch.aux_patio_cord_outlet_1
+          - switch.basement_lights
+
+    # Optional: Set thermostat to sleep temperature
+    - service: climate.set_temperature
+      target:
+        entity_id: climate.suite_thermostat
+      data:
+        temperature: 68
+
+rental_good_morning:
+  alias: "Rental: Good Morning Scene"
+  icon: mdi:weather-sunny
+  sequence:
+    # Turn on bedroom lamps to 50%
+    - service: light.turn_on
+      target:
+        entity_id: light.suite_bedroom_scones
+      data:
+        brightness_pct: 50
+
+    # Turn on den ceiling light to 70%
+    - service: light.turn_on
+      target:
+        entity_id: light.unnamed_ks240_den_fanlight
+      data:
+        brightness_pct: 70
+
+rental_movie_time:
+  alias: "Rental: Movie Time"
+  icon: mdi:movie
+  sequence:
+    # Dim all lights to 20%
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.suite_bedroom_scones
+          - light.unnamed_ks240_den_fanlight
+          - light.den_smart_diffuser
+      data:
+        brightness_pct: 20
+
+rental_away:
+  alias: "Rental: Away Mode"
+  icon: mdi:exit-run
+  sequence:
+    # Turn off all lights
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.suite_bedroom_scones
+          - light.unnamed_ks240_den_fanlight
+          - light.den_smart_diffuser
+
+    # Turn off fan
+    - service: fan.turn_off
+      target:
+        entity_id: fan.den_ceiling_fan
+
+    # Set thermostat to eco mode
+    - service: climate.set_preset_mode
+      target:
+        entity_id: climate.suite_thermostat
+      data:
+        preset_mode: away

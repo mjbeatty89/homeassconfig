@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>HA Tracker</title>
+  
+  <link rel="icon" href="favicon.png" type="image/png">
+  
+  <!-- Evitar caché -->
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Last-Modified" content="0">
+  <meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  
+  
+  <!-- Estilos -->
+
+  
+</head>
+<body hidden>
+  <div id="container">
+    <div id="map">
+    </div>
+    <div id="forms-container">
+		<div id="combo-container">
+		  <select id="combo-select">
+			<option value="users"  data-i18n="users"  data-icon="users">Users</option>
+			<option value="zones"  data-i18n="zones"  data-icon="zones">Zones</option>
+			<option value="filter" data-i18n="filter" data-icon="filter">Filter</option>
+		  </select>
+		</div>
+      <div id="persons-container" style="display: block;"> <!-- Visible por defecto -->
+        <div id="persons-table" class="table-container">
+          <table class="fixed-table">
+            <thead>
+              <tr>
+                <th data-i18n="name">Name</th>
+				<th style="width: 45px;" data-i18n="date">Date</th>
+				<th data-i18n="zone">Zone</th>				
+				<th style="width: 25px;" data-i18n="speed">Speed</th>
+				<th style="width: 15px;" data-i18n="percentage">%</th>
+              </tr>				  
+            </thead>
+            <tbody id="persons-table-body">
+              <!-- Filas generadas dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div> 	
+      <div id="zones-container" style="display: none;"> <!-- Oculto por defecto -->
+        <div class="zone-actions" id="zone-actions" style="display: none;">
+          <button id="add-zone-button" class="action-button btn-add" data-i18n="add">Add</button>
+          <button id="edit-zone-button" class="action-button btn-edit" data-i18n="edit">Edit</button>		  
+          <button id="delete-zone-button" class="action-button btn-delete" data-i18n="delete">Delete</button>
+        </div>
+        <div class="table-container">
+          <table  id="zones-table" class="fixed-table">
+            <thead>
+              <tr>
+                <th style="width: 33px;" data-i18n="column_map">Mapa</th>
+				<th style="width: 33px;" data-i18n="column_type">Type</th>					
+                <th data-i18n="name">Name</th>
+				<th style="width: 33px;" data-i18n="radius">Radius</th>
+              </tr>
+            </thead>
+            <tbody id="zones-table-body">
+              <!-- Filas generadas dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div> 	  
+      <div id="filter-container" style="display: none;"> <!-- Oculto por defecto -->
+        <div class="group">
+          <select id="person-select"></select>
+        </div>
+	    <div class="group">
+		  <input id="daterange" type="text" data-i18n-placeholder="filter_date_range"  placeholder="" readonly>
+	    </div>	
+		<div class="group">
+          <select id="export-filter">
+		    <option value="export-file" data-i18n="export_file" selected>Exportar a un fichero</option>
+		    <option value="export-pdf">.pdf</option>		
+			<option value="export-xlsx">.xlsx</option>		  
+			<option value="export-csv">.csv</option>		  			
+		    <option value="export-kml">.kml</option>		  
+		  </select>
+        </div>
+        <div>
+          <div class="tabs">
+            <button class="tab-button active" data-tab="positions" data-i18n="positions">Positions</button>
+            <button class="tab-button" data-tab="summary" data-i18n="summary">Summary</button>
+			<button class="tab-button" data-tab="chart" data-i18n="chart">Chart</button>
+          </div>
+          <div id="tab-content">
+            <div id="positions" class="tab active">
+              <div class="table-container">
+                <table id="positions-table" class="fixed-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 5px;"></th>					  
+					  <th style="width: 5px;"></th>
+                      <th style="width: 45px;" data-i18n="date">Date</th>
+                      <th data-i18n="zone">Zone</th>
+                      <th style="width: 25px;" data-i18n="speed">Speed</th>					  
+					  <th style="width: 5px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="filter-table-body">
+                    <!-- Filas generadas dinámicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="summary" class="tab">
+              <div class="table-container">
+                <table id="summary-table" class="fixed-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="metric">Metric</th>
+                      <th data-i18n="value">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td data-i18n="positions">Positions</td>
+                      <td id="positions-count">--</td>
+                    </tr>
+                    <tr>
+                      <td data-i18n="total_time">Total Time</td>
+                      <td id="total-time">--</td>
+                    </tr>
+                    <tr>
+                      <td data-i18n="distance">Distance</td>
+                      <td id="distance">--</td>
+                    </tr>
+                    <tr>
+                      <td data-i18n="max_speed">Max Speed</td>
+                      <td id="max-speed">--</td>
+                    </tr>
+                    <tr>
+                      <td data-i18n="avg_speed">Average Speed</td>
+                      <td id="average-speed">--</td>
+                    </tr>
+                      <td data-i18n="stops_count">Stops</td>
+                      <td id="stops-count">--</td>
+                    </tr>
+                      <td data-i18n="stopped_time">Stopped time</td>
+                      <td id="stopped-time">--</td>
+                    </tr>					
+                  </tbody>
+                </table>
+                <table id="summary-zones-table" class="fixed-table">
+                  <thead>
+                    <tr>
+                      <th data-i18n="zone">Zone</th>
+                      <th style="width: 40px;" data-i18n="time">Time</th>
+                      <th style="width: 40px;" data-i18n="visits">Visits</th>
+					  <th style="width: 40px;" data-i18n="stops">Stops</th>
+					  <th style="width: 30px;" data-i18n="distance">Distance</th>
+                    </tr>
+                  </thead>
+                  <tbody id="summary-zones-table-body">
+                    <!-- Filas generadas dinámicamente -->
+                  </tbody>
+                </table>         
+              </div>
+            </div>
+		    <div id="chart" class="tab">
+			  <div class="table-container">
+			    <div id="positions-chart" class="chart-slot" aria-label="Chart area"></div>
+			  </div>
+		    </div>			
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="hamburger-button" id="hamburger-button">☰</button>
+  </div>
+
+  <!-- Carga de scripts -->
+  
+  <!-- Carga CSS y JS de HA Tracker -->
+  <script type="module">
+    const urlParams = new URLSearchParams(window.location.search);
+    const v = urlParams.get("v") ?? Date.now(); // fallback como "cache buster" si no viene v
+    const debugParam = urlParams.get("debug");
+    const isDebug = debugParam !== null && debugParam !== "0" && String(debugParam).toLowerCase() !== "false";
+
+    function loadCSS(href) {
+      return new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href + (href.includes('?') ? '&' : '?') + 'v=' + v;
+        link.onload = () => resolve();
+        link.onerror = () => reject(new Error('CSS not loaded: ' + link.href));
+        document.head.appendChild(link);
+      });
+    }
+
+    (async () => {
+      try {
+        // 1) Carga CSS de la app (evita FOUC)
+        await loadCSS('css/styles.css');
+
+        // 2) Deja asentar el layout
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        // 3) Importa el bundle según el modo
+        const entry = isDebug ? './js/main.js' : './dist/ha-tracker.js';
+        const url = new URL(`${entry}${entry.includes('?') ? '&' : '?'}v=${v}`, import.meta.url).href;
+        await import(url);
+
+        // 4) Muestra el body y dispara eventos si procede
+        document.body.removeAttribute('hidden');
+        const domReady = document.readyState !== 'loading';
+        const winLoaded = document.readyState === 'complete';
+        if (domReady) document.dispatchEvent(new Event('DOMContentLoaded'));
+        if (winLoaded) window.dispatchEvent(new Event('load'));
+      } catch (e) {
+        console.error('[loader] error', e);
+        // Fallback: no quedarse en blanco si falla el CSS o el import
+        document.body.removeAttribute('hidden');
+        document.body.style.visibility = 'visible';
+        document.body.style.opacity = '1';
+      }
+    })();
+  </script>
+</body>
+</html>

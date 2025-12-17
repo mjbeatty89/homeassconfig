@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Remote Assistant",
+        "description": "Bitte gib den Namen ein, wie diese Home Assistant Installation innerhalb der App aufgelistet werden soll.Wähle zudem die Region des Servers aus, der für die Remote-Verbindung genutzt werden soll.",
+        "data": {
+          "name": "Anzeige Name",
+          "region": "Standort des Servers",
+          "tosaccepted": "Ich stimme den Nutzungsbedingungen zu."
+        },
+        "data_description": {
+          "tosaccepted": "[Nutzungsbedingungen](https://www.remote-red.com/de/nutzung/)"
+        }
+      },
+      "qr_display": {
+        "description": "Installiere die 'Remote Assistant' App auf deinem Endgerät.\n[Remote Assistant im Apple AppStore](https://apps.apple.com/de/app/remote-red/id6744168463)\n[Remote Assistant im Google PlayStore](http://play.google.com/store/apps/details?id=com.looking4cache.rrha.android)\n\nNutze dann 'Home Asstistant Instanz hinzufügen' und scanne diesen QR-Code:\n{qr_code}\n\nAlternativ kannst Du diesen Link kopieren und auf dem Gerät öffnen, nachdem Du die App installiert hast:\n{link}"
+      }
+    },
+    "error": {
+      "api_error": "Die Verbindung zum Server ist fehlgeschlagen.",
+      "tos_not_accepted": "Die Nutzungsbedingungen müssen akzeptiert werden."
+    }      
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Remote Assistant",
+        "description": "Du kannst einen weiteren QR-Code generieren um weitere App Verbindungen hinzuzufügen. Setzt hierfür den Haken bei 'Neuen QR-Code generieren' und klicke auf 'OK'.",
+        "data": {
+          "reconnect": "Neuen QR-Code generieren"
+        }
+      },
+      "qr_display": {
+        "title": "Remote Assistant",
+        "description": "Installiere die 'Remote Assistant' App auf deinem Endgerät.\n[Remote Assistant im Apple AppStore](https://apps.apple.com/de/app/remote-red/id6744168463)\n[Remote Assistant im Google PlayStore](http://play.google.com/store/apps/details?id=com.looking4cache.rrha.android)\n\nNutze dann 'Instanz hinzufügen' und scanne diesen QR-Code:\n{qr_code}\n\nAlternativ kannst Du diesen Link kopieren und auf dem Gerät öffnen, nachdem Du die App installiert hast:\n{link}"
+      }
+    },
+    "error": {
+      "api_error": "Die Verbindung zum Server ist fehlgeschlagen."
+    }      
+  },
+  "selector": {
+    "region" : {
+      "options": {
+        "us": "Amerika (USA)",
+        "de": "Europa (Deutschland)",
+        "sg": "Asien (Singapur)",
+        "dev": "Entwicklung"
+      }
+    }
+  }
+}

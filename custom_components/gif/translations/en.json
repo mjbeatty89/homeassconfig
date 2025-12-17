@@ -1,0 +1,24 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "description": "No configuration is needed for this component. Click submit to add the integration.",
+        "title": "GIF Creator Setup"
+      }
+    },
+    "error": {
+      "single_instance_allowed": "Only a single instance is allowed."
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single instance is allowed."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "description": "No options available for this integration.",
+        "title": "GIF Creator Options"
+      }
+    }
+  }
+}

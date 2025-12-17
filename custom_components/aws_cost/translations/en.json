@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "AWS Cost integration",    
+                "description": "Set up the AWS Account you want to monitor the cost",      
+                "data": {
+                    "aws_access_key_id": "AWS Access Key ID",
+                    "aws_secret_access_key": "AWS Secret Access key",
+                    "aws_region": "AWS region",
+                    "update_frequency": "Update Frequency"
+                }
+            }
+        }
+    }
+}

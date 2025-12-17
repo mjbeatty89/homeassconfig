@@ -1,0 +1,15 @@
+{
+  "domain": "aws_cost",
+  "name": "AWS Cost",
+  "codeowners": [
+      "@diego7marques"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/diego7marques/ha-aws-cost/blob/main/README.md",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/diego7marques/ha-aws-cost/issues/",
+  "requirements": [
+      "boto3"
+  ],
+  "version": "1.2.0"
+}

@@ -1,0 +1,23 @@
+{
+  "domain": "auth_oidc",
+  "name": "OIDC Authentication",
+  "codeowners": [
+    "@christiaangoossens"
+  ],
+  "config_flow": false,
+  "dependencies": [
+    "auth",
+    "http"
+  ],
+  "documentation": "https://github.com/christiaangoossens/hass-oidc-auth/blob/v0.6.3-alpha/docs/configuration.md",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/christiaangoossens/hass-oidc-auth/issues",
+  "requirements": [
+    "python-jose>=3.3.0",
+    "aiofiles>=24.1.0",
+    "jinja2>=3.1.4",
+    "bcrypt>=4.2.0"
+  ],
+  "version": "0.6.3"
+}

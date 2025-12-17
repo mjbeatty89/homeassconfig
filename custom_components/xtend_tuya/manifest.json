@@ -1,0 +1,50 @@
+{
+  "domain": "xtend_tuya",
+  "name": "Xtend Tuya",
+  "after_dependencies": ["tuya"],
+  "codeowners": ["@azerty9971"],
+  "config_flow": true,
+  "dependencies": ["ffmpeg", "http"],
+  "dhcp": [
+    {
+      "macaddress": "105A17*"
+    },
+    {
+      "macaddress": "10D561*"
+    },
+    {
+      "macaddress": "1869D8*"
+    },
+    {
+      "macaddress": "381F8D*"
+    },
+    {
+      "macaddress": "508A06*"
+    },
+    {
+      "macaddress": "68572D*"
+    },
+    {
+      "macaddress": "708976*"
+    },
+    {
+      "macaddress": "7CF666*"
+    },
+    {
+      "macaddress": "84E342*"
+    },
+    {
+      "macaddress": "D4A651*"
+    },
+    {
+      "macaddress": "D81F12*"
+    }
+  ],
+  "documentation": "https://github.com/azerty9971/xtend_tuya",
+  "integration_type": "hub",
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/azerty9971/xtend_tuya/issues",
+  "loggers": ["tuya_iot", "tuya_sharing"],
+  "requirements": [],
+  "version": "4.2.7"
+}
