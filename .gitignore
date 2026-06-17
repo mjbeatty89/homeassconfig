@@ -1,0 +1,48 @@
+# Home Assistant runtime state
+.storage/
+.cloud/
+deps/
+tts/
+backup/
+backups/runtime-target/
+zigbee2mqtt/
+www/known_devices.yaml
+
+# Databases and logs
+*.db
+*.db-shm
+*.db-wal
+*.log
+home-assistant.log*
+
+# Secrets and certificates
+secrets.yaml
+*.secret
+ssl/
+*.pem
+*.key
+*.crt
+.google.token
+
+# Local script state
+.staging/
+deploy.local.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Editor and OS files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*~
+*.swp
+*.tmp
+*.bak
+
+# Large media and generated artifacts
+nest/event_media/
+node_modules/
