@@ -54,6 +54,15 @@ YAML orchestrators are present.
 4. If valid, run `scripts/deploy-ha.sh`.
 5. Only use the HA Samba share for emergency recovery or comparison.
 
+## Rental Segmentation Workflow
+
+Rental/Airbnb work is tracked under `docs/rental/` and `dashboards/rental/`.
+
+- Re-run `scripts/export-rental-inventory.py` after hardware reconnects or area/entity changes.
+- Treat `dashboards/rental/*.json` as the reviewable dashboard specs.
+- Runtime tablet dashboards are storage-mode dashboards managed through HA UI/API, not by editing `.storage`.
+- Keep the future Proxmox Rental HA config in a separate repo so guest-critical control is isolated from main-house tinkering.
+
 ## First Recovery Step
 
 When the HA config share is available again, run:

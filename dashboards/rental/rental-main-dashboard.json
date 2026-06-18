@@ -1,0 +1,386 @@
+{
+  "views": [
+    {
+      "title": "Overview",
+      "path": "overview",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "title": "Comfort",
+          "cards": [
+            {
+              "type": "tile",
+              "entity": "climate.suite_thermostat",
+              "name": "Suite Thermostat",
+              "features": [
+                {
+                  "type": "target-temperature"
+                },
+                {
+                  "type": "climate-hvac-modes",
+                  "style": "dropdown"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.den_temperature",
+                  "name": "Den Temperature"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.1st_floor_guest_room_temperature",
+                  "name": "Bedroom Temperature"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.den_occupancy",
+                  "name": "Den Occupancy"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.1st_floor_guest_room_occupancy",
+                  "name": "Bedroom Occupancy"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quick Controls",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.den_lights",
+                  "name": "Den Lights",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.suite_lights",
+                  "name": "Bedroom Lights",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.den_ceiling_fan",
+                  "name": "Den Fan"
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.suite_bed_fan",
+                  "name": "Bedroom Fan"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Guest Safety",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.contact_sensor_4",
+                  "name": "Rental Door"
+                },
+                {
+                  "type": "tile",
+                  "entity": "camera.den_doorbell",
+                  "name": "Doorbell"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Den",
+      "path": "den",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "title": "Lights And Fan",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.den_hall",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.unnamed_ks240_den_fanlight",
+                  "name": "Fan Light",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.den_ceiling_fan",
+                  "features": [
+                    {
+                      "type": "fan-speed"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.den_hall_dimmer_switch_battery",
+                  "name": "Remote Battery"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Scenes",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 3,
+              "square": false,
+              "cards": [
+                {
+                  "type": "button",
+                  "name": "Relax",
+                  "icon": "mdi:sofa",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_relax"
+                    }
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Read",
+                  "icon": "mdi:book-open-page-variant",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_read"
+                    }
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Night",
+                  "icon": "mdi:weather-night",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_nightlight"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Suite Bedroom",
+      "path": "suite-bedroom",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "title": "Lights And Fan",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.suite_bedroom_scones",
+                  "name": "Sconces",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.suite_guest_bed",
+                  "name": "Guest Bed",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.suite_bed_fan",
+                  "name": "Bedroom Fan"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.suite_bed_fan",
+                  "name": "Fan Light"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Curtains",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "cover.curtain_3_66e9",
+                  "name": "Curtain Left",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "cover.curtain_3_d1a0",
+                  "name": "Curtain Right",
+                  "features": [
+                    {
+                      "type": "cover-open-close"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.curtain_3_66e9_battery",
+                  "name": "Left Battery"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.curtain_3_d1a0_battery",
+                  "name": "Right Battery"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "openHASP Status",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "device_tracker.suitebed_plate01",
+                  "name": "Plate Network"
+                },
+                {
+                  "type": "tile",
+                  "entity": "openhasp.plate01",
+                  "name": "Plate HA Binding"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Health",
+      "path": "health",
+      "type": "sections",
+      "max_columns": 3,
+      "sections": [
+        {
+          "title": "Network",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.suite_u6_pro_state",
+                  "name": "Suite AP"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.suite_u6_pro_memory_utilization",
+                  "name": "AP Memory"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.suite_u6_pro_cpu_utilization",
+                  "name": "AP CPU"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.den_flex_mini_memory_utilization",
+                  "name": "Switch Memory"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Repair Queue",
+          "cards": [
+            {
+              "type": "markdown",
+              "content": "Known first-pass repair targets: openHASP `plate01` HA binding, unavailable SwitchBot curtain siblings, restored Tuya den rotary/dining/impact devices, and any dashboard card showing unavailable."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

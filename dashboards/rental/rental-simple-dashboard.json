@@ -1,0 +1,160 @@
+{
+  "views": [
+    {
+      "title": "Guest Controls",
+      "path": "guest",
+      "type": "sections",
+      "max_columns": 2,
+      "sections": [
+        {
+          "title": "Temperature",
+          "cards": [
+            {
+              "type": "tile",
+              "entity": "climate.suite_thermostat",
+              "name": "Suite Thermostat",
+              "icon": "mdi:thermostat",
+              "features": [
+                {
+                  "type": "target-temperature"
+                },
+                {
+                  "type": "climate-hvac-modes",
+                  "style": "dropdown"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "sensor.den_temperature",
+                  "name": "Den"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.1st_floor_guest_room_temperature",
+                  "name": "Bedroom"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Lights",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.den_lights",
+                  "name": "Den Lights",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.suite_lights",
+                  "name": "Bedroom Lights",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ]
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.den_ceiling_fan",
+                  "name": "Den Fan"
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.suite_bed_fan",
+                  "name": "Bedroom Fan"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Scenes",
+          "cards": [
+            {
+              "type": "grid",
+              "columns": 2,
+              "square": false,
+              "cards": [
+                {
+                  "type": "button",
+                  "name": "Relax",
+                  "icon": "mdi:sofa",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_relax"
+                    }
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Read",
+                  "icon": "mdi:book-open-page-variant",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_read"
+                    }
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Night Light",
+                  "icon": "mdi:weather-night",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.den_nightlight"
+                    }
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Bedroom Relax",
+                  "icon": "mdi:bed",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "scene.turn_on",
+                    "target": {
+                      "entity_id": "scene.suite_guest_bed_relax"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Help",
+          "cards": [
+            {
+              "type": "markdown",
+              "content": "For temperature, use the thermostat card above. For quick lighting, use Relax, Read, or Night Light. If something does not respond, use the larger wall tablet or contact the host."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

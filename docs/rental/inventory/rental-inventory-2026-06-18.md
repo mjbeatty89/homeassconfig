@@ -1,0 +1,108 @@
+# Rental Inventory Export - 2026-06-18
+
+- Source: `http://10.1.30.10:8123`
+- Entity count: `184`
+
+## Classification Counts
+
+- `expose via bridge`: 7
+- `leave on Main HA temporarily`: 58
+- `move to Rental HA`: 68
+- `repair before split`: 25
+- `retire/review`: 26
+
+## Priority Rows
+
+- `automation.room_ohana_suite_light_follow` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `automation.room_ohana_suite_scene_selector` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `binary_sensor.1st_floor_guest_room_motion` (suite bedroom, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.1st_floor_guest_room_occupancy` (suite bedroom, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.contact_sensor` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.contact_sensor_2` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.contact_sensor_3` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.contact_sensor_4` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.contact_sensor_5` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.den_motion` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.den_occupancy` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.occupancy_sensor` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.occupancy_sensor_motion_sensor` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `binary_sensor.rental_area_motion` (, unknown integration): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `button.plate01_restart` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `camera.den_doorbell` (Rear Driveway, nest): move to Rental HA - guest-facing control or comfort entity
+- `climate.suite_thermostat` (Living Room, homekit_controller): move to Rental HA - guest-facing control or comfort entity
+- `cover.curtain_3_66e9` (suite bedroom, switchbot): move to Rental HA - guest-facing control or comfort entity
+- `cover.curtain_3_d1a0` (suite bedroom, switchbot): move to Rental HA - guest-facing control or comfort entity
+- `device_tracker.suitebed_plate01` (suite bedroom, unifi): move to Rental HA - guest-facing control or comfort entity
+- `fan.ceiling_fan_and_light` (suite bedroom, bond): move to Rental HA - guest-facing control or comfort entity
+- `fan.den_ceiling_fan` (Den, tplink): move to Rental HA - guest-facing control or comfort entity
+- `fan.suite_bed_fan` (suite bedroom, tuya): move to Rental HA - guest-facing control or comfort entity
+- `input_boolean.room_automation_enabled_ohana_suite` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `input_boolean.room_manual_hold_ohana_suite` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `input_select.room_scene_ohana_suite` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `light.den` (Den, hue): move to Rental HA - guest-facing control or comfort entity
+- `light.den_hall` (Den, hue): move to Rental HA - guest-facing control or comfort entity
+- `light.den_lights` (, group): move to Rental HA - guest-facing control or comfort entity
+- `light.den_rotary_dimmer_light` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `light.plate01_backlight` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `light.plate01_light_12` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `light.plate01_light_14` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `light.plate01_light_27` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `light.plate01_moodlight` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `light.suite_bed_fan` (suite bedroom, tuya): move to Rental HA - guest-facing control or comfort entity
+- `light.suite_bedroom_scones` (suite bedroom, lutron_caseta): move to Rental HA - guest-facing control or comfort entity
+- `light.suite_guest_bed` (Suite Guest Bed, hue): move to Rental HA - guest-facing control or comfort entity
+- `light.suite_lights` (, group): move to Rental HA - guest-facing control or comfort entity
+- `light.unnamed_ks240_den_fanlight` (Den, tplink): move to Rental HA - guest-facing control or comfort entity
+- `number.den_den_impact_sprinkler_controller_irrigation_duration` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `number.den_rotary_dimmer_minimum_brightness` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `number.plate01_page_number` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `scene.den_arctic_aurora` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_concentrate` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_crocus` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_energize` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_galaxy` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_honolulu` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_nightlight` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_pandemonium` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_read` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_relax` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.den_trick_or_treat` (Den, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_baby_s_breath` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_concentrate` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_crocus` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_energize` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_honolulu` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_natural_light` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_nightlight` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_read` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_relax` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `scene.suite_guest_bed_rest` (Suite Guest Bed, hue): move to Rental HA - room contract/control surface should live with the rental instance
+- `script.room_apply_scene_ohana_suite` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `script.room_resume_automation_ohana_suite` (, unknown integration): move to Rental HA - room contract/control surface should live with the rental instance
+- `select.den_dining_and_patio_selector_indicator_light_mode` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `select.den_dining_and_patio_selector_power_on_behavior` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `select.den_impact_weather_delay` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `select.den_rotary_dimmer_indicator_light_mode` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `select.den_rotary_dimmer_power_on_behavior` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `sensor.1st_floor_guest_room_battery` (suite bedroom, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.1st_floor_guest_room_temperature` (suite bedroom, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.contact_sensor_battery_sensor` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.contact_sensor_battery_sensor_2` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.contact_sensor_battery_sensor_3` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.contact_sensor_battery_sensor_4` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.contact_sensor_battery_sensor_5` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.curtain_3_66e9_battery` (suite bedroom, switchbot): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.curtain_3_d1a0_battery` (suite bedroom, switchbot): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.den_battery` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.den_den_impact_sprinkler_controller_last_watering_time` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `sensor.den_den_impact_sprinkler_controller_status` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `sensor.den_hall_dimmer_switch_battery` (Den, hue): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `sensor.den_impact_battery` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `sensor.den_impact_total_watering_time` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `sensor.den_temperature` (Den, homekit_controller): move to Rental HA - guest occupancy/comfort diagnostic needed for deterministic rental control
+- `switch.den_dining_and_patio_selector_switch_1` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `switch.den_dining_and_patio_selector_switch_2` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `switch.den_dining_and_patio_selector_switch_3` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `switch.den_dining_and_patio_selector_switch_4` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
+- `switch.plate01_antiburn` (suite bedroom, openhasp): repair before split - restored stale openHASP or abandoned hardware path
+- `valve.den_impact_valve` (Den, tuya): repair before split - hardware or integration exists but current HA binding is unhealthy
