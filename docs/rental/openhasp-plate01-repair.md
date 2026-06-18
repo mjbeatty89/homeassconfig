@@ -5,6 +5,9 @@
 - Plate web UI is reachable at `http://10.1.11.135/`.
 - Device reports as `plate01`, openHASP `0.7.0-rc12`.
 - HA sees `device_tracker.suitebed_plate01` as present.
+- Current plate snapshots are stored in:
+  - `docs/rental/openhasp-plate01-pages-2026-06-18.jsonl`
+  - `docs/rental/openhasp-plate01-config-2026-06-18.redacted.json`
 - HA openHASP entities are restored/unavailable:
   - `openhasp.plate01`
   - `light.plate01_backlight`
@@ -24,6 +27,14 @@
 4. Confirm retained MQTT discovery/state messages for `plate01`.
 5. Restore the HA binding before changing page layout.
 6. Rebuild pages around stable Rental HA scripts/helpers, not raw device entity IDs.
+
+## Current Pages Bug
+
+The 2026-06-18 `pages.jsonl` snapshot has one malformed JSONL line:
+
+- line 71: `{"page":3,"id":305","obj":"label",...}`
+
+The immediate syntax fix is to remove the stray quote after `305` before uploading any revised pages file.
 
 ## Target Page Contract
 

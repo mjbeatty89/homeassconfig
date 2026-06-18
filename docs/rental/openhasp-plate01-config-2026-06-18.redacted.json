@@ -1,0 +1,81 @@
+{
+  "debug": {
+    "ansi": 0,
+    "baud": 115200,
+    "host": "",
+    "log": 0,
+    "port": 514,
+    "proto": 0,
+    "tele": 300
+  },
+  "gpio": {
+    "config": [
+      197658,
+      263456,
+      329249,
+      655628,
+      655886,
+      656155,
+      0,
+      0
+    ]
+  },
+  "gui": {
+    "bckl": 5,
+    "bcklinv": 0,
+    "calibration": [
+      0,
+      65535,
+      0,
+      65535,
+      0,
+      0,
+      0,
+      0
+    ],
+    "cursor": 0,
+    "idle1": 60,
+    "idle2": 240,
+    "invert": 0,
+    "rotate": 2
+  },
+  "hasp": {
+    "color1": "#c54cde",
+    "color2": "#29babd",
+    "font": "",
+    "pages": "/pages.jsonl",
+    "startdim": 255,
+    "startpage": 1,
+    "theme": 1
+  },
+  "http": {
+    "enable": true,
+    "pass": "<redacted>",
+    "port": 80,
+    "user": ""
+  },
+  "mdns": {
+    "enable": 1
+  },
+  "mqtt": {
+    "host": "10.1.30.10",
+    "name": "plate01",
+    "pass": "<redacted>",
+    "port": 1883,
+    "topic": {
+      "broadcast": "state",
+      "group": "plates",
+      "hass": "homeassistant",
+      "node": "hasp/plate01"
+    },
+    "user": "<redacted>"
+  },
+  "telnet": {
+    "enable": 1,
+    "port": 23
+  },
+  "wifi": {
+    "pass": "<redacted>",
+    "ssid": "<redacted>"
+  }
+}

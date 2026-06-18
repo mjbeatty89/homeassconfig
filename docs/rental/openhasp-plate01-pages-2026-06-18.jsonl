@@ -1,0 +1,105 @@
+// openHASP pages for Lanbon L8-HS (vertical 240x320, rotation=2)
+// Place this file via the openHASP web UI (Pages) or publish each line to: hasp/plate01/command/page
+// Theme: dark bedroom, accent blue, subtle separators
+
+{"page":0,"id":1,"obj":"conf","lvgl":{"rotation":2,"theme":"haspdark","font":"montserrat-16"}}
+{"page":0,"id":2,"obj":"conf","colors":{"bg":"#121212","primary":"#1E88E5","accent":"#64B5F6","text":"#E0E0E0","muted":"#9E9E9E","card":"#1C1C1C","danger":"#E53935","success":"#43A047"}}
+
+// -------- Global header (replicated on each page) --------
+// H=32 area at top: time (left), date (center), indoor temp (right)
+// Page 1 header
+{"page":1,"id":10,"obj":"obj","x":0,"y":0,"w":240,"h":32,"bg_color":"#161616","radius":0,"border_side":0}
+{"page":1,"id":11,"obj":"label","x":8,"y":6,"w":80,"h":20,"align":"left","text":"--:--","text_font":18}
+{"page":1,"id":12,"obj":"label","x":120,"y":6,"w":120,"h":20,"align":"center","text":"Mon Aug 18","text_font":16,"text_color":"#B0BEC5"}
+{"page":1,"id":13,"obj":"label","x":160,"y":6,"w":72,"h":20,"align":"right","text":"--°F","text_font":18}
+
+// Page 2 header
+{"page":2,"id":10,"obj":"obj","x":0,"y":0,"w":240,"h":32,"bg_color":"#161616","radius":0,"border_side":0}
+{"page":2,"id":11,"obj":"label","x":8,"y":6,"w":80,"h":20,"align":"left","text":"--:--","text_font":18}
+{"page":2,"id":12,"obj":"label","x":120,"y":6,"w":120,"h":20,"align":"center","text":"Mon Aug 18","text_font":16,"text_color":"#B0BEC5"}
+{"page":2,"id":13,"obj":"label","x":160,"y":6,"w":72,"h":20,"align":"right","text":"--°F","text_font":18}
+
+// Page 3 header
+{"page":3,"id":10,"obj":"obj","x":0,"y":0,"w":240,"h":32,"bg_color":"#161616","radius":0,"border_side":0}
+{"page":3,"id":11,"obj":"label","x":8,"y":6,"w":80,"h":20,"align":"left","text":"--:--","text_font":18}
+{"page":3,"id":12,"obj":"label","x":120,"y":6,"w":120,"h":20,"align":"center","text":"Mon Aug 18","text_font":16,"text_color":"#B0BEC5"}
+{"page":3,"id":13,"obj":"label","x":160,"y":6,"w":72,"h":20,"align":"right","text":"--°F","text_font":18}
+
+// Page 4 header
+{"page":4,"id":10,"obj":"obj","x":0,"y":0,"w":240,"h":32,"bg_color":"#161616","radius":0,"border_side":0}
+{"page":4,"id":11,"obj":"label","x":8,"y":6,"w":80,"h":20,"align":"left","text":"--:--","text_font":18}
+{"page":4,"id":12,"obj":"label","x":120,"y":6,"w":120,"h":20,"align":"center","text":"Mon Aug 18","text_font":16,"text_color":"#B0BEC5"}
+{"page":4,"id":13,"obj":"label","x":160,"y":6,"w":72,"h":20,"align":"right","text":"--°F","text_font":18}
+
+// Page 5 header
+{"page":5,"id":10,"obj":"obj","x":0,"y":0,"w":240,"h":32,"bg_color":"#161616","radius":0,"border_side":0}
+{"page":5,"id":11,"obj":"label","x":8,"y":6,"w":80,"h":20,"align":"left","text":"--:--","text_font":18}
+{"page":5,"id":12,"obj":"label","x":120,"y":6,"w":120,"h":20,"align":"center","text":"Mon Aug 18","text_font":16,"text_color":"#B0BEC5"}
+{"page":5,"id":13,"obj":"label","x":160,"y":6,"w":72,"h":20,"align":"right","text":"--°F","text_font":18}
+
+// -------- Page 1: Lights / Fan / Blinds --------
+// Content area starts at y=36
+{"page":1,"id":101,"obj":"label","x":12,"y":40,"w":216,"h":24,"align":"left","text":"Suite Sconces","text_font":18}
+{"page":1,"id":102,"obj":"slider","x":12,"y":66,"w":216,"h":20,"min":0,"max":255,"value":0}
+{"page":1,"id":103,"obj":"btn","x":12,"y":96,"w":104,"h":40,"text":"Bed Light","radius":8}
+{"page":1,"id":104,"obj":"switch","x":132,"y":104,"w":40,"h":24,"state":0}
+{"page":1,"id":105,"obj":"label","x":12,"y":148,"w":216,"h":24,"align":"left","text":"Ceiling Fan","text_font":18}
+{"page":1,"id":106,"obj":"slider","x":12,"y":174,"w":216,"h":20,"min":0,"max":100,"value":0}
+{"page":1,"id":107,"obj":"label","x":12,"y":204,"w":216,"h":24,"align":"left","text":"Blinds","text_font":18}
+{"page":1,"id":108,"obj":"btn","x":12,"y":230,"w":104,"h":36,"text":"Open","radius":8}
+{"page":1,"id":109,"obj":"btn","x":124,"y":230,"w":104,"h":36,"text":"Close","radius":8}
+
+// -------- Page 2: Thermostat --------
+{"page":2,"id":201,"obj":"label","x":12,"y":40,"w":216,"h":24,"align":"left","text":"Thermostat","text_font":18}
+{"page":2,"id":202,"obj":"label","x":12,"y":66,"w":216,"h":44,"align":"center","text":"--°F","text_font":38}
+{"page":2,"id":203,"obj":"label","x":12,"y":112,"w":216,"h":20,"align":"center","text":"Mode: --","text_font":16,"text_color":"#B0BEC5"}
+{"page":2,"id":204,"obj":"btn","x":24,"y":134,"w":64,"h":44,"text":"Heat","radius":10}
+{"page":2,"id":205,"obj":"btn","x":88,"y":134,"w":64,"h":44,"text":"Cool","radius":10}
+{"page":2,"id":206,"obj":"btn","x":152,"y":134,"w":64,"h":44,"text":"Auto","radius":10}
+{"page":2,"id":210,"obj":"label","x":12,"y":182,"w":100,"h":22,"align":"left","text":"Heat --°F","text_font":16}
+{"page":2,"id":211,"obj":"label","x":128,"y":182,"w":100,"h":22,"align":"right","text":"Cool --°F","text_font":16}
+{"page":2,"id":212,"obj":"btn","x":12,"y":206,"w":44,"h":40,"text":"-","radius":10}
+{"page":2,"id":213,"obj":"btn","x":60,"y":206,"w":44,"h":40,"text":"+","radius":10}
+{"page":2,"id":214,"obj":"btn","x":132,"y":206,"w":44,"h":40,"text":"-","radius":10}
+{"page":2,"id":215,"obj":"btn","x":180,"y":206,"w":44,"h":40,"text":"+","radius":10}
+
+// -------- Page 3: Weather --------
+{"page":3,"id":301,"obj":"label","x":12,"y":40,"w":216,"h":24,"align":"left","text":"Weather","text_font":18}
+{"page":3,"id":302,"obj":"obj","x":12,"y":68,"w":216,"h":116,"bg_color":"#1C1C1C","radius":10}
+{"page":3,"id":303,"obj":"img","parentid":302,"x":6,"y":6,"w":64,"h":64,"src":"L:/w-64-unknown.png","auto_size":1}
+{"page":3,"id":304,"obj":"label","parentid":302,"x":80,"y":4,"w":128,"h":22,"align":"left","text":"-- --","text_font":18}
+{"page":3,"id":305","obj":"label","parentid":302,"x":80,"y":24,"w":128,"h":18,"align":"left","text":"--°F | --%","text_color":"#B0BEC5"}
+{"page":3,"id":306,"obj":"label","parentid":302,"x":80,"y":42,"w":128,"h":18,"align":"left","text":"Desc --","text_color":"#9E9E9E"}
+{"page":3,"id":307,"obj":"label","parentid":302,"x":8,"y":68,"w":96,"h":18,"align":"left","text":"AQI --","text_color":"#B0BEC5"}
+{"page":3,"id":308,"obj":"label","parentid":302,"x":112,"y":68,"w":96,"h":18,"align":"left","text":"UV --","text_color":"#B0BEC5"}
+{"page":3,"id":309,"obj":"label","parentid":302,"x":8,"y":88,"w":96,"h":18,"align":"left","text":"Precip --","text_color":"#B0BEC5"}
+{"page":3,"id":310,"obj":"label","parentid":302,"x":112,"y":88,"w":96,"h":18,"align":"left","text":"Wind --","text_color":"#B0BEC5"}
+// Forecast list (next 4 entries)
+{"page":3,"id":311,"obj":"label","x":16,"y":160,"w":80,"h":20,"align":"left","text":"--","text_color":"#B0BEC5"}
+{"page":3,"id":312,"obj":"label","x":96,"y":160,"w":40,"h":20,"align":"center","text":"--","text_font":18}
+{"page":3,"id":313,"obj":"img","x":148,"y":156,"w":24,"h":24,"src":"L:/w-24-unknown.png"}
+{"page":3,"id":321,"obj":"label","x":16,"y":184,"w":80,"h":20,"align":"left","text":"--","text_color":"#B0BEC5"}
+{"page":3,"id":322,"obj":"label","x":96,"y":184,"w":40,"h":20,"align":"center","text":"--","text_font":18}
+{"page":3,"id":323,"obj":"img","x":148,"y":180,"w":24,"h":24,"src":"L:/w-24-unknown.png"}
+{"page":3,"id":331,"obj":"label","x":16,"y":208,"w":80,"h":20,"align":"left","text":"--","text_color":"#B0BEC5"}
+{"page":3,"id":332,"obj":"label","x":96,"y":208,"w":40,"h":20,"align":"center","text":"--","text_font":18}
+{"page":3,"id":333,"obj":"img","x":148,"y":204,"w":24,"h":24,"src":"L:/w-24-unknown.png"}
+{"page":3,"id":341,"obj":"label","x":16,"y":232,"w":80,"h":20,"align":"left","text":"--","text_color":"#B0BEC5"}
+{"page":3,"id":342,"obj":"label","x":96,"y":232,"w":40,"h":20,"align":"center","text":"--","text_font":18}
+{"page":3,"id":343,"obj":"img","x":148,"y":228,"w":24,"h":24,"src":"L:/w-24-unknown.png"}
+
+// -------- Page 4: Media --------
+{"page":4,"id":401,"obj":"label","x":12,"y":40,"w":216,"h":24,"align":"left","text":"Media","text_font":18}
+{"page":4,"id":402,"obj":"img","x":12,"y":68,"w":96,"h":96,"src":"L:/cover.png"}
+{"page":4,"id":403,"obj":"label","x":116,"y":68,"w":112,"h":24,"align":"left","text":"Title","text_font":18}
+{"page":4,"id":404,"obj":"label","x":116,"y":94,"w":112,"h":18,"align":"left","text":"Artist","text_color":"#B0BEC5"}
+{"page":4,"id":405,"obj":"slider","x":12,"y":170,"w":216,"h":18,"min":0,"max":100,"value":0}
+{"page":4,"id":406,"obj":"btn","x":24,"y":200,"w":56,"h":40,"text":"Prev","radius":10}
+{"page":4,"id":407,"obj":"btn","x":92,"y":200,"w":56,"h":40,"text":"Play","radius":10}
+{"page":4,"id":408,"obj":"btn","x":160,"y":200,"w":56,"h":40,"text":"Next","radius":10}
+
+// -------- Page 5: Mood light --------
+{"page":5,"id":501,"obj":"label","x":12,"y":40,"w":216,"h":24,"align":"left","text":"Mood Light","text_font":18}
+{"page":5,"id":502,"obj":"slider","x":12,"y":68,"w":216,"h":20,"min":0,"max":255,"value":0}
+{"page":5,"id":503,"obj":"cpicker","x":12,"y":96,"w":216,"h":160,"type":1}
+
