@@ -38,7 +38,10 @@ echo "Validating YAML syntax with Ruby..."
 find . \
   -path './.git' -prune -o \
   -path './.staging' -prune -o \
+  -path './.storage_backup_before_recovery' -prune -o \
+  -path './backups' -prune -o \
   -path './custom_components' -prune -o \
+  -path './esphome' -prune -o \
   -path './node_modules' -prune -o \
   \( -name '*.yaml' -o -name '*.yml' \) -print0 |
 while IFS= read -r -d '' file; do
