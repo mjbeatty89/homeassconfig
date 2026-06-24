@@ -20,7 +20,7 @@ Borrow for HA 1.0:
 - Keep `configuration.yaml` as a readable bootstrap, not the home of business logic.
 - Use package-style modules for stable platform concerns: `logger`, `recorder`, `frontend`, `http`, `automation`, `script`, `scene`, and future `esphome`.
 - Keep UI-compatible files such as `automations.yaml`, `scripts.yaml`, and `scenes.yaml` as stable entrypoints while allowing split directories for hand-authored logic.
-- Add a `secrets.fake.yaml` pattern so CI/config checks can run without real secrets.
+- Add a secrets-safe validation path so CI/config checks can run without exposing real secrets.
 - Add CI/pre-commit checks once the recovered config is clean enough.
 
 Do not copy blindly:
@@ -106,7 +106,7 @@ The config should have three module classes:
 
 1. Finish reviewing the Samba recovery diff before reorganizing files.
 2. Create a clean top-level `configuration.yaml` plan that preserves current entrypoints.
-3. Add `secrets.fake.yaml` and a config-check workflow once secrets references are known.
+3. Add a config-check workflow once the recovered config has a stable validation path.
 4. Promote dashboard specs into `dashboards/operator/`, `dashboards/tablets/`, and `dashboards/rental/`.
 5. Build the operator dashboard as a PC-first surface, not as a replacement for tablet dashboards.
 6. Keep rental dashboards and controls isolated from experimental main-house work.
