@@ -1,0 +1,75 @@
+# packages/room_presence/kitchen.yaml
+# =========================================
+# Room: Kitchen
+# Presence Package — Saffron's Domain
+# =========================================
+# Pattern: Presence group → occupancy binary sensor (delay_off 3 min) →
+#           light follow automation
+#
+# Requires: group.sensors_presence_kitchen (built by Dynamic Asset Grouper)
+#           group.lights_adaptive_kitchen  (built by Dynamic Asset Grouper)
+
+template:
+  - binary_sensor:
+      - name: "Kitchen Occupied"
+        unique_id: room_occupied_kitchen
+        device_class: occupancy
+        delay_off: "00:03:00"
+        state: >
+          {{ is_state('group.sensors_presence_kitchen', 'on') }}
+        availability: >
+          {{ states('group.sensors_presence_kitchen') not in ['unknown', 'unavailable'] }}
+
+automation:
+  - alias: "Room: Kitchen Light Follow"
+    id: room_light_follow_kitchen
+    description: >
+      Turns adaptive lights on when Kitchen is occupied,
+      off with a 2s fade when vacant.
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.kitchen_occupied
+        to: "on"
+        id: occupied
+      - platform: state
+        entity_id: binary_sensor.kitchen_occupied
+        to: "off"
+        id: vacant
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('switch.adaptive_lighting_sleep_mode_kitchen')
+             not in ['on'] }}
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: occupied
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_kitchen
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_kitchen
+                state: "off"
+            sequence:
+              - action: script.room_apply_scene_kitchen
+                data:
+                  scene_name: Auto
+          - conditions:
+              - condition: trigger
+                id: vacant
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_kitchen
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_kitchen
+                state: "off"
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id:
+                    - group.lights_adaptive_kitchen
+                    - group.lights_ambient_kitchen
+                data:
+                  transition: 2

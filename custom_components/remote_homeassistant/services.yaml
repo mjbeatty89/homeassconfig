@@ -1,3 +1,0 @@
-reload:
-  name: Reload Remote Home-Assistant
-  description: Reload remote_homeassistant and re-process yaml configuration.

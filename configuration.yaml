@@ -1,24 +1,15 @@
 # Home Assistant Configuration
 # Multi-Agent Smart Home Architecture
 # See architecture.md for design philosophy
+default_config:
 
 # ============================================================================
 # CORE HOMEASSISTANT SETTINGS
 # ============================================================================
 
 homeassistant:
-  name: Miller Smart Home
-  latitude: !secret ha_latitude
-  longitude: !secret ha_longitude
-  elevation: !secret ha_elevation
-  unit_system: metric
-  time_zone: America/Detroit
-  currency: USD
-  country: US
-
-  # Internal and external URLs
-  internal_url: !secret internal_url
-  external_url: !secret external_url
+  #internal_url: !secret internal_url
+  #external_url: !secret external_url
 
   # Allowlist for external directories (if needed)
   allowlist_external_dirs:
@@ -26,17 +17,9 @@ homeassistant:
     - /media
     - /share
 
-# ============================================================================
-# DEFAULT INTEGRATIONS
-# ============================================================================
-# Loads default set of integrations including:
-# - automation, script, scene
-# - history, logbook, map
-# - person, zone, sun
-# - mobile_app, my, dhcp, ssdp, zeroconf, usb, bluetooth
-# - frontend, config, system_health
-
-default_config:
+  # Modular YAML-owned logic lives in packages/.
+  # This loader is recursive, so packages can be organized by concern.
+  packages: !include_dir_named packages/
 
 # ============================================================================
 # HTTP / SSL CONFIGURATION
@@ -47,27 +30,31 @@ http:
   trusted_proxies:
     - 127.0.0.1
     - ::1
-    - 10.1.30.0/24  # Your local network
-  # Uncomment if using SSL
-  # ssl_certificate: !secret ssl_cert
-  # ssl_key: !secret ssl_key
+    # LAN subnets
+    - 10.1.10.0/23
+    - 10.1.20.0/26
+    - 10.1.30.0/23
+    - 10.1.40.0/23
+    # Tailscale CGNAT block (covers any Tailscale peer access)
+    - 100.64.0.0/10
+    # HA addon / Docker bridge networks (Cloudflared addon lives here)
+    - 172.30.0.0/16
 
 # ============================================================================
 # RECORDER & HISTORY
 # ============================================================================
 
 recorder:
-  # Purge old data to keep database size manageable
-  purge_keep_days: 30
-  commit_interval: 1
-
-  # Exclude noisy sensors
+  purge_keep_days: 7
+  commit_interval: 30
   exclude:
     entity_globs:
       - sensor.sun_*
       - sensor.*_signal_strength
       - sensor.*_rssi
       - sensor.*_wifi_*
+      - sensor.*_estimated_distance # Bermuda BLE distance sensors are very noisy
+      - media_player.*_airplay # AirPlay duplicates unnecessary
     domains:
       - update
       - automation
@@ -80,10 +67,11 @@ recorder:
 logger:
   default: info
   logs:
-    # Set specific components to debug when needed
     # homeassistant.components.automation: debug
     # homeassistant.components.script: debug
     custom_components.spook: warning
+    custom_components.bps: warning # polls every 10s with no-op messages when idle
+    custom_components.tuya_cloud_ha_bridge: warning # chatty publish_eligible/infer_pid on every cycle
 
 # ============================================================================
 # FRONTEND & THEMES
@@ -91,9 +79,6 @@ logger:
 
 frontend:
   themes: !include_dir_merge_named themes
-  # Extra module URLs (if using custom cards)
-  # extra_module_url:
-  #   - /local/community/button-card/button-card.js
 
 # ============================================================================
 # LOVELACE DASHBOARDS
@@ -101,66 +86,104 @@ frontend:
 
 lovelace:
   mode: storage
-  # Add YAML dashboards alongside UI-managed dashboards
   dashboards:
-    rental-suite:
+    presence-dashboard:
+      mode: yaml
+      title: Presence
+      icon: mdi:account-group
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/presence.yaml
+    network-dashboard:
+      mode: yaml
+      title: Network
+      icon: mdi:network-outline
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/network.yaml
+    rental-suite-dashboard:
       mode: yaml
       title: Rental Suite
-      icon: mdi:home-variant
+      icon: mdi:home-floor-1
       show_in_sidebar: true
-      filename: dashboards/rental_suite.yaml
       require_admin: false
+      filename: dashboards/rental_suite.yaml
 
 # ============================================================================
 # CONFIGURATION INCLUDES
 # ============================================================================
 
-# Core configuration files
 automation: !include automations.yaml
-script: !include scripts/rental_scenes.yaml
+script: !include scripts.yaml
 scene: !include scenes.yaml
-
-# Template sensors and helpers
 template: !include templates.yaml
 
-# Additional configuration splits (create these as needed)
-# light: !include lights.yaml
-# sensor: !include sensors.yaml
-# binary_sensor: !include binary_sensors.yaml
-# switch: !include switches.yaml
-
 # ============================================================================
-# MQTT
+# MQTT — DTE Energy Monitoring
 # ============================================================================
+# Broker connection is managed via UI (Settings > Devices & Services > MQTT).
+# Only YAML-defined sensors live here.
 
 mqtt:
- # broker: !secret mqtt_server
- # port: 1883
-  # username: !secret mqtt_user
-  # password: !secret mqtt_password
- # discovery: true
- # discovery_prefix: homeassistant
+  sensor:
+    - name: "DTE Instant Demand"
+      unique_id: dte_instant_demand
+      state_topic: "event/metering/instantaneous_demand"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      value_template: "{{ value_json.demand | int }}"
+
+    - name: "DTE Total Energy"
+      unique_id: dte_total_energy
+      state_topic: "event/metering/summation/minute"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      value_template: "{{ value_json.value | float / 60000 }}"
+
+    - name: "IKEA 4-Button Remote Action"
+      unique_id: "ikea_4_button_remote_action_manual"
+      state_topic: "zigbee2mqtt/ikea_4_button_remote"
+      value_template: "{{ value_json.action }}"
+      expire_after: 0.1
+      icon: "mdi:gesture-tap"
 
 # ============================================================================
-# TEXT-TO-SPEECH
+# LEVITON
 # ============================================================================
-
-tts:
-  - platform: google_translate
-    service_name: google_say
-
-# ============================================================================
-# CLOUD & REMOTE ACCESS
-# ============================================================================
-
-# Nabu Casa Cloud (if subscribed)
-# cloud:
+# DISABLED — decora_wifi platform recursively re-enters login on Python 3.14
+# and can destabilize Core during startup. Re-evaluate after upstream fix.
+# light:
+#   - platform: decora_wifi
+#     username: !secret leviton_username
+#     password: !secret leviton_password
 
 # ============================================================================
-# ENERGY MONITORING (if configured)
+# HOMEKIT BRIDGE
 # ============================================================================
+# Filter keeps us under the 150-device cap.
+# Only expose actionable domains; sensors/media_players eat cap with no benefit.
 
-# energy:
+homekit:
+  - name: HASS Bridge
+    filter:
+      include_domains:
+        - light
+        - switch
+        - climate
+        - cover
+        - fan
+        - lock
+        - alarm_control_panel
+      exclude_entity_globs:
+        - media_player.*
+        - sensor.*
+        - binary_sensor.*browser_mod*
+        - button.*
+        - switch.*do_not_disturb
+        - switch.*adaptive_lighting*
+        - switch.*zigbee2mqtt*
 
 # ============================================================================
 # NOTIFICATIONS
@@ -171,42 +194,19 @@ notify:
     platform: group
     services:
       - service: mobile_app_mjb_iphone
-      # Add more notification services as needed
 
 # ============================================================================
-# ADDITIONAL INTEGRATIONS
+# STREAM (camera feeds)
 # ============================================================================
 
-# Spotify Integration
-#spotify:
-#  client_id: !secret spotify_client_id
-#  client_secret: !secret spotify_client_secret
-
-# Wake on LAN
-# wake_on_lan:
-
-# Stream (for camera feeds)
 stream:
-
-# ============================================================================
-# PACKAGES (Advanced modular organization)
-# ============================================================================
-# Uncomment to enable packages for better organization
-# See: https://www.home-assistant.io/docs/configuration/packages/
-
-# homeassistant:
-#   packages: !include_dir_named packages/
 
 # ============================================================================
 # NOTES & MAINTENANCE
 # ============================================================================
-
-# Last Updated: 2025-11-26
+# Last Updated: 2026-06-24
 # Architecture: Multi-Agent Collaborative System
 # See architecture.md for system design philosophy
 #
-# To validate configuration:
-#   Settings > System > Restart > Check Configuration
-#
-# To reload without restart (when possible):
-#   Settings > System > Restart > Quick reload
+# Validate: Settings > System > Restart > Check Configuration
+# Quick reload (automations/scripts/templates): Developer Tools > YAML > Reload All

@@ -1,0 +1,36 @@
+title: Network
+views:
+  - title: Health
+    path: health
+    icon: mdi:network-outline
+    cards:
+      - type: entities
+        title: Automation Health
+        show_header_toggle: false
+        entities:
+          - automation.system_dynamic_asset_grouper_v2
+          - automation.controller_office_ikea_remote
+          - script.system_cycle_room_light_selection
+      - type: entities
+        title: Signal and Battery Watch
+        show_header_toggle: false
+        entities:
+          - sensor.motion_sensors_average_battery
+          - sensor.active_motion_sensors
+          - sensor.dte_instant_demand
+          - sensor.dte_total_energy
+      - type: entities
+        title: Occupancy Infrastructure
+        show_header_toggle: false
+        entities:
+          - group.sensors_presence_living_room
+          - group.sensors_presence_kitchen
+          - group.sensors_presence_office
+          - group.sensors_presence_primary_bedroom
+      - type: markdown
+        content: |
+          ## Network Dashboard Scope
+
+          This dashboard is intentionally version-controlled because it is for debugging infrastructure, not everyday control.
+
+          Add coordinator, proxy, MQTT, Zigbee2MQTT, ESPHome, and router entities here as you confirm the exact entity IDs on the live system.

@@ -1,0 +1,219 @@
+blueprint:
+  name: ESPHome Device Auto Bulk Update
+  description: 'Automatically updates ESPHome devices when a specified number of them
+
+    have pending updates. Optionally sends a notification before updating.
+
+
+    DEVICE FIRMWARE ENTITIES MUST BE ENABLED
+
+
+    FLOW:
+
+    1. Triggers when any device needs an update, or daily sweep at the start of the
+    time window.
+
+    2. Checks the time window and device count conditions are met.
+
+    3. Sends a notification listing devices to be updated with Update Now and Cancel
+    buttons.
+
+    4. Waits for the delay period listening for a button response.
+
+    5. If Cancel is tapped - sends a cancellation notification and stops.
+
+    6. If Update Now is tapped or delay expires - proceeds with updates.
+
+    7. Updates all devices at once or sequentially depending on mode selected.
+
+    8. Sends a completion notification listing updated devices.
+
+    9. Waits out the cooldown period before the automation can trigger again.
+
+    '
+  domain: automation
+  source_url: https://raw.githubusercontent.com/bferd/homeassistant-blueprints/main/esphome_auto_bulk_update/esphome_auto_bulk_update.yaml
+  input:
+    update_threshold:
+      name: Device Update Threshold
+      description: How many devices need a pending update before updates are pushed.
+      default: 1
+      selector:
+        number:
+          min: 1.0
+          max: 20.0
+          step: 1.0
+          mode: slider
+    update_delay:
+      name: Delay Before Updating
+      description: How many minutes to wait before pushing updates.
+      default: 30
+      selector:
+        number:
+          min: 0.0
+          max: 60.0
+          step: 1.0
+          mode: slider
+          unit_of_measurement: minutes
+    cooldown:
+      name: Cooldown After Update
+      description: Minutes to wait after updates complete before the automation can
+        trigger again.
+      default: 60
+      selector:
+        number:
+          min: 1.0
+          max: 120.0
+          step: 1.0
+          mode: slider
+          unit_of_measurement: minutes
+    time_window_start:
+      name: Update Window Start
+      description: Earliest time of day updates can be triggered.
+      default: 08:00:00
+      selector:
+        time: {}
+    time_window_end:
+      name: Update Window End
+      description: Latest time of day updates can be triggered.
+      default: '21:00:00'
+      selector:
+        time: {}
+    notify_device:
+      name: Notification Device
+      description: 'Device to notify before updates are pushed. Requires the Home
+        Assistant Companion App to be installed on the device.
+
+        '
+      selector:
+        device:
+          integration: mobile_app
+          multiple: false
+    update_mode:
+      name: Update Mode
+      description: Update all devices at once or one at a time sequentially.
+      default: all_at_once
+      selector:
+        select:
+          options:
+          - label: All at once
+            value: all_at_once
+          - label: One at a time (Sequential)
+            value: sequential
+          sort: false
+          custom_value: false
+          multiple: false
+    sequential_delay:
+      name: Delay Between Sequential Updates
+      description: Minutes to wait between each device when using sequential mode.
+      default: 5
+      selector:
+        number:
+          min: 1.0
+          max: 10.0
+          step: 1.0
+          mode: slider
+          unit_of_measurement: minutes
+variables:
+  update_threshold: !input update_threshold
+  update_delay: !input update_delay
+  cooldown: !input cooldown
+  update_mode: !input update_mode
+  sequential_delay: !input sequential_delay
+  device_list: "{{ expand(integration_entities('esphome'))\n   | selectattr(\"entity_id\",
+    \"contains\", \"update\")\n   | selectattr(\"state\", \"eq\", \"on\")\n   | map(attribute='entity_id')
+    | list }}\n"
+  device_names: "{{ expand(integration_entities('esphome'))\n   | selectattr(\"entity_id\",
+    \"contains\", \"update\")\n   | selectattr(\"state\", \"eq\", \"on\")\n   | map(attribute='name')
+    | join(', ') }}\n"
+  device_count: "{{ expand(integration_entities('esphome'))\n   | selectattr(\"entity_id\",
+    \"contains\", \"update\")\n   | selectattr(\"state\", \"eq\", \"on\")\n   | list
+    | count }}\n"
+trigger:
+- platform: template
+  value_template: "{{ expand(integration_entities('esphome'))\n   | selectattr(\"entity_id\",
+    \"contains\", \"update\")\n   | selectattr(\"state\", \"eq\", \"on\")\n   | list
+    | count > 0 }}\n"
+- platform: time
+  at: !input time_window_start
+condition:
+- condition: time
+  after: !input time_window_start
+  before: !input time_window_end
+- condition: template
+  value_template: "{{ expand(integration_entities('esphome'))\n   | selectattr(\"entity_id\",
+    \"contains\", \"update\")\n   | selectattr(\"state\", \"eq\", \"on\")\n   | list
+    | count >= update_threshold }}\n"
+action:
+- continue_on_error: true
+  domain: mobile_app
+  type: notify
+  device_id: !input notify_device
+  title: ESPHome Device Update(s)
+  message: '{{ device_count }} device(s) need updating: {{ device_names }}. Updates
+    will begin in {{ update_delay }} minute(s).
+
+    '
+  data:
+    sticky: 'true'
+    persistent: 'true'
+    actions:
+    - action: UPDATE_NOW_ESPHOME
+      title: Update Now
+    - action: CANCEL_ESPHOME_UPDATE
+      title: Cancel
+- wait_for_trigger:
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: CANCEL_ESPHOME_UPDATE
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: UPDATE_NOW_ESPHOME
+  timeout:
+    minutes: '{{ update_delay }}'
+  continue_on_timeout: true
+- if:
+  - condition: template
+    value_template: "{{ wait.trigger is not none and\n   wait.trigger.event.data.action
+      == 'CANCEL_ESPHOME_UPDATE' }}\n"
+  then:
+  - continue_on_error: true
+    domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: ESPHome Update Cancelled
+    message: ESPHome device updates have been cancelled.
+  else:
+  - if:
+    - condition: template
+      value_template: '{{ update_mode == ''sequential'' }}'
+    then:
+    - repeat:
+        for_each: '{{ device_list }}'
+        sequence:
+        - action: update.install
+          continue_on_error: true
+          data: {}
+          target:
+            entity_id: '{{ repeat.item }}'
+        - delay:
+            minutes: '{{ 0 if repeat.last else sequential_delay }}'
+    else:
+    - action: update.install
+      continue_on_error: true
+      data: {}
+      target:
+        entity_id: '{{ device_list }}'
+  - continue_on_error: true
+    domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: ESPHome Updates Complete
+    message: '{{ device_count }} device(s) have been updated: {{ device_names }}.
+
+      '
+  - delay:
+      minutes: '{{ cooldown }}'
+mode: single

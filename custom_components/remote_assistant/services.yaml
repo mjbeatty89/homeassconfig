@@ -1,3 +1,0 @@
-restart:
-  name: Restart Remote Assistant
-  description: Restart the SSH connection.

@@ -1,1 +1,0 @@
-"""Wallpanel media player component."""

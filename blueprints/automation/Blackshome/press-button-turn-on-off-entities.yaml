@@ -1,0 +1,107 @@
+blueprint:
+  name: Press Button - Turn ON & OFF Entities
+  description: "# \U0001F9FF Press Button - Turn ON & OFF Entities\n**Version: 1.0**\n\nLet
+    us know what you think of this blueprint and for community support including updates:
+    [Click Here](https://community.home-assistant.io/t/press-button-turn-on-off-entities/634488)\n\n**The
+    Automation Process:**\n  - When you press the button it will turn ON the main
+    entity input.\n  - When you press the button again it will turn OFF the main entity
+    input.\n  - You have the option to input an alternating entity that will be the
+    opposite state to the main entity.\n\n**NOTE** - The button must have no state,
+    like a button helper.\n\nRequired = *\n\nNeed help? See our FAQ: [Click Here](https://community.home-assistant.io/t/press-button-turn-on-off-entities/634488/2?u=blacky)\n\n**If
+    you like my blueprints, and would like to show your support or just say thank
+    you?** [Click Here](https://www.paypal.com/donate/?hosted_button_id=WAZS3QSDTPGA8)
+    \U0001F642\n"
+  domain: automation
+  input:
+    press_button:
+      name: Press Button *
+      description: The press button that controls the entities.
+      selector:
+        entity:
+          reorder: false
+          multiple: false
+    main_entity:
+      name: Main Entity *
+      description: The main entity that will be turned ON when the button is pressed.
+      selector:
+        entity:
+          multiple: true
+          reorder: false
+    alternating_entity:
+      name: Alternating Entity (optional)
+      description: The alternating entity that will be the opposite state to the main
+        entity when the button is pressed.
+      default: []
+      selector:
+        entity:
+          multiple: true
+          reorder: false
+  source_url: https://gist.github.com/Blackshome/ca6be121c8d3e4404e33114fc88b599a
+variables:
+  press_button: !input press_button
+  main_entity: !input main_entity
+  alternating_entity: !input alternating_entity
+trigger:
+- platform: state
+  entity_id: !input press_button
+action:
+- choose:
+  - alias: Check if any alternating entity are enter in
+    conditions:
+    - '{{ alternating_entity == [] }}'
+    sequence:
+    - choose:
+      - alias: Check any main entities are on
+        conditions:
+        - condition: state
+          entity_id: !input main_entity
+          match: any
+          state: 'on'
+        sequence:
+        - alias: Turn OFF the main entities
+          service: homeassistant.turn_off
+          target:
+            entity_id: !input main_entity
+      - alias: Check all main entities are off
+        conditions:
+        - condition: state
+          entity_id: !input main_entity
+          match: all
+          state: 'off'
+        sequence:
+        - alias: Turn ON the main entities
+          service: homeassistant.turn_on
+          target:
+            entity_id: !input main_entity
+  default:
+  - choose:
+    - alias: Check any main entities are on
+      conditions:
+      - condition: state
+        entity_id: !input main_entity
+        match: any
+        state: 'on'
+      sequence:
+      - alias: Turn ON the main entities
+        service: homeassistant.turn_off
+        target:
+          entity_id: !input main_entity
+      - alias: Turn ON the alternating entity entities
+        service: homeassistant.turn_on
+        target:
+          entity_id: !input alternating_entity
+    - alias: Check all main entities are off
+      conditions:
+      - condition: state
+        entity_id: !input main_entity
+        match: all
+        state: 'off'
+      sequence:
+      - alias: Turn OFF the main entities
+        service: homeassistant.turn_on
+        target:
+          entity_id: !input main_entity
+      - alias: Turn OFF the alternating entity entities
+        service: homeassistant.turn_off
+        target:
+          entity_id: !input alternating_entity

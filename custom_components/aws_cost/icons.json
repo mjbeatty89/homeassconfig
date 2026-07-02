@@ -1,9 +1,0 @@
-{
-    "entity": {
-        "sensor": {
-            "phase": {
-                "default": "mdi:aws"
-            }
-        }
-    }
-}

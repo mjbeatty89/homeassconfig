@@ -1,0 +1,777 @@
+blueprint:
+  name: Philips Hue Tap Dial - Media Controls (Native Hue Hub)
+  domain: automation
+  homeassistant:
+    min_version: 2024.8.0
+  description: "# Philips Hue Tap Dial - Media and Custom Controls (Native Hue Hub)\n\nThis
+    blueprint uses the **native Philips Hue integration** (via Hue Bridge/Hub,\nnot
+    ZHA or Zigbee2MQTT) to control media players with a Hue Tap Dial Switch (RDM002).\n\n##
+    Setup\n\nSimply select your Hue Tap Dial Switch device from the Philips Hue integration.\nThe
+    blueprint automatically handles all 4 buttons and the dial - no need to\nselect
+    individual entities.\n\nThen choose your media players for volume control (dial)
+    and transport control\n(play/pause, previous/next track buttons).\n\n## Built-In
+    Behaviors\n\n**Button Layout**\n\n|1 - Play/Pause | |2 - Custom |\n|3 - Previous
+    Track| |4 - Next Track|\n\n* Button 1 toggles the play/pause state of the media
+    player\n* Button 3 navigates to the previous track\n* Button 2 has no default
+    behavior (fully customizable)\n* Button 4 navigates to the next track\n* Volume
+    increases and decreases with the rotation of the dial\n\nThe default short press
+    behavior for buttons 1, 3, and 4 can be overridden\nby defining a custom short
+    press action in the corresponding section below.\n\n## Dial Control (Volume /
+    Light Dimming)\n\nThe dial can operate in three modes:\n* **Volume Only** - Dial
+    always controls media player volume\n* **Light Only** - Dial always controls light
+    brightness\n* **Smart** - Dial controls volume when media is playing, and light\n
+    \ brightness when media is stopped/paused\n\nVolume and Light each have their
+    own rotation thresholds and increment\nsettings, so you can fine-tune how the
+    dial behaves for each independently.\n\nWhen the dial is rotated, the Hue Bridge
+    reports the number of rotation steps.\nUse the Small, Medium, and Large rotation
+    thresholds in each section to\nconfigure how rotation speed maps to volume/brightness
+    changes.\n\n**Players without volume level reporting (e.g. HomePods):** some media\nplayers
+    do not report their current volume to Home Assistant. For these,\nthe dial falls
+    back to the device's own volume up/down steps; the number\nof steps per rotation
+    size is configurable. For precise percentage-based\ncontrol instead, create an
+    input_number helper (range 0-100) and select\nit as the Volume Helper in the \"Dial
+    Controls - Volume\" section.\n\n## Logbook Logging\n\nWhen enabled, a logbook
+    entry will be created for **every** event received\nfrom the Hue Tap Dial, including
+    button presses and rotation details.\nUseful for debugging and tuning rotation
+    thresholds.\n\n## Custom Events\n\nYou can configure custom actions for short
+    press and long press of each button.\nLong press actions fire once when the button
+    is released after being held.\n\nNote: The native Hue integration does not support
+    multi-press detection\n(double, triple, etc.) - that is a ZHA-only feature at
+    the protocol level.\n\n---\n\nVersion History:\n* 1.00 (Mar-04-2026) : Initial
+    Release - Native Hue Hub version\n* 1.01 (Mar-05-2026) : Single device selector
+    (no individual entity selection needed).\n  All 4 buttons now have customizable
+    short press actions.\n* 1.02 (Mar-05-2026) : Removed model filter from device
+    selector to fix empty\n  device list issue.\n* 1.03 (Mar-05-2026) : Fixed device
+    selector model filter. The Hue integration\n  stores the product name as model,
+    not the model ID.\n* 1.04 (Mar-05-2026) : Added light dimming support. Dial can
+    now operate in\n  three modes: Volume Only, Light Only, or Smart (volume when
+    playing,\n  light when not).\n* 1.05 (Mar-05-2026) : Fixed Smart dial mode not
+    working (template variable\n  chaining bug). Added maximum volume and brightness
+    limits. Increased\n  default rotation thresholds (Small: 25, Medium: 75) to match
+    actual\n  Hue dial step values. Clarified Transport Player description.\n* 1.06
+    (Mar-06-2026) : Moved Dial Behaviour selector to general configuration.\n  Split
+    dial controls into separate Volume and Light sections with independent\n  rotation
+    thresholds and increments. Fixed logbook logging (added entity_id\n  for visibility,
+    cleaned up message format).\n* 1.07 (Mar-09-2026) : Fixed event filter condition
+    showing as \"Unknown condition\"\n  in automation traces. Changed to explicit
+    template condition format.\n* 1.08 (Mar-16-2026) : Fixed long press actions never
+    firing. The Hue bridge\n  does not reliably send \"repeat\" events for button
+    long presses, so\n  button_X_long actions now fire on the \"long_release\" event
+    instead.\n  Removed separate long_release inputs (redundant).\n* 1.09 (Jun-05-2026)
+    : Fixed dial volume control on media players that do not\n  report a volume_level
+    attribute (notably HomePods via HomeKit Controller).\n  Previously each rotation
+    set the volume to the increment value (e.g. to 10%)\n  instead of adding to it,
+    because the unknown current level defaulted to 0.\n  The dial now falls back to
+    the device's own relative volume_up / volume_down\n  (scaled by rotation size)
+    when volume_level is unavailable, and keeps the\n  precise percentage-based control
+    for players that do report it (Sonos, etc.).\n* 1.10 (Jun-12-2026) : Finer dial
+    volume control for players that do not\n  report volume_level (e.g. HomePods).
+    Added an optional Volume Helper\n  (input_number) that tracks the assumed volume,
+    restoring the precise\n  percentage increments and the Maximum Volume cap on such
+    players.\n  The fallback device-step counts per rotation size are now configurable\n
+    \ (0 = ignore that rotation size).\n"
+  input:
+    remote:
+      name: Philips Hue Tap Dial Switch
+      description: 'Select the Hue Tap Dial Switch device from the Philips Hue integration.
+        All button and dial events will be detected automatically.
+
+        '
+      selector:
+        device:
+          filter:
+          - integration: hue
+            model: Hue tap dial switch
+          multiple: false
+    volume_player:
+      name: Volume Player
+      description: 'The media player whose volume is controlled by the dial. In most
+        setups this is the same as the Transport Player.
+
+        '
+      selector:
+        entity:
+          domain:
+          - media_player
+          multiple: false
+          reorder: false
+    transport_player:
+      name: Transport Player
+      description: 'The media player for play/pause and track controls (buttons).
+        In "Smart" dial mode, this player''s state determines whether the dial controls
+        volume (when playing) or light brightness (when stopped/paused). In most setups,
+        select the same player as the Volume Player.
+
+        '
+      selector:
+        entity:
+          domain:
+          - media_player
+          multiple: false
+          reorder: false
+    light_entity:
+      name: Light Entity (Optional)
+      description: 'Select a light to control with the dial. Required for "Light Only"
+        and "Smart" dial modes. Leave empty if using "Volume Only" mode.
+
+        '
+      default: ''
+      selector:
+        entity:
+          domain:
+          - light
+          multiple: false
+          reorder: false
+    dial_mode:
+      name: Dial Behaviour
+      description: 'Choose what the dial controls: **Volume Only** - Always adjusts
+        media player volume. **Light Only** - Always adjusts light brightness (requires
+        Light Entity above). **Smart** - Adjusts volume when the Transport Player
+        is playing, and adjusts light brightness when it is stopped or paused (requires
+        Light Entity above).
+
+        '
+      default: volume
+      selector:
+        select:
+          options:
+          - label: Volume Only
+            value: volume
+          - label: Light Only
+            value: light
+          - label: 'Smart: Volume when playing, Light when not'
+            value: smart
+          multiple: false
+          sort: false
+          custom_value: false
+    logbook_enabled:
+      name: Enable logging to Logbook
+      description: 'When enabled, a logbook entry is created for every event received
+        from the dial (buttons and rotation). Useful for debugging.
+
+        '
+      default: false
+      selector:
+        boolean: {}
+    dial_volume_controls:
+      name: Dial Controls - Volume
+      icon: mdi:volume-high
+      collapsed: true
+      input:
+        vol_small_rotation_max:
+          name: Small Rotation Maximum
+          description: 'The maximum rotation "Steps" value for a "Small Rotation".
+            A rotation event with steps between 1 and this value (inclusive) will
+            change the volume by the "Small Rotation Increment" below. Tip: enable
+            Logbook Logging to see actual step values from your dial and tune these
+            thresholds.
+
+            '
+          default: 25
+          selector:
+            number:
+              min: 1.0
+              max: 200.0
+              step: 1.0
+              mode: box
+        vol_medium_rotation_max:
+          name: Medium Rotation Maximum
+          description: 'The maximum rotation "Steps" value for a "Medium Rotation".
+            A rotation event with steps greater than the Small Rotation Maximum and
+            up to this value will change the volume by the "Medium Rotation Increment".
+            Steps above this value are treated as a "Large Rotation".
+
+            '
+          default: 75
+          selector:
+            number:
+              min: 1.0
+              max: 200.0
+              step: 1.0
+              mode: box
+        vol_small_rotation_increment:
+          name: Small Rotation Increment
+          description: 'The percentage to increase or decrease volume when a "Small
+            Rotation" occurs.
+
+            '
+          default: 1
+          selector:
+            number:
+              min: 1.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        vol_medium_rotation_increment:
+          name: Medium Rotation Increment
+          description: 'The percentage to increase or decrease volume when a "Medium
+            Rotation" occurs.
+
+            '
+          default: 3
+          selector:
+            number:
+              min: 1.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        vol_large_rotation_increment:
+          name: Large Rotation Increment
+          description: 'The percentage to increase or decrease the volume when a "Large
+            Rotation" occurs (steps exceed Medium Rotation Maximum).
+
+            '
+          default: 5
+          selector:
+            number:
+              min: 1.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        max_volume_pct:
+          name: Maximum Volume
+          description: 'The maximum volume percentage the dial can reach. The dial
+            will not increase volume beyond this level.
+
+            '
+          default: 100
+          selector:
+            number:
+              min: 1.0
+              max: 100.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        volume_helper:
+          name: Volume Helper (Optional)
+          description: 'Only for media players that do NOT report their volume level
+            to Home Assistant (e.g. HomePods). Create an input_number helper (Settings
+            > Devices & Services > Helpers, type Number, range 0 to 100) and select
+            it here. The blueprint tracks the assumed volume in this helper and sets
+            the volume precisely, restoring the percentage increments above and the
+            Maximum Volume cap. Note: if the volume is changed outside the dial (voice
+            assistant, app), the next rotation snaps it back to the tracked value.
+            Leave empty for players that report their volume (Sonos, Google, etc.)
+            - the reported volume always takes priority. Without a helper, non-reporting
+            players use the device volume steps below. Tip: before relying on the
+            helper, verify once in Developer Tools > Actions that media_player.volume_set
+            works on your player.
+
+            '
+          default: ''
+          selector:
+            entity:
+              domain:
+              - input_number
+              multiple: false
+              reorder: false
+        vol_fallback_small_steps:
+          name: Device Volume Steps - Small Rotation
+          description: 'Only used when the media player does not report its volume
+            level AND no Volume Helper is configured. The number of native volume
+            up/down commands sent for a Small rotation. Each command changes the volume
+            by the device''s own fixed step. Set to 0 to ignore Small rotations.
+
+            '
+          default: 1
+          selector:
+            number:
+              min: 0.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+        vol_fallback_medium_steps:
+          name: Device Volume Steps - Medium Rotation
+          description: 'Only used when the media player does not report its volume
+            level AND no Volume Helper is configured. The number of native volume
+            up/down commands sent for a Medium rotation. Set to 0 to ignore Medium
+            rotations.
+
+            '
+          default: 2
+          selector:
+            number:
+              min: 0.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+        vol_fallback_large_steps:
+          name: Device Volume Steps - Large Rotation
+          description: 'Only used when the media player does not report its volume
+            level AND no Volume Helper is configured. The number of native volume
+            up/down commands sent for a Large rotation. Set to 0 to ignore Large rotations.
+
+            '
+          default: 3
+          selector:
+            number:
+              min: 0.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+    dial_light_controls:
+      name: Dial Controls - Light
+      icon: mdi:brightness-6
+      collapsed: true
+      input:
+        light_small_rotation_max:
+          name: Small Rotation Maximum
+          description: 'The maximum rotation "Steps" value for a "Small Rotation".
+            A rotation event with steps between 1 and this value (inclusive) will
+            change the brightness by the "Small Rotation Increment" below. Tip: enable
+            Logbook Logging to see actual step values from your dial and tune these
+            thresholds.
+
+            '
+          default: 25
+          selector:
+            number:
+              min: 1.0
+              max: 200.0
+              step: 1.0
+              mode: box
+        light_medium_rotation_max:
+          name: Medium Rotation Maximum
+          description: 'The maximum rotation "Steps" value for a "Medium Rotation".
+            A rotation event with steps greater than the Small Rotation Maximum and
+            up to this value will change the brightness by the "Medium Rotation Increment".
+            Steps above this value are treated as a "Large Rotation".
+
+            '
+          default: 75
+          selector:
+            number:
+              min: 1.0
+              max: 200.0
+              step: 1.0
+              mode: box
+        light_small_rotation_increment:
+          name: Small Rotation Increment
+          description: 'The percentage to increase or decrease brightness when a "Small
+            Rotation" occurs.
+
+            '
+          default: 1
+          selector:
+            number:
+              min: 1.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        light_medium_rotation_increment:
+          name: Medium Rotation Increment
+          description: 'The percentage to increase or decrease brightness when a "Medium
+            Rotation" occurs.
+
+            '
+          default: 3
+          selector:
+            number:
+              min: 1.0
+              max: 10.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        light_large_rotation_increment:
+          name: Large Rotation Increment
+          description: 'The percentage to increase or decrease the brightness when
+            a "Large Rotation" occurs (steps exceed Medium Rotation Maximum).
+
+            '
+          default: 5
+          selector:
+            number:
+              min: 1.0
+              max: 20.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+        max_brightness_pct:
+          name: Maximum Brightness
+          description: 'The maximum brightness percentage the dial can reach. The
+            dial will not increase brightness beyond this level.
+
+            '
+          default: 100
+          selector:
+            number:
+              min: 1.0
+              max: 100.0
+              step: 1.0
+              mode: slider
+              unit_of_measurement: '%'
+    button_1_custom:
+      name: Button 1 - Custom Actions
+      icon: mdi:numeric-1-circle-outline
+      collapsed: true
+      input:
+        button_1_short:
+          name: Button 1 (Short Press)
+          description: 'Action to run on a short press of Button 1. Leave empty to
+            use the default behavior (Play/Pause toggle).
+
+            '
+          default: []
+          selector:
+            action: {}
+        button_1_long:
+          name: Button 1 (Long Press)
+          description: 'Action to run when Button 1 is released after a long press.
+            Fires once per long press.
+
+            '
+          default: []
+          selector:
+            action: {}
+    button_2_custom:
+      name: Button 2 - Custom Actions
+      icon: mdi:numeric-2-circle-outline
+      collapsed: true
+      input:
+        button_2_short:
+          name: Button 2 (Short Press)
+          description: Action to run on a short press of Button 2.
+          default: []
+          selector:
+            action: {}
+        button_2_long:
+          name: Button 2 (Long Press)
+          description: 'Action to run when Button 2 is released after a long press.
+            Fires once per long press.
+
+            '
+          default: []
+          selector:
+            action: {}
+    button_3_custom:
+      name: Button 3 - Custom Actions
+      icon: mdi:numeric-3-circle-outline
+      collapsed: true
+      input:
+        button_3_short:
+          name: Button 3 (Short Press)
+          description: 'Action to run on a short press of Button 3. Leave empty to
+            use the default behavior (Previous Track).
+
+            '
+          default: []
+          selector:
+            action: {}
+        button_3_long:
+          name: Button 3 (Long Press)
+          description: 'Action to run when Button 3 is released after a long press.
+            Fires once per long press.
+
+            '
+          default: []
+          selector:
+            action: {}
+    button_4_custom:
+      name: Button 4 - Custom Actions
+      icon: mdi:numeric-4-circle-outline
+      collapsed: true
+      input:
+        button_4_short:
+          name: Button 4 (Short Press)
+          description: 'Action to run on a short press of Button 4. Leave empty to
+            use the default behavior (Next Track).
+
+            '
+          default: []
+          selector:
+            action: {}
+        button_4_long:
+          name: Button 4 (Long Press)
+          description: 'Action to run when Button 4 is released after a long press.
+            Fires once per long press.
+
+            '
+          default: []
+          selector:
+            action: {}
+  source_url: https://gist.github.com/clousberg/4e6156403fe72e3ff24edbc62697d16b
+mode: restart
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: hue_event
+  event_data:
+    device_id: !input remote
+action:
+- variables:
+    event_type: '{{ trigger.event.data.type }}'
+    event_subtype: '{{ trigger.event.data.subtype }}'
+    command: '{% if event_subtype in [''clock_wise'', ''counter_clock_wise''] %} {{
+      event_subtype }} {% else %} button_{{ event_subtype }}_{{ event_type }} {% endif
+      %}
+
+      '
+    steps: '{{ trigger.event.data.steps | default(0) | int(0) }}'
+    duration: '{{ trigger.event.data.duration | default(0) | int(0) }}'
+    logbook_enabled: !input logbook_enabled
+    vol_small_rotation_max: !input vol_small_rotation_max
+    vol_medium_rotation_max: !input vol_medium_rotation_max
+    vol_small_rotation_increment: !input vol_small_rotation_increment
+    vol_medium_rotation_increment: !input vol_medium_rotation_increment
+    vol_large_rotation_increment: !input vol_large_rotation_increment
+    max_volume_pct: !input max_volume_pct
+    volume_helper: !input volume_helper
+    has_volume_helper: '{{ volume_helper is defined and volume_helper != '''' and
+      volume_helper != none }}'
+    vol_fallback_small_steps: !input vol_fallback_small_steps
+    vol_fallback_medium_steps: !input vol_fallback_medium_steps
+    vol_fallback_large_steps: !input vol_fallback_large_steps
+    light_small_rotation_max: !input light_small_rotation_max
+    light_medium_rotation_max: !input light_medium_rotation_max
+    light_small_rotation_increment: !input light_small_rotation_increment
+    light_medium_rotation_increment: !input light_medium_rotation_increment
+    light_large_rotation_increment: !input light_large_rotation_increment
+    max_brightness_pct: !input max_brightness_pct
+    volume_player: !input volume_player
+    transport_player: !input transport_player
+    volume_player_friendly_name: '{{ state_attr(volume_player, ''friendly_name'')
+      | default(volume_player) }}
+
+      '
+    transport_player_friendly_name: '{{ state_attr(transport_player, ''friendly_name'')
+      | default(transport_player) }}
+
+      '
+    remote: !input remote
+    remote_friendly_name: '{{ device_attr(remote, ''name_by_user'') | default(device_attr(remote,
+      ''name''), true) | default(remote) }}
+
+      '
+    dial_mode: !input dial_mode
+    light_entity: !input light_entity
+    has_light: '{{ light_entity is defined and light_entity != '''' and light_entity
+      != none }}'
+    use_light: '{{ dial_mode == ''light'' or (dial_mode == ''smart'' and not is_state(transport_player,
+      ''playing'')) }}
+
+      '
+    use_volume: '{{ dial_mode == ''volume'' or (dial_mode == ''smart'' and is_state(transport_player,
+      ''playing'')) }}
+
+      '
+    button_1_short_actions: !input button_1_short
+    button_3_short_actions: !input button_3_short
+    button_4_short_actions: !input button_4_short
+- condition: template
+  value_template: '{{ event_type not in [''initial_press'', ''long_press''] }}'
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ logbook_enabled }}'
+    sequence:
+    - action: logbook.log
+      data:
+        name: '{{ remote_friendly_name }}'
+        message: '{% if event_subtype in [''clock_wise'', ''counter_clock_wise'']
+          %} Dial {{ event_subtype | replace(''_'', '' '') }} (steps: {{ steps }},
+          duration: {{ duration }}ms, mode: {{ dial_mode }}) {% else %} {{ command
+          | replace(''_'', '' '') }} {% endif %}
+
+          '
+        entity_id: '{{ transport_player }}'
+- choose:
+  - conditions: '{{ command == ''button_1_short_release'' and button_1_short_actions
+      | length > 0 }}'
+    sequence: !input button_1_short
+  - conditions: '{{ command == ''button_1_short_release'' }}'
+    sequence:
+    - action: media_player.media_play_pause
+      entity_id: !input transport_player
+  - conditions: '{{ command == ''button_1_long_release'' }}'
+    sequence: !input button_1_long
+  - conditions: '{{ command == ''button_2_short_release'' }}'
+    sequence: !input button_2_short
+  - conditions: '{{ command == ''button_2_long_release'' }}'
+    sequence: !input button_2_long
+  - conditions: '{{ command == ''button_3_short_release'' and button_3_short_actions
+      | length > 0 }}'
+    sequence: !input button_3_short
+  - conditions: '{{ command == ''button_3_short_release'' }}'
+    sequence:
+    - action: media_player.media_previous_track
+      entity_id: !input transport_player
+  - conditions: '{{ command == ''button_3_long_release'' }}'
+    sequence: !input button_3_long
+  - conditions: '{{ command == ''button_4_short_release'' and button_4_short_actions
+      | length > 0 }}'
+    sequence: !input button_4_short
+  - conditions: '{{ command == ''button_4_short_release'' }}'
+    sequence:
+    - action: media_player.media_next_track
+      entity_id: !input transport_player
+  - conditions: '{{ command == ''button_4_long_release'' }}'
+    sequence: !input button_4_long
+  - conditions: '{{ command in [''clock_wise'', ''counter_clock_wise''] }}'
+    sequence:
+    - choose:
+      - conditions: '{{ use_light and has_light }}'
+        sequence:
+        - variables:
+            current_brightness_pct: '{{ (state_attr(light_entity, ''brightness'')
+              | default(0) | float(0)) / 255 * 100 }}
+
+              '
+            light_increment: '{% if steps | int <= light_small_rotation_max | int
+              %} {{ light_small_rotation_increment }} {% elif steps | int <= light_medium_rotation_max
+              | int %} {{ light_medium_rotation_increment }} {% else %} {{ light_large_rotation_increment
+              }} {% endif %}
+
+              '
+            light_step_size: '{% if steps | int <= light_small_rotation_max | int
+              %}Small {% elif steps | int <= light_medium_rotation_max | int %}Medium
+              {% else %}Large{% endif %}
+
+              '
+        - choose:
+          - conditions: '{{ command == ''clock_wise'' }}'
+            sequence:
+            - action: light.turn_on
+              target:
+                entity_id: '{{ light_entity }}'
+              data:
+                brightness_pct: '{% set new_pct = current_brightness_pct | float +
+                  light_increment | float %} {{ [new_pct, max_brightness_pct | float]
+                  | min | int }}
+
+                  '
+          default:
+          - action: light.turn_on
+            target:
+              entity_id: '{{ light_entity }}'
+            data:
+              brightness_pct: '{% set new_pct = current_brightness_pct | float - light_increment
+                | float %} {{ [new_pct, 0] | max | int }}
+
+                '
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ logbook_enabled }}'
+            sequence:
+            - action: logbook.log
+              data:
+                name: '{{ remote_friendly_name }}'
+                message: '{% if command == ''clock_wise'' %}Increase{% else %}Decrease{%
+                  endif %} Brightness ({{ light_step_size }}: {{ light_increment }}%,
+                  max: {{ max_brightness_pct }}%)
+
+                  '
+                entity_id: '{{ light_entity }}'
+      - conditions: '{{ use_light and not has_light }}'
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ logbook_enabled }}'
+            sequence:
+            - action: logbook.log
+              data:
+                name: '{{ remote_friendly_name }}'
+                message: No light entity configured - dial rotation ignored
+                entity_id: '{{ transport_player }}'
+      - conditions: '{{ use_volume }}'
+        sequence:
+        - variables:
+            raw_volume_level: '{{ state_attr(volume_player, ''volume_level'') }}'
+            volume_level_available: '{{ raw_volume_level is not none }}'
+            current_volume: '{{ raw_volume_level | float(0) }}'
+            vol_increment: '{% if steps | int <= vol_small_rotation_max | int %} {{
+              vol_small_rotation_increment }} {% elif steps | int <= vol_medium_rotation_max
+              | int %} {{ vol_medium_rotation_increment }} {% else %} {{ vol_large_rotation_increment
+              }} {% endif %}
+
+              '
+            vol_step_size: '{% if steps | int <= vol_small_rotation_max | int %}Small
+              {% elif steps | int <= vol_medium_rotation_max | int %}Medium {% else
+              %}Large{% endif %}
+
+              '
+            vol_step_count: '{% if steps | int <= vol_small_rotation_max | int %}{{
+              vol_fallback_small_steps }} {% elif steps | int <= vol_medium_rotation_max
+              | int %}{{ vol_fallback_medium_steps }} {% else %}{{ vol_fallback_large_steps
+              }}{% endif %}
+
+              '
+        - choose:
+          - conditions: '{{ volume_level_available }}'
+            sequence:
+            - choose:
+              - conditions: '{{ command == ''clock_wise'' }}'
+                sequence:
+                - action: media_player.volume_set
+                  entity_id: !input volume_player
+                  data:
+                    volume_level: '{% set new_volume = current_volume + (vol_increment
+                      | float / 100) %} {% set max_vol = max_volume_pct | float /
+                      100 %} {{ [new_volume, max_vol] | min }}
+
+                      '
+              default:
+              - action: media_player.volume_set
+                entity_id: !input volume_player
+                data:
+                  volume_level: '{% set new_volume = current_volume - (vol_increment
+                    | float / 100) %} {{ [new_volume, 0.0] | max }}
+
+                    '
+          - conditions: '{{ has_volume_helper }}'
+            sequence:
+            - variables:
+                helper_volume_pct: '{{ states(volume_helper) | float(50) }}'
+                helper_min: '{{ state_attr(volume_helper, ''min'') | float(0) }}'
+                helper_max: '{{ state_attr(volume_helper, ''max'') | float(100) }}'
+                new_volume_pct: '{% if command == ''clock_wise'' %} {% set raw = (helper_volume_pct
+                  | float) + (vol_increment | float) %} {% else %} {% set raw = (helper_volume_pct
+                  | float) - (vol_increment | float) %} {% endif %} {% set upper =
+                  [max_volume_pct | float, helper_max | float] | min %} {% set lower
+                  = [0.0, helper_min | float] | max %} {{ [[raw, upper] | min, lower]
+                  | max | round(1) }}
+
+                  '
+            - action: input_number.set_value
+              target:
+                entity_id: '{{ volume_helper }}'
+              data:
+                value: '{{ new_volume_pct | float }}'
+            - action: media_player.volume_set
+              entity_id: !input volume_player
+              data:
+                volume_level: '{{ new_volume_pct | float / 100 }}'
+          default:
+          - repeat:
+              count: '{{ vol_step_count | int }}'
+              sequence:
+              - choose:
+                - conditions: '{{ command == ''clock_wise'' }}'
+                  sequence:
+                  - action: media_player.volume_up
+                    entity_id: !input volume_player
+                default:
+                - action: media_player.volume_down
+                  entity_id: !input volume_player
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ logbook_enabled }}'
+            sequence:
+            - action: logbook.log
+              data:
+                name: '{{ remote_friendly_name }}'
+                message: '{% if command == ''clock_wise'' %}Increase{% else %}Decrease{%
+                  endif %} Volume ({{ vol_step_size }}: {% if volume_level_available
+                  %}{{ vol_increment }}%, max: {{ max_volume_pct }}%{% elif has_volume_helper
+                  %}{{ vol_increment }}% via helper, now {{ states(volume_helper)
+                  }}%, max: {{ max_volume_pct }}%{% else %}{{ vol_step_count }} device
+                  step(s), volume_level not reported{% endif %})
+
+                  '
+                entity_id: '{{ volume_player }}'

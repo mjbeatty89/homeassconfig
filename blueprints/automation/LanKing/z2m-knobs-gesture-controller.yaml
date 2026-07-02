@@ -1,0 +1,477 @@
+blueprint:
+  name: ⏲️ Z2M Knob — Set Actions for Gestures (Moes ZG-101ZD & similar)
+  description: 'Configure what each gesture of your Zigbee2MQTT rotary knob does:
+    single and double clicks, hold and release, rotate, and rotate while holding.
+    Includes filtering of false “tail” events.
+
+
+    Supports many AliExpress-sold rotary knobs from brands such as Moes, Girier, and
+    others. Project: https://github.com/LanKing/z2m-knobs-gesture-controller
+
+    '
+  domain: automation
+  input:
+    base_topic:
+      name: ⚠️ Base topic
+      description: 'The easiest way: find the "Friendly name" of your device in Zigbee2MQTT
+        and replace "your_knob_friendly_name" with it. Example: zigbee2mqtt/MyKnob'
+      default: zigbee2mqtt/your_knob_friendly_name
+      selector:
+        text:
+          multiline: false
+          multiple: false
+    hook_script:
+      name: "\U0001F9E9 Hook script (optional)"
+      description: "If selected, this script will be called on every MQTT message
+        BEFORE gesture actions. It receives ALL helper variables, see details below
+        \U0001F447\n"
+      default: ''
+      selector:
+        entity:
+          domain:
+          - script
+          multiple: false
+          reorder: false
+    cmd_single_action:
+      name: 1️⃣ Single click (command mode)
+      description: "Optional helper variables available for all gestures below. \nYou
+        may use them in your actions and scripts if needed:\n- gesture: single | double
+        | hold | hold_release | rotate_left | rotate_right | hold_rotate_left | hold_rotate_right
+        | mode_change | unknown\n- step_size: action_step_size from payload\n- rate:
+        action_rate from payload\n- operation_mode: operation_mode from payload\n-
+        native_event: action from payload\n- topic: MQTT topic of the message\n- raw:
+        raw MQTT payload (string)\n- payload_json: parsed MQTT payload (dict)        \n-
+        knob_id: Id of your knob (without \"zigbee2mqtt/\")      \n\nHow to use: https://github.com/LanKing/z2m-knobs-gesture-controller/#%E2%80%8D-additional-parameters-for-scripts\n"
+      default: []
+      selector:
+        action: {}
+    ev_single_action:
+      name: Single click (event mode)
+      description: "Optional. If left empty, the action from command mode will be
+        used \U0001F446\U0001F3FC"
+      default: []
+      selector:
+        action: {}
+    cmd_double_action:
+      name: 2️⃣ Double click (command mode)
+      default: []
+      selector:
+        action: {}
+    ev_double_action:
+      name: Double click (event mode)
+      description: "Optional. If left empty, the action from command mode will be
+        used \U0001F446\U0001F3FC"
+      default: []
+      selector:
+        action: {}
+    cmd_hold_action:
+      name: "\U0001F447 Hold (command mode)"
+      default: []
+      selector:
+        action: {}
+    ev_hold_action:
+      name: Hold (event mode)
+      description: "Optional. If left empty, the action from command mode will be
+        used \U0001F446\U0001F3FC"
+      default: []
+      selector:
+        action: {}
+    cmd_hold_release_action:
+      name: "\U0001F590️ Hold release (command mode only)"
+      default: []
+      selector:
+        action: {}
+    cmd_rotate_left_action:
+      name: ⬅️ Rotate left (command mode)
+      default: []
+      selector:
+        action: {}
+    ev_rotate_left_action:
+      name: Rotate left (event mode)
+      description: "Optional. If left empty, the action from command mode will be
+        used \U0001F446\U0001F3FC"
+      default: []
+      selector:
+        action: {}
+    cmd_rotate_right_action:
+      name: ➡️ Rotate right (command mode)
+      default: []
+      selector:
+        action: {}
+    ev_rotate_right_action:
+      name: Rotate right (event mode)
+      description: "Optional. If left empty, the action from command mode will be
+        used \U0001F446\U0001F3FC"
+      default: []
+      selector:
+        action: {}
+    cmd_hold_rotate_left:
+      name: "\U0001F447⬅️ Hold + rotate left (command mode only)"
+      default: []
+      selector:
+        action: {}
+    cmd_hold_rotate_right:
+      name: "\U0001F447➡️ Hold + rotate right (command mode only)"
+      default: []
+      selector:
+        action: {}
+    automation_mode:
+      name: "\U0001F4AB Automation / Mode"
+      description: https://www.home-assistant.io/docs/automation/modes/
+      default: queued
+      selector:
+        select:
+          mode: dropdown
+          options:
+          - single
+          - restart
+          - queued
+          - parallel
+          multiple: false
+          custom_value: false
+          sort: false
+    automation_max:
+      name: "\U0001F4AB Automation / Max runs"
+      description: The maximum number of runs that can be executing and/or queued
+        at the same time. Applies only to queued and parallel modes.
+      default: 10
+      selector:
+        number:
+          mode: box
+          min: 1.0
+          max: 100.0
+          step: 1.0
+    noise_filter_window_ms:
+      name: "\U0001F507 Noise filter window (ms)"
+      description: Ignores false tail events after a knob rotation within this time
+        window.
+      default: 500
+      selector:
+        number:
+          mode: box
+          min: 0.0
+          max: 5000.0
+          step: 1.0
+    debug_mode:
+      name: "\U0001F41E Debug"
+      description: If you want to inspect how your knob reacts, the best way is to
+        use notification mode.
+      default: notification
+      selector:
+        select:
+          options:
+          - disabled
+          - notification
+          - log
+          - both
+          multiple: false
+          custom_value: false
+          sort: false
+    bind_single:
+      name: "\U0001F5171️⃣ Bind native knob events to single click"
+      description: One value per line.
+      default: 'single
+
+        toggle'
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_double:
+      name: "\U0001F5172️⃣ Bind native knob events to double click"
+      description: One value per line.
+      default: double
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_hold:
+      name: "\U0001F517\U0001F447 Bind native knob events to hold"
+      description: One value per line.
+      default: 'hold
+
+        hue_move'
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_hold_release:
+      name: "\U0001F517\U0001F590️ Bind native knob events to hold release"
+      description: One value per line.
+      default: hue_stop
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_rotate_left:
+      name: "\U0001F517⬅️ Bind native knob events to rotate left"
+      description: One value per line.
+      default: 'brightness_step_down
+
+        rotate_left'
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_rotate_right:
+      name: "\U0001F517➡️ Bind native knob events to rotate right"
+      description: One value per line.
+      default: 'brightness_step_up
+
+        rotate_right'
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_hold_rotate_left:
+      name: "\U0001F517\U0001F447⬅️ Bind native knob events to hold + rotate left"
+      description: One value per line.
+      default: color_temperature_step_down
+      selector:
+        text:
+          multiline: true
+          multiple: false
+    bind_hold_rotate_right:
+      name: "\U0001F517\U0001F447➡️ Bind native knob events to hold + rotate right"
+      description: One value per line.
+      default: color_temperature_step_up
+      selector:
+        text:
+          multiline: true
+          multiple: false
+  source_url: https://github.com/LanKing/z2m-knobs-gesture-controller/blob/main/blueprints/automation/lanking/z2m-knobs-gesture-controller.yaml
+mode: !input automation_mode
+max: !input automation_max
+max_exceeded: warning
+trigger:
+- platform: mqtt
+  topic: !input base_topic
+variables:
+  topic: '{{ trigger.topic | default('''') }}'
+  _hook_script: !input hook_script
+  _cmd_single_action: !input cmd_single_action
+  _ev_single_action: !input ev_single_action
+  _cmd_double_action: !input cmd_double_action
+  _ev_double_action: !input ev_double_action
+  _cmd_hold_action: !input cmd_hold_action
+  _ev_hold_action: !input ev_hold_action
+  _cmd_hold_release_action: !input cmd_hold_release_action
+  _cmd_rotate_left_action: !input cmd_rotate_left_action
+  _ev_rotate_left_action: !input ev_rotate_left_action
+  _cmd_rotate_right_action: !input cmd_rotate_right_action
+  _ev_rotate_right_action: !input ev_rotate_right_action
+  _cmd_hold_rotate_left_action: !input cmd_hold_rotate_left
+  _cmd_hold_rotate_right_action: !input cmd_hold_rotate_right
+  raw: '{{ trigger.payload | default('''') }}'
+  payload_json: '{{ trigger.payload_json | default({}) }}'
+  native_event: '{{ payload_json.action | default('''') }}'
+  operation_mode: '{{ payload_json.operation_mode | default('''') }}'
+  step_size: '{{ payload_json.action_step_size | default('''') }}'
+  rate: '{{ payload_json.action_rate | default('''') }}'
+  _debug_mode: !input debug_mode
+  _debug_notification_id: z2m_knobs_gesture_controller_debug
+  bind_single: !input bind_single
+  bind_double: !input bind_double
+  bind_hold: !input bind_hold
+  bind_hold_release: !input bind_hold_release
+  bind_rotate_left: !input bind_rotate_left
+  bind_rotate_right: !input bind_rotate_right
+  bind_hold_rotate_left: !input bind_hold_rotate_left
+  bind_hold_rotate_right: !input bind_hold_rotate_right
+  _bind_raw: "{{\n  dict(\n    single=bind_single,\n    double=bind_double,\n    hold=bind_hold,\n
+    \   hold_release=bind_hold_release,\n    hold_rotate_left=bind_hold_rotate_left,\n
+    \   hold_rotate_right=bind_hold_rotate_right,\n    rotate_left=bind_rotate_left,\n
+    \   rotate_right=bind_rotate_right\n  )\n}}"
+  _gesture_icons: "{{\n  dict(\n    single='1️⃣',\n    double='2️⃣',\n    hold='\U0001F447',\n
+    \   hold_release='\U0001F590️',\n    hold_rotate_left='\U0001F447⬅️',\n    hold_rotate_right='\U0001F447➡️',\n
+    \   rotate_left='⬅️',\n    rotate_right='➡️'\n  )\n}}"
+  _gestures_list: '{{ _bind_raw.keys() | list }}'
+  _bindings: "{% set ns = namespace(out=dict()) %} {% for g in _gestures_list %}\n
+    \ {% set raw_lines = (_bind_raw.get(g, '') | string) %}\n  {% set lst = (raw_lines.splitlines()
+    | map('trim') | reject('equalto','') | list) %}\n  {% set ns.out = dict(ns.out,
+    **{g: lst}) %}\n{% endfor %} {{ ns.out }}"
+  _bind_to_gesture: "{% set ns = namespace(out=dict()) %} {% for g in _gestures_list
+    %}\n  {% for b in (_bindings.get(g, [])) %}\n    {% set key = (b | string | trim)
+    %}\n    {% if key != '' and (ns.out.get(key) is none) %}\n      {% set ns.out
+    = dict(ns.out, **{key: g}) %}\n    {% endif %}\n  {% endfor %}\n{% endfor %} {{
+    ns.out }}"
+  gesture: "{% set g = _bind_to_gesture.get(native_event, 'unknown') %} {% if g !=
+    'unknown' %}\n  {{ g }}\n{% elif operation_mode in ['event','command'] %}\n  mode_change\n{%
+    else %}\n  unknown\n{% endif %}"
+  _direction: "{% if gesture in ['rotate_left','hold_rotate_left'] %}\n  left\n{%
+    elif gesture in ['rotate_right','hold_rotate_right'] %}\n  right\n{% else %}\n
+    \ ''\n{% endif %}"
+  _is_holded: '{{ gesture in [''hold_rotate_left'',''hold_rotate_right''] }}'
+  _is_rotation: '{{ gesture in [''rotate_left'',''rotate_right'',''hold_rotate_left'',''hold_rotate_right'']
+    }}'
+  _noise_filter_window_ms: !input noise_filter_window_ms
+  _state_id: z2m_device_states
+  _state_name: LanKing Z2M Device States
+  _state_domain: lanking
+  _state_unique_id: '{{ _state_domain }}_{{ _state_id }}'
+  _state_entity: sensor.{{_state_unique_id}}
+  _state_topic: ha/{{ _state_domain }}/{{ _state_id }}
+  _state_config_topic: homeassistant/sensor/{{ _state_domain }}_{{ _state_id }}/config
+  _state_raw: '{{ states(_state_entity) }}'
+  _state_map: "{% set s = _state_raw %} {% if s in ['unknown','unavailable','none','']
+    %}\n  {{ dict() }}\n{% else %}\n  {{ s | from_json }}\n{% endif %}"
+  knob_id: '{{ topic | replace(''zigbee2mqtt/'','''') }}'
+  _last: '{{ _state_map.get(knob_id, dict()) }}'
+  _last_ts: '{{ _last.get(''ts'', 0) | float(0) }}'
+  _last_is_holded: '{{ _last.get(''is_holded'', false) }}'
+  _ms_since_last_event: '{{ ((now().timestamp() - _last_ts) * 1000) | int }}'
+  _in_filter_window: '{{ (_noise_filter_window_ms | int) > 0 and (_ms_since_last_event
+    >= 0) and (_ms_since_last_event <= (_noise_filter_window_ms | int)) }}'
+  _is_rotation_continuation: '{{ _is_rotation and _is_holded == _last_is_holded }}'
+  _skip_event: '{{ _in_filter_window and not _is_rotation_continuation }}'
+  _dbg_msg: "{% if gesture == 'mode_change' %}\n  {% set header = '\U0001F504 The
+    operation mode was changed by the user.' %}\n{% elif gesture != 'unknown' %}\n
+    \ {% set header = ('Skipped: ' if _skip_event == true else '') ~ _gesture_icons.get(gesture,
+    '')  ~ ' ' ~ gesture ~ ('. Native event: ' ~ native_event if native_event != ''
+    else '') %}\n{% else %}\n  {% set header = '❌ The event did not match any binding.
+    Something may be wrong.' %}\n{% endif %}\n{{ header }}\n\nOperation mode: {{ operation_mode
+    if operation_mode != '' else '—' }}\nStep size: {{ step_size if step_size != ''
+    else '—' }}\nRate: {{ rate if rate != '' else '—' }}\n{{ raw }}\n\n\n\U0001F507
+    Noise filter window:{% if _state_raw in ['unknown','unavailable'] %}  \n⚠️ WARNING:
+    Sensor {{ _state_unique_id }} not found!\nThe noise filter is probably DISABLED.
+    Automation will try to re-create it.\n{% else %}\nInside filter window: {{_in_filter_window}}\nWindow
+    duration: {{ _noise_filter_window_ms }} ms\nSince last event: {{ _ms_since_last_event
+    }} ms\nRotation continuation: {{_is_rotation_continuation}}\nLast sensor snapshot:
+    {{ _last }}\n{% endif %}\n\nTopic: {{ topic }}\n"
+action:
+- if:
+  - condition: template
+    value_template: '{{ _state_raw in [''unknown'',''unavailable''] }}'
+  then:
+  - service: mqtt.publish
+    data:
+      topic: '{{ _state_config_topic }}'
+      retain: true
+      payload: "{\n  \"name\": \"{{_state_name}}\",\n  \"unique_id\": \"{{ _state_unique_id
+        }}\",\n  \"state_topic\": \"{{ _state_topic }}\"\n}\n"
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ _debug_mode == ''log'' or _debug_mode == ''both'' }}'
+    sequence:
+    - service: system_log.write
+      data:
+        level: info
+        message: '{{ _dbg_msg }}'
+  - conditions:
+    - condition: template
+      value_template: '{{ _debug_mode == ''notification'' or _debug_mode == ''both''
+        }}'
+    sequence:
+    - service: persistent_notification.create
+      data:
+        notification_id: '{{ _debug_notification_id }}'
+        title: ⏲️ Knob debug
+        message: '{{ _dbg_msg }}'
+  default: []
+- if:
+  - condition: template
+    value_template: '{{ _skip_event }}'
+  then:
+  - stop: Event skipped due to noise filter
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ _is_rotation }}'
+    sequence:
+    - variables:
+        _now_ts: '{{ now().timestamp() }}'
+        _new_entry: '{{ dict(ts=_now_ts, is_holded=_is_holded) }} # direction=_direction,'
+        _merged_state: '{{ _state_map | combine({knob_id: _new_entry}) | to_json }}'
+    - service: mqtt.publish
+      data:
+        topic: '{{ _state_topic }}'
+        payload: '{{ _merged_state }}'
+        retain: true
+  default: []
+- if:
+  - condition: template
+    value_template: '{{ _hook_script is string and (_hook_script | trim) != '''' }}'
+  then:
+  - action: script.turn_on
+    data:
+      entity_id: '{{ _hook_script }}'
+      variables:
+        topic: '{{ topic }}'
+        raw: '{{ raw }}'
+        payload_json: '{{ payload_json }}'
+        native_event: '{{ native_event }}'
+        operation_mode: '{{ operation_mode }}'
+        step_size: '{{ step_size }}'
+        rate: '{{ rate }}'
+        gesture: '{{ gesture }}'
+        knob_id: '{{ knob_id }}'
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''single'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ operation_mode == ''event'' and (_ev_single_action |
+            length > 0) }}'
+        sequence: !input ev_single_action
+      default: !input cmd_single_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''double'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ operation_mode == ''event'' and (_ev_double_action |
+            length > 0) }}'
+        sequence: !input ev_double_action
+      default: !input cmd_double_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''hold'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ operation_mode == ''event'' and (_ev_hold_action | length
+            > 0) }}'
+        sequence: !input ev_hold_action
+      default: !input cmd_hold_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''hold_release'' }}'
+    sequence: !input cmd_hold_release_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''rotate_left'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ operation_mode == ''event'' and (_ev_rotate_left_action
+            | length > 0) }}'
+        sequence: !input ev_rotate_left_action
+      default: !input cmd_rotate_left_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''rotate_right'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: template
+          value_template: '{{ operation_mode == ''event'' and (_ev_rotate_right_action
+            | length > 0) }}'
+        sequence: !input ev_rotate_right_action
+      default: !input cmd_rotate_right_action
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''hold_rotate_left'' }}'
+    sequence: !input cmd_hold_rotate_left
+  - conditions:
+    - condition: template
+      value_template: '{{ gesture == ''hold_rotate_right'' }}'
+    sequence: !input cmd_hold_rotate_right
+  default: []

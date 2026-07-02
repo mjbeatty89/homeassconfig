@@ -1,0 +1,82 @@
+# packages/room_presence/primary_bedroom.yaml
+# =========================================
+# Room: Primary Bedroom
+# Presence Package — Vesper's Domain
+# =========================================
+# Pattern: Presence group → occupancy binary sensor (delay_off 5 min, longer
+#           grace period for bedroom) → light follow automation
+#
+# IMPORTANT: Bedroom light follow is DISABLED when sleep mode is active.
+#            The Dynamic Asset Grouper excludes 'primary_bedroom' from the
+#            Room Manager — this package handles it properly here instead.
+#
+# Requires: group.sensors_presence_primary_bedroom (built by Dynamic Asset Grouper)
+#           group.lights_adaptive_primary_bedroom  (built by Dynamic Asset Grouper)
+
+template:
+  - binary_sensor:
+      - name: "Primary Bedroom Occupied"
+        unique_id: room_occupied_primary_bedroom
+        device_class: occupancy
+        delay_off: "00:05:00"   # Longer grace for bedroom (no false-offs mid-sleep)
+        state: >
+          {{ is_state('group.sensors_presence_primary_bedroom', 'on') }}
+        availability: >
+          {{ states('group.sensors_presence_primary_bedroom') not in ['unknown', 'unavailable'] }}
+
+automation:
+  - alias: "Room: Primary Bedroom Light Follow"
+    id: room_light_follow_primary_bedroom
+    description: >
+      Conservative bedroom lighting. Occupancy can only turn lights on outside
+      quiet hours and when sleep mode is off. Manual hold always wins.
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.primary_bedroom_occupied
+        to: "on"
+        id: occupied
+      - platform: state
+        entity_id: binary_sensor.primary_bedroom_occupied
+        to: "off"
+        id: vacant
+    condition:
+      - condition: template
+        value_template: >
+          {{ states('switch.adaptive_lighting_sleep_mode_primary_bedroom')
+             not in ['on'] }}
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: occupied
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_primary_bedroom
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_primary_bedroom
+                state: "off"
+              - condition: state
+                entity_id: binary_sensor.night_mode
+                state: "off"
+            sequence:
+              - action: script.room_apply_scene_primary_bedroom
+                data:
+                  scene_name: Auto
+          - conditions:
+              - condition: trigger
+                id: vacant
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_primary_bedroom
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_primary_bedroom
+                state: "off"
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id:
+                    - group.lights_adaptive_primary_bedroom
+                    - group.lights_ambient_primary_bedroom
+                data:
+                  transition: 5

@@ -1,44 +1,115 @@
-# Home Assistant database
+# ============================================================
+# Home Assistant Config — .gitignore
+# Updated: 2026-03-08
+# ============================================================
+
+# ─── HA Databases ───────────────────────────────────────────
 *.db
 *.db-shm
 *.db-wal
 
-# Logs
+# ─── Logs ───────────────────────────────────────────────────
 *.log
+*.log.*
+*.log.old
+*.log.fault
+logs/
 
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-
-# ESPHome (external git repo)
-esphome/
-
-# Secrets and sensitive data
+# ─── Secrets & Credentials ──────────────────────────────────
 secrets.yaml
 *.secret
+.ha_token
+.ha_cursor_agent_key
 
-# Temporary files
+# ─── HA Internal State (not config) ─────────────────────────
+.storage/
+.cloud/
+.google.token
+.ha_run.lock
+
+# ─── Dependencies / Runtime ─────────────────────────────────
+deps/
+tts/
+
+# ─── HACS / Frontend Community Files ────────────────────────
+# These are downloaded assets, not your config
+www/
+
+# ─── HACS Custom Components ──────────────────────────────────
+# Downloaded integrations — managed by HACS, not hand-authored
+# If you want to track a specific custom component, force-include it:
+#   !custom_components/my_handwritten_component/
+custom_components/
+
+# ─── Git helper repos ─────────────────────────────────────────
+ha_vibecode_git/
+
+# ─── ESPHome (has its own git repo) ─────────────────────────
+esphome/
+
+# ─── Zigbee2MQTT (has its own git repo) ─────────────────────
+zigbee2mqtt/
+
+# ─── HA Backup Archives ─────────────────────────────────────
+backup/
+
+# ─── Media & Binary Assets ──────────────────────────────────
+image/
+media/
+llmvision/
+f1_replay_cache/
+
+# ─── Binary Executables ─────────────────────────────────────
+go2rtc-*
+
+# ─── SSL Certificates (secrets) ─────────────────────────────
+ssl/
+*.pem
+*.crt
+*.key
+
+# ─── OpenHands Runtime ──────────────────────────────────────
+packages/openhands/
+
+# ─── Temporary / OS Files ───────────────────────────────────
 *.tmp
 *.bak
 *.swp
 *~
-
-# OS files
 .DS_Store
 Thumbs.db
 
-# IDE
+# ─── IDE ────────────────────────────────────────────────────
 .vscode/
 .idea/
 
-# Home Assistant specific
-.storage/
-.cloud/
-.google.token
-deps/
-tts/
+# ─── Python Cache ───────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ─── Node Modules ───────────────────────────────────────────
+node_modules/
+
+# ─── Nest Integration ───────────────────────────────────────
+nest/
+
+# ─── Known Devices ──────────────────────────────────────────
 www/known_devices.yaml
 
-# Node modules if using custom frontends
-node_modules/
+# ─── HA Runtime Version Marker ──────────────────────────────
+.HA_VERSION
+
+# ─── Stray Manual Backups ───────────────────────────────────
+*.bak-*
+
+# ─── HACS External Components ───────────────────────────────
+# Same as custom_components/ — downloaded via HACS, not hand-authored
+external_components/
+
+# ─── AI Tool / Agent Session State ──────────────────────────
+# Local tool caches and session config — not repo config
+.codex/
+.claude/
+.cache/
+openclaw/

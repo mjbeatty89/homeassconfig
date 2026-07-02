@@ -1,0 +1,142 @@
+blueprint:
+  name: ZHA - Tuya Smart Scene Button (Knob) for Media Player - v1
+  description: 'Control a Media Player (like Music Assistant) with a generic Tuya
+    Smart Scene Button (Knob).
+
+    ⚠️ **IMPORTANT: THIS DEVICE HAS TWO MODES** ⚠️ Switch between modes by rapidly
+    tapping the button 3 times.
+
+    **1. Normal Mode (Built-in Media Control)** - Single Press: Play/Pause the selected
+    media player. - Rotate Left/Right: Smoothly adjust the volume based on your chosen
+    step percentage. *Note: If the device does nothing when you first set it up, tap
+    it 3 times to wake up Normal Mode!*
+
+    **2. Remote Mode (Custom Actions)** In this mode, default volume and play/pause
+    logic is ignored. Instead, it executes the custom actions you assign in the fields
+    below for: - Short Press - Double Press - Long Press - Rotate Right - Rotate Left
+
+    '
+  domain: automation
+  input:
+    remote:
+      name: Remote
+      description: Tuya Smart Scene Button (Knob) to use
+      selector:
+        device:
+          integration: zha
+          multiple: false
+    media_player:
+      name: Media Player
+      description: The media player to control
+      selector:
+        entity:
+          domain:
+          - media_player
+          multiple: false
+          reorder: false
+    step_percent:
+      name: Volume Step
+      description: Volume percent change for each step
+      selector:
+        number:
+          mode: slider
+          min: 1.0
+          max: 100.0
+          unit_of_measurement: '%'
+          step: 1.0
+      default: 5
+    short_press:
+      name: Remote Mode - Short Press
+      description: Action to run on single press
+      default: []
+      selector:
+        action: {}
+    double_press:
+      name: Remote Mode - Double Press
+      description: Action to run on double press
+      default: []
+      selector:
+        action: {}
+    long_press:
+      name: Remote Mode - Long Press
+      description: Action to run on long press
+      default: []
+      selector:
+        action: {}
+    remote_right:
+      name: Remote mode - Spin Right
+      description: Action to run on "right spin" in remote mode
+      default: []
+      selector:
+        action: {}
+    remote_left:
+      name: Remote mode - Spin Left
+      description: Action to run on "left spin" in remote mode
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/acdye/zha-knob-media-control/blob/main/tuya_media_knob.yaml
+mode: parallel
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+action:
+- variables:
+    media_player_entity: !input media_player
+    command: '{{ trigger.event.data.command }}'
+    mode: '{% if command == ''step'' %} {{ trigger.event.data.args[0] }} {% endif
+      %}'
+    steps: '{% if command == ''step'' %} {{ (trigger.event.data.args[1] / 12.5 ) |
+      int }} {% endif %}'
+    step_percent: !input step_percent
+- choose:
+  - conditions:
+    - '{{ command == ''toggle'' }}'
+    sequence:
+    - service: media_player.media_play_pause
+      target:
+        entity_id: '{{ media_player_entity }}'
+  - conditions:
+    - '{{ command == ''step'' }}'
+    - '{{ mode == ''StepMode.Up'' }}'
+    sequence:
+    - service: media_player.volume_set
+      target:
+        entity_id: '{{ media_player_entity }}'
+      data:
+        volume_level: '{% set current_vol = state_attr(media_player_entity, ''volume_level'')
+          | float(0.0) %} {% set step = (step_percent / 100) %} {% set new_vol = current_vol
+          + (step * steps) %} {{ [new_vol, 1.0] | min }}
+
+          '
+  - conditions:
+    - '{{ command == ''step'' }}'
+    - '{{ mode == ''StepMode.Down'' }}'
+    sequence:
+    - service: media_player.volume_set
+      target:
+        entity_id: '{{ media_player_entity }}'
+      data:
+        volume_level: '{% set current_vol = state_attr(media_player_entity, ''volume_level'')
+          | float(0.0) %} {% set step = (step_percent / 100) %} {% set new_vol = current_vol
+          - (step * steps) %} {{ [new_vol, 0.0] | max }}
+
+          '
+  - conditions:
+    - '{{ command == ''remote_button_short_press'' }}'
+    sequence: !input short_press
+  - conditions:
+    - '{{ command == ''remote_button_double_press'' }}'
+    sequence: !input double_press
+  - conditions:
+    - '{{ command == ''remote_button_long_press'' }}'
+    sequence: !input long_press
+  - conditions:
+    - '{{ command == ''right'' }}'
+    sequence: !input remote_right
+  - conditions:
+    - '{{ command == ''left'' }}'
+    sequence: !input remote_left

@@ -1,0 +1,58 @@
+blueprint:
+  name: ZBMINIR2 detached relay mode
+  description: Configure ZBMINIR2 to toggle light without turn off the switch.
+  domain: automation
+  source_url: https://gist.github.com/alexsotoaguilera/7c5a64050e3ad9e2156ea874de1420f7
+  author: Alex Soto Aguilera
+  homeassistant:
+    min_version: 2022.4.0
+  input:
+    zbminir2_device:
+      name: ZBMINIR2 device
+      description: ZBMINIR2 device, ensure to activate "Detach relay mode"
+      selector:
+        device:
+          filter:
+          - manufacturer: SONOFF
+            model: Zigbee smart switch
+          multiple: false
+    controlled_light:
+      name: Toggle target lights
+      description: The switch will toggle these lights.
+      selector:
+        entity:
+          filter:
+          - domain:
+            - light
+          multiple: true
+          reorder: false
+triggers:
+- domain: mqtt
+  device_id: !input zbminir2_device
+  type: action
+  subtype: toggle
+  trigger: device
+variables:
+  zbminir2_device: !input zbminir2_device
+  zbminir2_switch: '{{ device_entities(zbminir2_device)[0] }}'
+actions:
+- choose:
+  - conditions:
+    - alias: ZBMINIR2 switch is OFF
+      condition: template
+      value_template: '{{ states(zbminir2_switch) == ''off'' }}'
+    sequence:
+    - service: switch.turn_on
+      data:
+        entity_id: '{{ zbminir2_switch }}'
+  - conditions:
+    - alias: ZBMINIR2 switch is ON
+      condition: template
+      value_template: '{{ states(zbminir2_switch) == ''on'' }}'
+    sequence:
+    - action: light.toggle
+      metadata: {}
+      data: {}
+      target:
+        entity_id: !input controlled_light
+mode: single
