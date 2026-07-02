@@ -1,0 +1,142 @@
+blueprint:
+  name: 'Telegram Bot: Conversation with Assist'
+  author: marc-romu
+  domain: automation
+  homeassistant:
+    min_version: 2024.6.0
+  description: "Using this blueprint, you can create a conversation flow between your
+    Telegram Bot and Home Assistant using a conversation agent (like Home Assistant
+    default Assist or OpenAI Conversation).\nIt will only respond to text messages
+    coming from the Telegram Bot. Not commands, voice messages, images...\n## \"Conversation
+    Agent\" field\nREQUIRED. Home Assistant conversation agent to respond to your
+    messages.\n## \"Response options\" section\nIn this section you can set some response
+    options like:\n\n - **\"Reply in private?\" field**: If bot is added to a group,
+    set it to TRUE to reply in a private chat to the person who executed the command
+    instead of in the group chat. This is not needed in case you talk directly to
+    the bot in a private chat.\n\n## \"Whitelist\" section\nRespond to messages coming
+    only from certain users or chats.\nThere are two fields: \"Whitelist user_id\"
+    and \"Whitelist chat_id\". You can add multiple user_ids or chat_ids to each field,
+    but just one per line.\nKeep in mind the Telegram id rules:\n\n  - A user id is
+    a number, like in '123456789'.\n\n  - A direct chat between a user and the bot
+    (a private chat) has the chat id equal to the user id.\n\n  - A group chat id
+    is a hyphenated number, like in '-123456789'\n"
+  input:
+    conversation_agent:
+      name: Conversation Agent
+      description: REQUIRED. Home Assistant conversation agent to respond to your
+        messages.
+      default: conversation.home_assistant
+      selector:
+        conversation_agent: {}
+    response_options:
+      name: Response options
+      collapsed: true
+      input:
+        private:
+          name: Reply in private?
+          description: If bot is added to a group, set it to TRUE to reply in a private
+            chat to the person who executed the command instead of in the group chat.
+            This is not needed in case you talk directly to the bot in a private chat.
+          default: false
+          selector:
+            boolean: {}
+    whitelist:
+      name: Whitelist
+      description: Respond to messages comming only from certain users or chats.
+      collapsed: true
+      input:
+        whitelist_user_id:
+          name: Whitelist user_id
+          description: Execute the sequence ONLY IF the text message is received from
+            this user_id. Leave empty to avoid filtering.
+          default: []
+          selector:
+            text:
+              multiple: true
+              multiline: false
+        whitelist_chat_id:
+          name: Whitelist chat_id
+          description: Execute the sequence ONLY IF the text message is received from
+            this chat_id. Leave empty to avoid filtering.
+          default: []
+          selector:
+            text:
+              multiple: true
+              multiline: false
+    telegram_bot:
+      name: Bot username (optional)
+      description: 'If you have multiple Telegram bots, enter the Telegram username
+        of the bot that should handle this conversation (without the @ symbol, for
+        example: my_home_bot). Leave empty if you only have one bot.
+
+        '
+      default: ''
+      selector:
+        text:
+          multiline: false
+          multiple: false
+  source_url: https://raw.githubusercontent.com/marc-romu/home-assistant_blueprints/main/blueprints/automation/marc-romu_telegram-bot/telegram-bot--conversation.yaml
+mode: queued
+max: 10
+max_exceeded: warning
+trigger:
+- platform: event
+  id: telegram_text
+  event_type: telegram_text
+variables:
+  conversation_agent: !input conversation_agent
+  telegram_sender_first_name: '{{ trigger.event.data[''from_first''] }}'
+  telegram_sender_last_name: '{{ trigger.event.data[''from_last''] }}'
+  telegram_sender_full_name: '{{ telegram_sender_first_name }} {{ telegram_sender_last_name
+    }}'
+  telegram_sender_user_id: '{{ trigger.event.data[''user_id''] }}'
+  telegram_chat_id: '{{ trigger.event.data[''chat_id''] }}'
+  telegram_message_id: '{{ trigger.event.data[''id''] }}'
+  telegram_message_text: '{{ trigger.event.data[''text''] }}'
+  private: !input private
+  whitelist_user_id: !input whitelist_user_id
+  whitelist_chat_id: !input whitelist_chat_id
+  telegram_bot: !input telegram_bot
+  conversation_id: telegram_{{ telegram_chat_id }}
+condition:
+- and:
+  - or:
+    - alias: used_id in whitelist
+      condition: template
+      value_template: '{{ whitelist_user_id|list|length > 0 and telegram_sender_user_id|string
+        in whitelist_user_id|list }}'
+    - alias: used_id whitelist not set
+      condition: template
+      value_template: '{{ whitelist_user_id|list|length == 0 }}'
+  - or:
+    - alias: chat_id in whitelist
+      condition: template
+      value_template: '{{ whitelist_chat_id|list|length > 0 and telegram_chat_id|string
+        in whitelist_chat_id|list }}'
+    - alias: chat_id whitelist not set
+      condition: template
+      value_template: '{{ whitelist_chat_id|list|length == 0 }}'
+  - condition: template
+    value_template: '{{ telegram_message_text != None }}'
+  - or:
+    - alias: specific bot requested
+      condition: template
+      value_template: "{{ telegram_bot|length > 0 and\n   trigger.event.data.bot is
+        defined and\n   trigger.event.data.bot.username == telegram_bot }}\n"
+    - alias: no bot filter set
+      condition: template
+      value_template: '{{ telegram_bot|length == 0 }}'
+action:
+- alias: Send message to the conversation agent
+  action: conversation.process
+  data:
+    text: '[{{ telegram_sender_full_name }}] {{ telegram_message_text }}'
+    conversation_id: '{{ conversation_id }}'
+    agent_id: '{{ conversation_agent }}'
+  response_variable: response
+- action: telegram_bot.send_message
+  data:
+    parse_mode: markdown
+    chat_id: '{% if private %}{{ telegram_sender_user_id }}{% else %}{{ telegram_chat_id
+      }}{% endif %}'
+    message: '{{ response.response.speech.plain.speech }}'

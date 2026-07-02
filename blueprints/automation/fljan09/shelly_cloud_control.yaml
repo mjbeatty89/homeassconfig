@@ -1,0 +1,108 @@
+blueprint:
+  name: Shelly Cloud Control
+  domain: automation
+  description: "Controls a Shelly device via the Shelly Cloud API (due to http limitations,
+    the current state of the device can't be retrieved). <h2>SETUP REQUIRED:</h2>\n1.
+    \ **Add Helpers for Credentials:** Before using this blueprint, you must create
+    two helpers in Home Assistant to store your Shelly Cloud credentials. Go to **Settings
+    > Devices & Services > Helpers**.\n    * Create a **Text** helper for your URL
+    (e.g., name it `Shelly Cloud URL`, which will create `input_text.shelly_cloud_url`).
+    Enter your server URL like `shelly-42-eu.shelly.cloud`.\n    * Create another
+    **Text** helper for your API Key (e.g., `Shelly Cloud API Key`, creating `input_text.shelly_cloud_api_key`).
+    Set its mode to `Password`.\n\n1.  **Add Helper controlling the Shelly Light:**
+    Create a \"light\", \"switch\", or \"input_boolean\" helper. The state of this
+    helper will be forwarded to the Shelly API.\n1.  **Add REST Commands:** Add the
+    following definitions to your `configuration.yaml` file. These commands use the
+    helpers you just created.\n    ```yaml\n    # In your configuration.yaml\n      rest_command:\n
+    \       shelly_cloud_control:\n          url: \"https://{{ url }}/v2/devices/api/set/{{
+    device_type }}\"\n          method: POST\n          payload: >\n            {\n
+    \             \"id\": \"{{ device_id }}\",\n              \"channel\": {{ channel
+    | int }},\n              \"on\": {{ state }},\n              \"auth_key\": \"{{
+    api_key }}\"\n            }\n          headers:\n            Content-Type: application/json\n
+    \         verify_ssl: true\n    ```\n1.  **Restart Home Assistant** to apply the
+    changes to your configuration.\n\n<h3>Important: 'Multiline' has to be turned
+    off on all used text inputs.</h3>\n"
+  input:
+    helper_id:
+      name: Helper to get on/off state
+      description: The ID of the Home Assistant helper that triggers this automation.
+      selector:
+        entity:
+          domain:
+          - light
+          - switch
+          - input_boolean
+          multiple: false
+          reorder: false
+    shelly_device_id:
+      name: Shelly Device ID
+      description: The unique device ID (NOT the decimal ID) of the Shelly device.
+        Go to 'control.shelly.cloud' → Click on your device → Settings → Copy and
+        paste the Device ID.
+      selector:
+        text:
+          multiline: false
+          multiple: false
+    shelly_device_type:
+      name: Shelly Device Type
+      description: The type of the device to be controlled
+      selector:
+        select:
+          options:
+          - label: Shelly Smart Switch
+            value: Switch
+          - label: Bulb/RGB Controller
+            value: light
+          sort: false
+          custom_value: false
+          multiple: false
+    shelly_channel:
+      name: Shelly Channel
+      description: The channel number of the Shelly device (commonly 0).
+      selector:
+        number:
+          min: 0.0
+          max: 100.0
+          mode: box
+          step: 1.0
+    shelly_cloud_api_key:
+      name: Shelly Cloud API Key
+      description: The API Key for your Shelly Cloud account.
+      selector:
+        entity:
+          domain:
+          - input_text
+          multiple: false
+          reorder: false
+    shelly_cloud_url:
+      name: Shelly Cloud URL
+      description: The URL of your Shelly Cloud server (e.g., 'https://shelly-42-eu.shelly.cloud').
+      selector:
+        entity:
+          domain:
+          - input_text
+          multiple: false
+          reorder: false
+  source_url: https://gist.github.com/fljan09/0d12fd310db5800b95b82c5776732584
+trigger:
+- platform: state
+  entity_id: !input helper_id
+variables:
+  device_id: !input shelly_device_id
+  channel: !input shelly_channel
+  device_type: !input shelly_device_type
+  helper_api_key: !input shelly_cloud_api_key
+  helper_url: !input shelly_cloud_url
+  helper_entity: !input helper_id
+action:
+- service: rest_command.shelly_cloud_control
+  data:
+    url: '{{ states[helper_url].state }}'
+    device_type: '{{ device_type }}'
+    device_id: '{{ device_id }}'
+    channel: '{{ channel }}'
+    state: '{{ ''true'' if trigger.to_state.state == ''on'' else ''false'' }}'
+    api_key: '{{ states[helper_api_key].state }}'
+- delay:
+    milliseconds: 1200
+mode: queued

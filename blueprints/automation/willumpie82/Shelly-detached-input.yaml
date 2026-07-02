@@ -1,0 +1,265 @@
+blueprint:
+  name: Shelly Detached Input - Single Button v1.3.1
+  domain: automation
+  description: "# \U0001F50C Shelly Detached Input – Single Button\n**Version: 1.3.1**\n\n✨
+    Use a physical wall switch or Shelly button to control smart lights **without
+    cutting power**.\nDesigned for Shelly Gen3/Gen4 devices in **detached mode**.\n\n\U0001F9E0
+    Thanks to the optional local Shelly fallback, basic interaction remains functional\neven
+    when Home Assistant is temporarily unavailable – increasing the WAF factor.\n\n---\n##
+    \U0001F6E0 Supported Modes\n\n\U0001F518 Switch mode  – binary_sensor based wall
+    switch\n\U0001F5B2️ Button mode – Shelly device button events\n\n\U0001F4A1 Lamp
+    mode   – control a light directly\n\U0001F9E9 Custom mode – execute your own actions\n\n⚠️
+    Fields marked with * are required by Home Assistant,\nbut may be ignored depending
+    on your selected mode.\n"
+  input:
+    input_mode:
+      name: Input mode
+      description: 'Select how this Shelly input is configured. - switch: classic
+        wall switch using a binary_sensor - button: Shelly button events (device triggers)
+
+        '
+      default: switch
+      selector:
+        select:
+          options:
+          - switch
+          - button
+          multiple: false
+          custom_value: false
+          sort: false
+    action_mode:
+      name: Action mode
+      description: 'Choose how this automation reacts. - lamp: directly control a
+        light entity - custom: execute your own action sequences
+
+        '
+      default: lamp
+      selector:
+        select:
+          options:
+          - lamp
+          - custom
+          multiple: false
+          custom_value: false
+          sort: false
+    primary_input:
+      name: '[Switch mode]* Binary sensor input'
+      description: 'REQUIRED by Home Assistant. Used only when Input mode is set to
+        ''switch''. Ignored when Input mode is ''button''.
+
+        '
+      selector:
+        entity:
+          domain:
+          - binary_sensor
+          multiple: false
+          reorder: false
+    shelly_device:
+      name: '[Button mode]* Shelly device'
+      description: 'REQUIRED by Home Assistant. Used only when Input mode is set to
+        ''button''. Ignored when Input mode is ''switch''.
+
+        '
+      selector:
+        device:
+          integration: shelly
+          multiple: false
+    button_subtype:
+      name: '[Button mode]* Button number'
+      description: 'REQUIRED by Home Assistant. Select which physical button this
+        automation controls. Ignored when Input mode is ''switch''.
+
+        '
+      default: button1
+      selector:
+        select:
+          options:
+          - button1
+          - button2
+          - button3
+          - button4
+          multiple: false
+          custom_value: false
+          sort: false
+    lamp_entity:
+      name: '[Lamp mode]* Lamp entity'
+      description: 'REQUIRED when Action mode is ''lamp''. Ignored when Action mode
+        is ''custom''.
+
+        '
+      selector:
+        entity:
+          domain:
+          - light
+          multiple: false
+          reorder: false
+    confirm_switch:
+      name: Confirm switch (optional)
+      description: 'Optional Shelly feedback output. Will be turned ON after each
+        action to provide local confirmation.
+
+        '
+      selector:
+        entity:
+          domain:
+          - switch
+          multiple: false
+          reorder: false
+    custom_on:
+      name: '[Switch][Custom] ON action'
+      description: Executed when the switch goes from OFF to ON.
+      default: []
+      selector:
+        action: {}
+    custom_off:
+      name: '[Switch][Custom] OFF action'
+      description: Executed when the switch goes from ON to OFF.
+      default: []
+      selector:
+        action: {}
+    custom_single:
+      name: '[Button][Custom] Single press'
+      description: Executed on a single button press.
+      default: []
+      selector:
+        action: {}
+    custom_double:
+      name: '[Button][Custom] Double press'
+      description: Executed on a double button press.
+      default: []
+      selector:
+        action: {}
+    custom_long:
+      name: '[Button][Custom] Long press'
+      description: Executed on a long button press.
+      default: []
+      selector:
+        action: {}
+  source_url: https://raw.githubusercontent.com/willumpie82/homeassistant-blueprints/main/blueprints/automation/willumpie82/Shelly-detached-input.yaml
+variables:
+  input_mode_var: !input input_mode
+  action_mode_var: !input action_mode
+  confirm_switch_var: !input confirm_switch
+trigger:
+- platform: state
+  entity_id: !input primary_input
+  from: 'off'
+  to: 'on'
+  id: switch_on
+- platform: state
+  entity_id: !input primary_input
+  from: 'on'
+  to: 'off'
+  id: switch_off
+- platform: device
+  domain: shelly
+  device_id: !input shelly_device
+  type: single_push
+  subtype: !input button_subtype
+  id: btn_single
+- platform: device
+  domain: shelly
+  device_id: !input shelly_device
+  type: double_push
+  subtype: !input button_subtype
+  id: btn_double
+- platform: device
+  domain: shelly
+  device_id: !input shelly_device
+  type: long_push
+  subtype: !input button_subtype
+  id: btn_long
+- platform: event
+  event_type: shelly_button_event
+  event_data:
+    device_id: !input shelly_device
+  id: btn_single
+action:
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ input_mode_var == ''switch'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: trigger
+          id: switch_on
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''lamp'' }}'
+            sequence:
+            - service: light.toggle
+              target:
+                entity_id: !input lamp_entity
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''custom'' }}'
+            sequence: !input custom_on
+      - conditions:
+        - condition: trigger
+          id: switch_off
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''custom'' }}'
+            sequence: !input custom_off
+  - conditions:
+    - condition: template
+      value_template: '{{ input_mode_var == ''button'' }}'
+    sequence:
+    - choose:
+      - conditions:
+        - condition: trigger
+          id: btn_single
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''lamp'' }}'
+            sequence:
+            - service: light.toggle
+              target:
+                entity_id: !input lamp_entity
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''custom'' }}'
+            sequence: !input custom_single
+      - conditions:
+        - condition: trigger
+          id: btn_double
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''lamp'' }}'
+            sequence:
+            - service: light.turn_on
+              target:
+                entity_id: !input lamp_entity
+              data:
+                brightness_pct: 100
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''custom'' }}'
+            sequence: !input custom_double
+      - conditions:
+        - condition: trigger
+          id: btn_long
+        sequence:
+        - choose:
+          - conditions:
+            - condition: template
+              value_template: '{{ action_mode_var == ''custom'' }}'
+            sequence: !input custom_long
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ confirm_switch_var is not none }}'
+    sequence:
+    - service: switch.turn_on
+      target:
+        entity_id: !input confirm_switch
+mode: single

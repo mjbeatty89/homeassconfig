@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "minor_version": 1,
+  "key": "person",
+  "data": {
+    "items": [
+      {
+        "id": "matthew_beatty",
+        "name": "Matthew Beatty",
+        "device_trackers": [],
+        "user_id": "23eb80efb95546f38a7e673de5ac28d1",
+        "picture": null
+      }
+    ]
+  }
+}

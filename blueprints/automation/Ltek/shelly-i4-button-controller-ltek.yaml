@@ -1,0 +1,1353 @@
+blueprint:
+  name: "\U0001F4DB Shelly i4 Button Controller by LTek"
+  description: "\n\U0001F4DB Shelly i4 Button Controller with scenes and single-button
+    dimming and scenes\n\U0001F680 Version 2026.03.01.07c\n✅ Features:\n  - Set any
+    HA Action for Button presses (Single, Double, Triple, Down, Up, Long)\n  - Single
+    Button Dim any or all buttons (optional)\n  - Dim Direction Start Boundary sets
+    dim direction at start of dim; upward if below, downward if above\n  - Dim Fine
+    Tuning - Dim Percent per Step, Step Interval (time delay between steps), Transition
+    Duration\n  - Debug notifications show trigger and action, with timestamps\n\n\U0001F39A️
+    Dim Configuration Guide\"\n    **NOTE...** Dimming starts 1 second after the initial
+    press-hold. (native Shelly device detection period for long_press)\n    Default
+    values balance dim speed, system latency, and smoothness control for Zigbee lights.\n
+    \   \n  - When Dim Function is Enabled, Basic Actions for Button Up and Long Press
+    are disabled\n    - if the Light is OFF, Long press turns on the Light then Dims\n\n
+    \ These three settings work together to control dimming feel:\n  - Dim Step Percent
+    — brightness change per cycle. Smaller = finer steps but slower\n    to traverse
+    the full range. Larger = faster but more visible jumps.\n    Default: 14%  \n
+    \ - Dim Interval — time between each step. This is the primary speed control.\n
+    \   Shorter = faster dimming. \n    Default: 0.2s\n  - Transition Duration — the
+    lights own transition between the current and new brightness.\n    Must be LESS
+    than Dim Interval or steps will overlap and stutter.\n    Default: 0.0s\n    \n
+    \ ⚠️ High-latency lights (Zigbee, Z-Wave): if dimming feels slow despite short
+    intervals,\n    set Transition Duration to 0.0 — the light's own fade response
+    is adding delay to\n    each loop cycle. The step frequency itself creates perceived
+    smoothness.\n\n\U0001F4D6 Community Discussion, Help, and Details... https://community.home-assistant.io/t/shelly-i4-button-controller-by-ltek-with-single-button-dim-multi-press-functions/941400\n"
+  source_url: https://gist.github.com/Ltek/27a83afea0a073834052bd055995da4b?permalink_comment_id=5872776#gistcomment-5872776
+  domain: automation
+  input:
+    shelly_device:
+      name: "\U0001F4DB Shelly i4 Device"
+      selector:
+        device:
+          integration: shelly
+          manufacturer: Shelly
+          multiple: false
+    button1_basic_actions:
+      name: Button 1 - Basic Actions
+      description: Configure basic button press actions
+      icon: mdi:numeric-1-box
+      collapsed: true
+      input:
+        button1_single:
+          name: Single Press
+          selector:
+            action: {}
+          default: []
+        button1_double:
+          name: Double Press
+          selector:
+            action: {}
+          default: []
+        button1_triple:
+          name: Triple Press
+          selector:
+            action: {}
+          default: []
+        button1_down:
+          name: Button Down
+          selector:
+            action: {}
+          default: []
+        button1_up:
+          name: Button Up
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+        button1_long:
+          name: Long Press
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+    button1_dim_settings:
+      name: Button 1 - Dimming Settings
+      description: Configure dimming functionality for long press
+      icon: mdi:brightness-6
+      collapsed: true
+      input:
+        button1_dim_enabled:
+          name: Enable Dim Function
+          description: When enabled the above actions for Long Press and Button Up
+            are Disabled
+          selector:
+            boolean: {}
+          default: false
+        button1_dim_target:
+          name: Light Entity or Group you want to Dim
+          selector:
+            entity:
+              domain:
+              - light
+              reorder: false
+              multiple: false
+          default: ''
+        button1_dim_step:
+          name: Dim Step Percent
+          description: Change light Brightness this amount per dim cycle. (1 to 50)
+          selector:
+            number:
+              min: 1.0
+              max: 50.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 14
+        button1_dim_delay:
+          name: Dim Interval (seconds)
+          description: Time between each dim cycle. (0.05 to 2.0)
+          selector:
+            number:
+              min: 0.05
+              max: 2.0
+              unit_of_measurement: seconds
+              step: 1.0
+              mode: slider
+          default: 0.2
+        button1_transition:
+          name: Transition Duration (seconds)
+          description: Duration of brightness transition for each dim step. Set to
+            0.0 for Zigbee/Z-Wave lights to avoid latency blocking the dim loop. (0.0
+            to 2.0)
+          selector:
+            number:
+              min: 0.0
+              max: 2.0
+              step: 0.05
+              unit_of_measurement: seconds
+              mode: slider
+          default: 0.0
+        button1_boundary:
+          name: Dim Boundary Percent
+          description: At Dim Start, if the light is Below this Brightness Level,
+            the dim will Increase Brightness, otherwise it will Decreases Brightness
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 50
+    button2_basic_actions:
+      name: Button 2 - Basic Actions
+      description: Configure basic button press actions
+      icon: mdi:numeric-2-box
+      collapsed: true
+      input:
+        button2_single:
+          name: Single Short Press
+          selector:
+            action: {}
+          default: []
+        button2_double:
+          name: Double Short Press
+          selector:
+            action: {}
+          default: []
+        button2_triple:
+          name: Triple Short Press
+          selector:
+            action: {}
+          default: []
+        button2_down:
+          name: Button Down
+          selector:
+            action: {}
+          default: []
+        button2_up:
+          name: Button Up
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+        button2_long:
+          name: Long Press
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+    button2_dim_settings:
+      name: Button 2 - Dimming Settings
+      description: Configure dimming functionality for long press
+      icon: mdi:brightness-6
+      collapsed: true
+      input:
+        button2_dim_enabled:
+          name: Enable Dim Function
+          description: When enabled the above actions for Long Press and Button Up
+            are Disabled
+          selector:
+            boolean: {}
+          default: false
+        button2_dim_target:
+          name: Light Entity or Group you want to Dim
+          selector:
+            entity:
+              domain:
+              - light
+              reorder: false
+              multiple: false
+          default: ''
+        button2_dim_step:
+          name: Dim Step Percent
+          description: Change light Brightness this amount per dim cycle. (1 to 50)
+          selector:
+            number:
+              min: 1.0
+              max: 50.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 14
+        button2_dim_delay:
+          name: Dim Interval (seconds)
+          description: Time between each dim cycle. (0.05 to 2.0)
+          selector:
+            number:
+              min: 0.05
+              max: 2.0
+              unit_of_measurement: seconds
+              step: 1.0
+              mode: slider
+          default: 0.2
+        button2_transition:
+          name: Transition Duration (seconds)
+          description: Duration of brightness transition for each dim step. Set to
+            0.0 for Zigbee/Z-Wave lights to avoid latency blocking the dim loop. (0.0
+            to 2.0)
+          selector:
+            number:
+              min: 0.0
+              max: 2.0
+              step: 0.05
+              unit_of_measurement: seconds
+              mode: slider
+          default: 0.0
+        button2_boundary:
+          name: Dim Boundary Percent
+          description: At Dim Start, if the light is Below this Brightness Level,
+            the dim will Increase Brightness, otherwise it will Decreases Brightness
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 50
+    button3_basic_actions:
+      name: Button 3 - Basic Actions
+      description: Configure basic button press actions
+      icon: mdi:numeric-3-box
+      collapsed: true
+      input:
+        button3_single:
+          name: Single Short Press
+          selector:
+            action: {}
+          default: []
+        button3_double:
+          name: Double Short Press
+          selector:
+            action: {}
+          default: []
+        button3_triple:
+          name: Triple Short Press
+          selector:
+            action: {}
+          default: []
+        button3_down:
+          name: Button Down
+          selector:
+            action: {}
+          default: []
+        button3_up:
+          name: Button Up
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+        button3_long:
+          name: Long Press
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+    button3_dim_settings:
+      name: Button 3 - Dimming Settings
+      description: Configure dimming functionality for long press
+      icon: mdi:brightness-6
+      collapsed: true
+      input:
+        button3_dim_enabled:
+          name: Enable Dim Function
+          description: When enabled the above actions for Long Press and Button Up
+            are Disabled
+          selector:
+            boolean: {}
+          default: false
+        button3_dim_target:
+          name: Light Entity or Group you want to Dim
+          selector:
+            entity:
+              domain:
+              - light
+              reorder: false
+              multiple: false
+          default: ''
+        button3_dim_step:
+          name: Dim Step Percent
+          description: Change light Brightness this amount per dim cycle. (1 to 50)
+          selector:
+            number:
+              min: 1.0
+              max: 50.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 14
+        button3_dim_delay:
+          name: Dim Interval (seconds)
+          description: Time between each dim cycle. (0.05 to 2.0)
+          selector:
+            number:
+              min: 0.05
+              max: 2.0
+              unit_of_measurement: seconds
+              step: 1.0
+              mode: slider
+          default: 0.2
+        button3_transition:
+          name: Transition Duration (seconds)
+          description: Duration of brightness transition for each dim step. Set to
+            0.0 for Zigbee/Z-Wave lights to avoid latency blocking the dim loop. (0.0
+            to 2.0)
+          selector:
+            number:
+              min: 0.0
+              max: 2.0
+              step: 0.05
+              unit_of_measurement: seconds
+              mode: slider
+          default: 0.0
+        button3_boundary:
+          name: Dim Boundary Percent
+          description: At Dim Start, if the light is Below this Brightness Level,
+            the dim will Increase Brightness, otherwise it will Decreases Brightness
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 50
+    button4_basic_actions:
+      name: Button 4 - Basic Actions
+      description: Configure basic button press actions
+      icon: mdi:numeric-4-box
+      collapsed: true
+      input:
+        button4_single:
+          name: Single Short Press
+          selector:
+            action: {}
+          default: []
+        button4_double:
+          name: Double Short Press
+          selector:
+            action: {}
+          default: []
+        button4_triple:
+          name: Triple Short Press
+          selector:
+            action: {}
+          default: []
+        button4_down:
+          name: Button Down
+          selector:
+            action: {}
+          default: []
+        button4_up:
+          name: Button Up
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+        button4_long:
+          name: Long Press
+          description: when Dimming Function enabled, this setting is ignored.
+          selector:
+            action: {}
+          default: []
+    button4_dim_settings:
+      name: Button 4 - Dimming Settings
+      description: Configure dimming functionality for long press
+      icon: mdi:brightness-6
+      collapsed: true
+      input:
+        button4_dim_enabled:
+          name: Enable Dim Function
+          description: When enabled the above actions for Long Press and Button Up
+            are Disabled
+          selector:
+            boolean: {}
+          default: false
+        button4_dim_target:
+          name: Light Entity or Group you want to Dim
+          selector:
+            entity:
+              domain:
+              - light
+              reorder: false
+              multiple: false
+          default: ''
+        button4_dim_step:
+          name: Dim Step Percent
+          description: Change light Brightness this amount per dim cycle. (1 to 50)
+          selector:
+            number:
+              min: 1.0
+              max: 50.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 14
+        button4_dim_delay:
+          name: Dim Interval (seconds)
+          description: Time between each dim cycle. (0.05 to 2.0)
+          selector:
+            number:
+              min: 0.05
+              max: 2.0
+              unit_of_measurement: seconds
+              step: 1.0
+              mode: slider
+          default: 0.2
+        button4_transition:
+          name: Transition Duration (seconds)
+          description: Duration of brightness transition for each dim step. Set to
+            0.0 for Zigbee/Z-Wave lights to avoid latency blocking the dim loop. (0.0
+            to 2.0)
+          selector:
+            number:
+              min: 0.0
+              max: 2.0
+              step: 0.05
+              unit_of_measurement: seconds
+              mode: slider
+          default: 0.0
+        button4_boundary:
+          name: Dim Boundary Percent
+          description: At Dim Start, if the light is Below this Brightness Level,
+            the dim will Increase Brightness, otherwise it will Decreases Brightness
+          selector:
+            number:
+              min: 0.0
+              max: 100.0
+              unit_of_measurement: '%'
+              step: 1.0
+              mode: slider
+          default: 50
+    expert_settings:
+      name: Expert Settings
+      description: Advanced automation behavior settings. Only change these if you
+        understand the implications.
+      icon: mdi:tune
+      collapsed: true
+      input:
+        mode_select:
+          name: Execution Mode
+          description: "Controls what happens when a new button event fires while
+            the automation is already running.\n\n\U0001F504 Restart (default) — Stops
+            any running instance and starts fresh. Required when using the Dimming
+            Function — this is what stops the dim loop when you release the button
+            (btn_up). Best for: setups using dimming on any button.\n\n⏸️ Single —
+            Ignores new triggers while the automation is running. Useful if your button
+            actions contain delays or multi-step sequences and you want to prevent
+            them being interrupted by a second press. WARNING: incompatible with dimming
+            — the dim loop will never stop because btn_up will be ignored while the
+            loop is running.\n\n\U0001F4CB Queued — New triggers wait in line and
+            run after the current instance finishes. Useful if you want every press
+            to be acted on, even rapid ones. WARNING: incompatible with dimming for
+            the same reason as Single.\n\n⚡ Parallel — Every trigger starts a new
+            independent instance simultaneously. Useful if buttons are truly independent
+            and actions are fast fire-and-forget service calls with no delays. WARNING:
+            incompatible with dimming — the dim loop will never stop.\n\n⚠️ If ANY
+            button has Dimming enabled, you must use Restart.\n"
+          default: restart
+          selector:
+            select:
+              options:
+              - label: "\U0001F504 Restart — stops running instance; required for
+                  dimming (default)"
+                value: restart
+              - label: ⏸️ Single — ignores new triggers while running; no dimming
+                value: single
+              - label: "\U0001F4CB Queued — queues triggers to run in order; no dimming"
+                value: queued
+              - label: ⚡ Parallel — each trigger runs independently; no dimming
+                value: parallel
+              sort: false
+              custom_value: false
+              multiple: false
+        debug_enabled:
+          name: "\U0001F518 Enable Debug Notifications"
+          description: Show combined trigger+action notifications for troubleshooting
+            (disable after setup)
+          selector:
+            boolean: {}
+          default: false
+mode: !input mode_select
+max_exceeded: silent
+trigger:
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: single_push
+  id: btn1_single
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: double_push
+  id: btn1_double
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: triple_push
+  id: btn1_triple
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: btn_down
+  id: btn1_down
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: btn_up
+  id: btn1_up
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 1
+    click_type: long_push
+  id: btn1_long
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: single_push
+  id: btn2_single
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: double_push
+  id: btn2_double
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: triple_push
+  id: btn2_triple
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: btn_down
+  id: btn2_down
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: btn_up
+  id: btn2_up
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 2
+    click_type: long_push
+  id: btn2_long
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: single_push
+  id: btn3_single
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: double_push
+  id: btn3_double
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: triple_push
+  id: btn3_triple
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: btn_down
+  id: btn3_down
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: btn_up
+  id: btn3_up
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 3
+    click_type: long_push
+  id: btn3_long
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: single_push
+  id: btn4_single
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: double_push
+  id: btn4_double
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: triple_push
+  id: btn4_triple
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: btn_down
+  id: btn4_down
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: btn_up
+  id: btn4_up
+- platform: event
+  event_type: shelly.click
+  event_data:
+    device_id: !input shelly_device
+    channel: 4
+    click_type: long_push
+  id: btn4_long
+variables:
+  debug_enabled: !input debug_enabled
+  trigger_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+  dimming_active: false
+  button1_dim_enabled: !input button1_dim_enabled
+  button1_dim_target: !input button1_dim_target
+  button1_dim_step: !input button1_dim_step
+  button1_dim_delay: !input button1_dim_delay
+  button1_transition: !input button1_transition
+  button1_boundary: !input button1_boundary
+  button2_dim_enabled: !input button2_dim_enabled
+  button2_dim_target: !input button2_dim_target
+  button2_dim_step: !input button2_dim_step
+  button2_dim_delay: !input button2_dim_delay
+  button2_transition: !input button2_transition
+  button2_boundary: !input button2_boundary
+  button3_dim_enabled: !input button3_dim_enabled
+  button3_dim_target: !input button3_dim_target
+  button3_dim_step: !input button3_dim_step
+  button3_dim_delay: !input button3_dim_delay
+  button3_transition: !input button3_transition
+  button3_boundary: !input button3_boundary
+  button4_dim_enabled: !input button4_dim_enabled
+  button4_dim_target: !input button4_dim_target
+  button4_dim_step: !input button4_dim_step
+  button4_dim_delay: !input button4_dim_delay
+  button4_transition: !input button4_transition
+  button4_boundary: !input button4_boundary
+action:
+- choose:
+  - conditions:
+    - condition: trigger
+      id: btn1_single
+    sequence:
+    - choose: []
+      default: !input button1_single
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 1 Single"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn1_single_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn1_double
+    sequence:
+    - choose: []
+      default: !input button1_double
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 1 Double"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn1_double_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn1_triple
+    sequence:
+    - choose: []
+      default: !input button1_triple
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 1 Triple"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn1_triple_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn1_down
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ not button1_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button1_down
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 1 Down"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn1_down_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn1_up
+    sequence:
+    - variables:
+        dimming_active: false
+    - if:
+      - condition: template
+        value_template: '{{ not button1_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button1_up
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 1 Up"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn1_up_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn1_long
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ button1_dim_enabled and button1_dim_target is defined
+          and button1_dim_target != '''' }}'
+      then:
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            dim_start_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 DIMMING START - Button 1"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A1 Dim Start: {{ dim_start_time
+              }}"
+            notification_id: shelly_dim_start_btn1_{{ dim_start_time }}
+      - if:
+        - condition: template
+          value_template: '{{ is_state(button1_dim_target, ''off'') }}'
+        then:
+        - service: light.turn_on
+          target:
+            entity_id: '{{ button1_dim_target }}'
+      - variables:
+          current_brightness: '{{ state_attr(button1_dim_target, ''brightness'') |
+            default(255) }}'
+          start_pct: '{{ (current_brightness | int / 255 * 100) | round(0) }}'
+          brightness_step_value: '{{ (button1_dim_step | float / 100 * 255) | round(0)
+            }}'
+          button1_dim_direction: '{{ ''+'' if start_pct < button1_boundary else ''-''
+            }}'
+          dimming_active: true
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ dimming_active }}'
+          sequence:
+          - if:
+            - condition: template
+              value_template: '{{ debug_enabled }}'
+            then:
+            - variables:
+                loop_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+                loop_count: '{{ repeat.index }}'
+            - service: persistent_notification.create
+              data:
+                title: "\U0001F518 DIM CYCLE - Button 1"
+                message: '⏰ {{ loop_time }} | #{{ loop_count }}'
+                notification_id: shelly_cycle_btn1_{{ loop_count }}_{{ loop_time }}
+          - service: light.turn_on
+            target:
+              entity_id: '{{ button1_dim_target }}'
+            data:
+              brightness_step: '{{ button1_dim_direction }}{{ brightness_step_value
+                }}'
+              transition: '{{ button1_transition }}'
+          - delay:
+              seconds: '{{ button1_dim_delay }}'
+      else:
+      - choose: []
+        default: !input button1_long
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 1 Long"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn1_long_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_single
+    sequence:
+    - choose: []
+      default: !input button2_single
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 2 Single"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn2_single_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_double
+    sequence:
+    - choose: []
+      default: !input button2_double
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 2 Double"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn2_double_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_triple
+    sequence:
+    - choose: []
+      default: !input button2_triple
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 2 Triple"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn2_triple_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_down
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ not button2_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button2_down
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 2 Down"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn2_down_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_up
+    sequence:
+    - variables:
+        dimming_active: false
+    - if:
+      - condition: template
+        value_template: '{{ not button2_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button2_up
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 2 Up"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn2_up_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn2_long
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ button2_dim_enabled and button2_dim_target is defined
+          and button2_dim_target != '''' }}'
+      then:
+      - if:
+        - condition: template
+          value_template: '{{ is_state(button2_dim_target, ''off'') }}'
+        then:
+        - service: light.turn_on
+          target:
+            entity_id: '{{ button2_dim_target }}'
+      - variables:
+          current_brightness: '{{ state_attr(button2_dim_target, ''brightness'') |
+            default(255) }}'
+          start_pct: '{{ (current_brightness | int / 255 * 100) | round(0) }}'
+          brightness_step_value: '{{ (button2_dim_step | float / 100 * 255) | round(0)
+            }}'
+          button2_dim_direction: '{{ ''+'' if start_pct < button2_boundary else ''-''
+            }}'
+          dimming_active: true
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ dimming_active }}'
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: '{{ button2_dim_target }}'
+            data:
+              brightness_step: '{{ button2_dim_direction }}{{ brightness_step_value
+                }}'
+              transition: '{{ button2_transition }}'
+          - delay:
+              seconds: '{{ button2_dim_delay }}'
+      else:
+      - choose: []
+        default: !input button2_long
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 2 Long"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn2_long_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_single
+    sequence:
+    - choose: []
+      default: !input button3_single
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 3 Single"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn3_single_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_double
+    sequence:
+    - choose: []
+      default: !input button3_double
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 3 Double"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn3_double_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_triple
+    sequence:
+    - choose: []
+      default: !input button3_triple
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 3 Triple"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn3_triple_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_down
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ not button3_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button3_down
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 3 Down"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn3_down_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_up
+    sequence:
+    - variables:
+        dimming_active: false
+    - if:
+      - condition: template
+        value_template: '{{ not button3_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button3_up
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 3 Up"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn3_up_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn3_long
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ button3_dim_enabled and button3_dim_target is defined
+          and button3_dim_target != '''' }}'
+      then:
+      - if:
+        - condition: template
+          value_template: '{{ is_state(button3_dim_target, ''off'') }}'
+        then:
+        - service: light.turn_on
+          target:
+            entity_id: '{{ button3_dim_target }}'
+      - variables:
+          current_brightness: '{{ state_attr(button3_dim_target, ''brightness'') |
+            default(255) }}'
+          start_pct: '{{ (current_brightness | int / 255 * 100) | round(0) }}'
+          brightness_step_value: '{{ (button3_dim_step | float / 100 * 255) | round(0)
+            }}'
+          button3_dim_direction: '{{ ''+'' if start_pct < button3_boundary else ''-''
+            }}'
+          dimming_active: true
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ dimming_active }}'
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: '{{ button3_dim_target }}'
+            data:
+              brightness_step: '{{ button3_dim_direction }}{{ brightness_step_value
+                }}'
+              transition: '{{ button3_transition }}'
+          - delay:
+              seconds: '{{ button3_dim_delay }}'
+      else:
+      - choose: []
+        default: !input button3_long
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 3 Long"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn3_long_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_single
+    sequence:
+    - choose: []
+      default: !input button4_single
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 4 Single"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn4_single_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_double
+    sequence:
+    - choose: []
+      default: !input button4_double
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 4 Double"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn4_double_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_triple
+    sequence:
+    - choose: []
+      default: !input button4_triple
+    - if:
+      - condition: template
+        value_template: '{{ debug_enabled }}'
+      then:
+      - variables:
+          action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+      - service: persistent_notification.create
+        data:
+          title: "\U0001F518 Button 4 Triple"
+          message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+            }}"
+          notification_id: shelly_btn4_triple_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_down
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ not button4_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button4_down
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 4 Down"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn4_down_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_up
+    sequence:
+    - variables:
+        dimming_active: false
+    - if:
+      - condition: template
+        value_template: '{{ not button4_dim_enabled }}'
+      then:
+      - choose: []
+        default: !input button4_up
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 4 Up"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn4_up_{{ action_time }}
+  - conditions:
+    - condition: trigger
+      id: btn4_long
+    sequence:
+    - if:
+      - condition: template
+        value_template: '{{ button4_dim_enabled and button4_dim_target is defined
+          and button4_dim_target != '''' }}'
+      then:
+      - if:
+        - condition: template
+          value_template: '{{ is_state(button4_dim_target, ''off'') }}'
+        then:
+        - service: light.turn_on
+          target:
+            entity_id: '{{ button4_dim_target }}'
+      - variables:
+          current_brightness: '{{ state_attr(button4_dim_target, ''brightness'') |
+            default(255) }}'
+          start_pct: '{{ (current_brightness | int / 255 * 100) | round(0) }}'
+          brightness_step_value: '{{ (button4_dim_step | float / 100 * 255) | round(0)
+            }}'
+          button4_dim_direction: '{{ ''+'' if start_pct < button4_boundary else ''-''
+            }}'
+          dimming_active: true
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ dimming_active }}'
+          sequence:
+          - service: light.turn_on
+            target:
+              entity_id: '{{ button4_dim_target }}'
+            data:
+              brightness_step: '{{ button4_dim_direction }}{{ brightness_step_value
+                }}'
+              transition: '{{ button4_transition }}'
+          - delay:
+              seconds: '{{ button4_dim_delay }}'
+      else:
+      - choose: []
+        default: !input button4_long
+      - if:
+        - condition: template
+          value_template: '{{ debug_enabled }}'
+        then:
+        - variables:
+            action_time: '{{ now().strftime(''%H:%M:%S.%f'')[:-3] }}'
+        - service: persistent_notification.create
+          data:
+            title: "\U0001F518 Button 4 Long"
+            message: "⚡ Trigger: {{ trigger_time }} | \U0001F4A5 Action: {{ action_time
+              }}"
+            notification_id: shelly_btn4_long_{{ action_time }}

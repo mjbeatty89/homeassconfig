@@ -1,0 +1,275 @@
+blueprint:
+  name: Zigbee2MQTT 4-Button Switch (Collapsible, Conditions & Debounce)
+  description: 'Monitors a Zigbee2MQTT topic for a 4-button switch (such as the ANCLLO).  Supports
+    12 actions (1-4; single, double, hold) with optional conditions and a debounce
+    timer.
+
+    '
+  domain: automation
+  input:
+    mqtt_topic:
+      name: MQTT Topic
+      description: The MQTT topic to monitor. Replace 'SOMETHING' with your device
+        name.
+      default: zigbee2mqtt/SOMETHING/action
+    debounce_delay:
+      name: Debounce Delay
+      description: Wait time (in seconds) after a button press to ignore accidental
+        double-triggers.
+      default: 0.1
+      selector:
+        number:
+          min: 0.0
+          max: 5.0
+          step: 0.1
+          unit_of_measurement: s
+          mode: slider
+    section_1_single:
+      name: Button 1 - Single
+      icon: mdi:gesture-tap-button
+      collapsed: true
+      input:
+        condition_1_single:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_1_single:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_1_double:
+      name: Button 1 - Double
+      icon: mdi:gesture-double-tap
+      collapsed: true
+      input:
+        condition_1_double:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_1_double:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_1_hold:
+      name: Button 1 - Hold
+      icon: mdi:gesture-tap-hold
+      collapsed: true
+      input:
+        condition_1_hold:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_1_hold:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_2_single:
+      name: Button 2 - Single
+      icon: mdi:gesture-tap-button
+      collapsed: true
+      input:
+        condition_2_single:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_2_single:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_2_double:
+      name: Button 2 - Double
+      icon: mdi:gesture-double-tap
+      collapsed: true
+      input:
+        condition_2_double:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_2_double:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_2_hold:
+      name: Button 2 - Hold
+      icon: mdi:gesture-tap-hold
+      collapsed: true
+      input:
+        condition_2_hold:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_2_hold:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_3_single:
+      name: Button 3 - Single
+      icon: mdi:gesture-tap-button
+      collapsed: true
+      input:
+        condition_3_single:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_3_single:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_3_double:
+      name: Button 3 - Double
+      icon: mdi:gesture-double-tap
+      collapsed: true
+      input:
+        condition_3_double:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_3_double:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_3_hold:
+      name: Button 3 - Hold
+      icon: mdi:gesture-tap-hold
+      collapsed: true
+      input:
+        condition_3_hold:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_3_hold:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_4_single:
+      name: Button 4 - Single
+      icon: mdi:gesture-tap-button
+      collapsed: true
+      input:
+        condition_4_single:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_4_single:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_4_double:
+      name: Button 4 - Double
+      icon: mdi:gesture-double-tap
+      collapsed: true
+      input:
+        condition_4_double:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_4_double:
+          name: Action
+          default: []
+          selector:
+            action: {}
+    section_4_hold:
+      name: Button 4 - Hold
+      icon: mdi:gesture-tap-hold
+      collapsed: true
+      input:
+        condition_4_hold:
+          name: Condition
+          default: []
+          selector:
+            condition: {}
+        action_4_hold:
+          name: Action
+          default: []
+          selector:
+            action: {}
+  source_url: https://gist.github.com/olli-dot-dev/03a4208d453510c6a220fdace0dec8a3
+mode: single
+max_exceeded: silent
+trigger:
+- platform: mqtt
+  topic: !input mqtt_topic
+action:
+- choose:
+  - conditions: '{{ trigger.payload == ''1_single'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_1_single
+        sequence: !input action_1_single
+  - conditions: '{{ trigger.payload == ''1_double'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_1_double
+        sequence: !input action_1_double
+  - conditions: '{{ trigger.payload == ''1_hold'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_1_hold
+        sequence: !input action_1_hold
+  - conditions: '{{ trigger.payload == ''2_single'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_2_single
+        sequence: !input action_2_single
+  - conditions: '{{ trigger.payload == ''2_double'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_2_double
+        sequence: !input action_2_double
+  - conditions: '{{ trigger.payload == ''2_hold'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_2_hold
+        sequence: !input action_2_hold
+  - conditions: '{{ trigger.payload == ''3_single'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_3_single
+        sequence: !input action_3_single
+  - conditions: '{{ trigger.payload == ''3_double'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_3_double
+        sequence: !input action_3_double
+  - conditions: '{{ trigger.payload == ''3_hold'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_3_hold
+        sequence: !input action_3_hold
+  - conditions: '{{ trigger.payload == ''4_single'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_4_single
+        sequence: !input action_4_single
+  - conditions: '{{ trigger.payload == ''4_double'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_4_double
+        sequence: !input action_4_double
+  - conditions: '{{ trigger.payload == ''4_hold'' }}'
+    sequence:
+    - choose:
+      - conditions: !input condition_4_hold
+        sequence: !input action_4_hold
+- delay: !input debounce_delay

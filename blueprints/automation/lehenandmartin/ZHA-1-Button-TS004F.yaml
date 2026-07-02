@@ -1,0 +1,58 @@
+blueprint:
+  name: ZHA - 1-Button (TS004F)
+  description: 'Handle single, double and long presses from 1-button devices identified
+    as TS004F button using ZHA.
+
+    '
+  domain: automation
+  input:
+    remote:
+      name: TS004F 1-Button Device
+      description: Select the TS004F 1-button
+      selector:
+        device:
+          integration: zha
+          model: TS004F
+          multiple: false
+    single_press_action:
+      name: Single Press
+      description: Action to run on single press
+      default: []
+      selector:
+        action: {}
+    double_press_action:
+      name: Double Press
+      description: Action to run on double press
+      default: []
+      selector:
+        action: {}
+    long_press_action:
+      name: Long Press
+      description: Action to run on long press
+      default: []
+      selector:
+        action: {}
+  source_url: https://gist.github.com/lehenandmartin/9768bd6149b97331153b51db19a6b04c/raw/ZHA-1-Button-TS004F.yaml
+mode: single
+trigger:
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+    command: press_type
+action:
+- variables:
+    press_type: '{{ trigger.event.data.args[0] | int }}'
+- choose:
+  - conditions:
+    - condition: template
+      value_template: '{{ press_type == 0 }}'
+    sequence: !input single_press_action
+  - conditions:
+    - condition: template
+      value_template: '{{ press_type == 1 }}'
+    sequence: !input double_press_action
+  - conditions:
+    - condition: template
+      value_template: '{{ press_type == 2 }}'
+    sequence: !input long_press_action

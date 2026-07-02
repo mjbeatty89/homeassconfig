@@ -1,0 +1,220 @@
+blueprint:
+  name: ZHA - TS004F Rotary Knob (Dual Mode Support)
+  description: 'Complete blueprint for Tuya TS004F rotary knob (manufacturer: _TZ3000_402vrq2i
+    and similar).
+
+
+    Supports ALL actions in BOTH operating modes:
+
+    - Mode 1 (Dimmer): Smooth step-based rotation
+
+    - Mode 2 (Scene): Button-press based rotation
+
+
+    Switch modes by triple-clicking the button or long-pressing (device-dependent).
+
+
+    Features:
+
+    - Configurable rotation debounce delay (prevents accidental triggers during button
+    presses)
+
+    - Single, double, and long press actions
+
+    - Works in both dimmer and scene modes automatically
+
+
+    Compatible with various TS004F manufacturers including:
+
+    - _TZ3000_402vrq2i
+
+    - _TZ3000_4fjiwweb (Moes)
+
+    - _TZ3000_qja6nq5z
+
+    - _TZ3000_gwkzibhs
+
+
+    Version: 2.0 (Added configurable debounce delay)
+
+    '
+  domain: automation
+  input:
+    remote:
+      name: TS004F Rotary Knob
+      description: Select your TS004F device
+      selector:
+        device:
+          integration: zha
+          manufacturer: _TZ3000_402vrq2i
+          model: TS004F
+          multiple: false
+    button_single_press:
+      name: Single Press
+      description: Action to run on single button press
+      default: []
+      selector:
+        action: {}
+    button_double_press:
+      name: Double Press
+      description: Action to run on double button press
+      default: []
+      selector:
+        action: {}
+    button_long_press:
+      name: Long Press
+      description: Action to run on long button press (hold ~4 seconds)
+      default: []
+      selector:
+        action: {}
+    rotation_debounce_delay:
+      name: Rotation Debounce Delay (ms)
+      description: "Delay in milliseconds before executing rotation actions. Prevents
+        accidental rotation \ntriggers when pressing the button (the knob is very
+        sensitive).\n- 0ms = Instant (no protection, very sensitive)\n- 100ms = Recommended
+        (barely noticeable, good protection)\n- 200-300ms = High protection (slight
+        delay noticeable)\n- 500ms+ = Maximum protection (delay very noticeable)\n"
+      default: 100
+      selector:
+        number:
+          min: 0.0
+          max: 1000.0
+          step: 50.0
+          unit_of_measurement: ms
+          mode: slider
+    rotate_left:
+      name: Rotate Left (Counter-clockwise)
+      description: Action to run when rotating left. Works in both dimmer and scene
+        modes.
+      default: []
+      selector:
+        action: {}
+    rotate_right:
+      name: Rotate Right (Clockwise)
+      description: Action to run when rotating right. Works in both dimmer and scene
+        modes.
+      default: []
+      selector:
+        action: {}
+  source_url: https://github.com/jrfigura/HomeAssistant/blob/main/blueprints/automations/TS004FROtaryKnob.yaml
+mode: restart
+max_exceeded: silent
+variables:
+  remote: !input remote
+trigger:
+- platform: device
+  device_id: !input remote
+  domain: zha
+  type: remote_button_short_press
+  subtype: button
+  id: button_single
+- platform: device
+  device_id: !input remote
+  domain: zha
+  type: remote_button_double_press
+  subtype: button_1
+  id: button_double
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+    command: press_type
+  id: button_long_event
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+    command: step
+  id: rotate_step
+- platform: device
+  device_id: !input remote
+  domain: zha
+  type: remote_button_short_press
+  subtype: left
+  id: rotate_mode2_left
+- platform: device
+  device_id: !input remote
+  domain: zha
+  type: remote_button_short_press
+  subtype: right
+  id: rotate_mode2_right
+- platform: event
+  event_type: zha_event
+  event_data:
+    device_id: !input remote
+    command: rotate_type
+  id: rotate_type_event
+action:
+- choose:
+  - conditions:
+    - condition: trigger
+      id: button_single
+    sequence: !input button_single_press
+  - conditions:
+    - condition: trigger
+      id: button_double
+    sequence: !input button_double_press
+  - conditions:
+    - condition: trigger
+      id: button_long_event
+    - condition: template
+      value_template: '{{ trigger.event.data.params.press_type == 2 }}'
+    sequence: !input button_long_press
+  - conditions:
+    - condition: trigger
+      id: rotate_step
+    - condition: template
+      value_template: "{{ trigger.event.data.params.step_mode == 1 \n   or (trigger.event.data.params.step_mode
+        is mapping \n       and trigger.event.data.params.step_mode.value == 1) }}"
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_left
+  - conditions:
+    - condition: trigger
+      id: rotate_step
+    - condition: template
+      value_template: "{{ trigger.event.data.params.step_mode == 0 \n   or (trigger.event.data.params.step_mode
+        is mapping \n       and trigger.event.data.params.step_mode.value == 0) }}"
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_right
+  - conditions:
+    - condition: trigger
+      id: rotate_mode2_left
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_left
+  - conditions:
+    - condition: trigger
+      id: rotate_mode2_right
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_right
+  - conditions:
+    - condition: trigger
+      id: rotate_type_event
+    - condition: template
+      value_template: '{{ trigger.event.data.params.rotate_type == 1 }}'
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_left
+  - conditions:
+    - condition: trigger
+      id: rotate_type_event
+    - condition: template
+      value_template: '{{ trigger.event.data.params.rotate_type == 0 }}'
+    sequence:
+    - delay:
+        milliseconds: !input rotation_debounce_delay
+    - choose: []
+      default: !input rotate_right
