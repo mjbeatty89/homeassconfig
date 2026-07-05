@@ -1,0 +1,164 @@
+input_boolean:
+  room_automation_enabled_ohana_suite:
+    name: Ohana Suite Automation Enabled
+    icon: mdi:robot
+    initial: false
+  room_manual_hold_ohana_suite:
+    name: Ohana Suite Manual Hold
+    icon: mdi:hand-back-right
+    initial: false
+
+input_select:
+  room_scene_ohana_suite:
+    name: Ohana Suite Scene
+    icon: mdi:home-floor-1
+    options:
+      - Auto
+      - Welcome
+      - Guest Evening
+      - Quiet Hours
+      - Checkout
+      - Off
+    initial: Auto
+
+template:
+  - sensor:
+      - name: "Ohana Suite Recommended Scene"
+        unique_id: ohana_suite_recommended_scene
+        state: >
+          {% set tod = states('sensor.time_of_day') %}
+          {% if tod in ['Morning', 'Afternoon'] %}
+            Welcome
+          {% elif tod == 'Evening' %}
+            Guest Evening
+          {% else %}
+            Quiet Hours
+          {% endif %}
+      - name: "Ohana Suite Lighting Mode"
+        unique_id: ohana_suite_lighting_mode
+        state: >
+          {% if is_state('input_boolean.room_automation_enabled_ohana_suite', 'off') %}
+            Rental Automation Held On Main HA
+          {% elif is_state('input_boolean.room_manual_hold_ohana_suite', 'on') %}
+            Manual: {{ states('input_select.room_scene_ohana_suite') }}
+          {% else %}
+            Auto: {{ states('sensor.ohana_suite_recommended_scene') }}
+          {% endif %}
+
+script:
+  room_apply_scene_ohana_suite:
+    alias: "Room: Apply Ohana Suite Scene"
+    mode: restart
+    fields:
+      scene_name:
+        description: "Scene to apply; Auto falls back to the recommended scene."
+        example: "Quiet Hours"
+    sequence:
+      - variables:
+          selected_scene: "{{ scene_name | default(states('input_select.room_scene_ohana_suite'), true) }}"
+          effective_scene: >
+            {% if selected_scene in ['unknown', 'unavailable', '', none] %}
+              {{ states('sensor.ohana_suite_recommended_scene') }}
+            {% elif selected_scene == 'Auto' %}
+              {{ states('sensor.ohana_suite_recommended_scene') }}
+            {% else %}
+              {{ selected_scene }}
+            {% endif %}
+          target_all: >
+            {{ ['group.lights_adaptive_den', 'group.lights_adaptive_suite_bedroom', 'group.lights_ambient_den']
+               | select('has_value') | list }}
+      - if: "{{ target_all | count > 0 }}"
+        then:
+          - choose:
+              - conditions: "{{ effective_scene == 'Off' }}"
+                sequence:
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      transition: 3
+              - conditions: "{{ effective_scene == 'Quiet Hours' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 10
+                      color_temp_kelvin: 2300
+                      transition: 3
+              - conditions: "{{ effective_scene == 'Checkout' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 80
+                      color_temp_kelvin: 3500
+                      transition: 1
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ target_all }}"
+                data:
+                  brightness_pct: 40
+                  color_temp_kelvin: 2800
+                  transition: 2
+
+  room_resume_automation_ohana_suite:
+    alias: "Room: Resume Ohana Suite Automation"
+    mode: single
+    sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_ohana_suite
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.room_scene_ohana_suite
+        data:
+          option: Auto
+      - if: >
+          {{ is_state('binary_sensor.ohana_suite_occupied', 'on')
+             and is_state('input_boolean.room_automation_enabled_ohana_suite', 'on') }}
+        then:
+          - action: script.room_apply_scene_ohana_suite
+
+automation:
+  - alias: "Room: Ohana Suite Scene Selector"
+    id: room_scene_selector_ohana_suite
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_select.room_scene_ohana_suite
+      - platform: state
+        entity_id: input_boolean.room_automation_enabled_ohana_suite
+        to: "on"
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_ohana_suite' and trigger.to_state.state != 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.room_manual_hold_ohana_suite
+              - action: script.room_apply_scene_ohana_suite
+                data:
+                  scene_name: "{{ trigger.to_state.state }}"
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_ohana_suite' and trigger.to_state.state == 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.room_manual_hold_ohana_suite
+              - if: >
+                  {{ is_state('binary_sensor.ohana_suite_occupied', 'on')
+                     and is_state('input_boolean.room_automation_enabled_ohana_suite', 'on') }}
+                then:
+                  - action: script.room_apply_scene_ohana_suite
+          - conditions: >
+              {{ trigger.entity_id == 'input_boolean.room_automation_enabled_ohana_suite'
+                 and trigger.to_state.state == 'on'
+                 and is_state('binary_sensor.ohana_suite_occupied', 'on')
+                 and is_state('input_boolean.room_manual_hold_ohana_suite', 'off') }}
+            sequence:
+              - action: script.room_apply_scene_ohana_suite
+                data:
+                  scene_name: Auto
+        default: []

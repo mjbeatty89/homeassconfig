@@ -1,0 +1,155 @@
+input_boolean:
+  room_automation_enabled_office:
+    name: Office Automation Enabled
+    icon: mdi:robot
+    initial: true
+  room_manual_hold_office:
+    name: Office Manual Hold
+    icon: mdi:hand-back-right
+    initial: false
+
+input_select:
+  room_scene_office:
+    name: Office Scene
+    icon: mdi:desk
+    options:
+      - Auto
+      - Focus
+      - Meeting
+      - Evening
+      - Off
+    initial: Auto
+
+template:
+  - sensor:
+      - name: "Office Recommended Scene"
+        unique_id: office_recommended_scene
+        state: >
+          {% set tod = states('sensor.time_of_day') %}
+          {% if tod in ['Morning', 'Afternoon'] %}
+            Focus
+          {% elif tod == 'Evening' %}
+            Evening
+          {% else %}
+            Off
+          {% endif %}
+      - name: "Office Lighting Mode"
+        unique_id: office_lighting_mode
+        state: >
+          {% if is_state('input_boolean.room_automation_enabled_office', 'off') %}
+            Automation Paused
+          {% elif is_state('input_boolean.room_manual_hold_office', 'on') %}
+            Manual: {{ states('input_select.room_scene_office') }}
+          {% else %}
+            Auto: {{ states('sensor.office_recommended_scene') }}
+          {% endif %}
+
+script:
+  room_apply_scene_office:
+    alias: "Room: Apply Office Scene"
+    mode: restart
+    fields:
+      scene_name:
+        description: "Scene to apply; Auto falls back to the recommended scene."
+        example: "Focus"
+    sequence:
+      - variables:
+          selected_scene: "{{ scene_name | default(states('input_select.room_scene_office'), true) }}"
+          effective_scene: >
+            {% if selected_scene in ['unknown', 'unavailable', '', none] %}
+              {{ states('sensor.office_recommended_scene') }}
+            {% elif selected_scene == 'Auto' %}
+              {{ states('sensor.office_recommended_scene') }}
+            {% else %}
+              {{ selected_scene }}
+            {% endif %}
+          target_all: >
+            {{ ['group.lights_adaptive_office', 'group.lights_ambient_office']
+               | select('has_value') | list }}
+      - if: "{{ target_all | count > 0 }}"
+        then:
+          - choose:
+              - conditions: "{{ effective_scene == 'Off' }}"
+                sequence:
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      transition: 2
+              - conditions: "{{ effective_scene == 'Meeting' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 45
+                      color_temp_kelvin: 3500
+                      transition: 1
+              - conditions: "{{ effective_scene == 'Evening' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 28
+                      color_temp_kelvin: 2700
+                      transition: 2
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ target_all }}"
+                data:
+                  brightness_pct: 95
+                  color_temp_kelvin: 4300
+                  transition: 1
+
+  room_resume_automation_office:
+    alias: "Room: Resume Office Automation"
+    mode: single
+    sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_office
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.room_scene_office
+        data:
+          option: Auto
+      - if: "{{ is_state('binary_sensor.office_occupied', 'on') }}"
+        then:
+          - action: script.room_apply_scene_office
+
+automation:
+  - alias: "Room: Office Scene Selector"
+    id: room_scene_selector_office
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_select.room_scene_office
+      - platform: state
+        entity_id: input_boolean.room_automation_enabled_office
+        to: "on"
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_office' and trigger.to_state.state != 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.room_manual_hold_office
+              - action: script.room_apply_scene_office
+                data:
+                  scene_name: "{{ trigger.to_state.state }}"
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_office' and trigger.to_state.state == 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.room_manual_hold_office
+              - if: "{{ is_state('binary_sensor.office_occupied', 'on') and is_state('input_boolean.room_automation_enabled_office', 'on') }}"
+                then:
+                  - action: script.room_apply_scene_office
+          - conditions: "{{ trigger.entity_id == 'input_boolean.room_automation_enabled_office' and trigger.to_state.state == 'on' and is_state('binary_sensor.office_occupied', 'on') and is_state('input_boolean.room_manual_hold_office', 'off') }}"
+            sequence:
+              - action: script.room_apply_scene_office
+                data:
+                  scene_name: Auto
+        default: []

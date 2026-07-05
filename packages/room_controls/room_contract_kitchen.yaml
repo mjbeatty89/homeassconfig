@@ -1,0 +1,167 @@
+input_boolean:
+  room_automation_enabled_kitchen:
+    name: Kitchen Automation Enabled
+    icon: mdi:robot
+    initial: true
+  room_manual_hold_kitchen:
+    name: Kitchen Manual Hold
+    icon: mdi:hand-back-right
+    initial: false
+
+input_select:
+  room_scene_kitchen:
+    name: Kitchen Scene
+    icon: mdi:stove
+    options:
+      - Auto
+      - Morning
+      - Bright
+      - Cooking
+      - Evening
+      - Off
+    initial: Auto
+
+template:
+  - sensor:
+      - name: "Kitchen Recommended Scene"
+        unique_id: kitchen_recommended_scene
+        state: >
+          {% set tod = states('sensor.time_of_day') %}
+          {% if tod == 'Morning' %}
+            Morning
+          {% elif tod == 'Afternoon' %}
+            Bright
+          {% elif tod == 'Evening' %}
+            Cooking
+          {% else %}
+            Evening
+          {% endif %}
+      - name: "Kitchen Lighting Mode"
+        unique_id: kitchen_lighting_mode
+        state: >
+          {% if is_state('input_boolean.room_automation_enabled_kitchen', 'off') %}
+            Automation Paused
+          {% elif is_state('input_boolean.room_manual_hold_kitchen', 'on') %}
+            Manual: {{ states('input_select.room_scene_kitchen') }}
+          {% else %}
+            Auto: {{ states('sensor.kitchen_recommended_scene') }}
+          {% endif %}
+
+script:
+  room_apply_scene_kitchen:
+    alias: "Room: Apply Kitchen Scene"
+    mode: restart
+    fields:
+      scene_name:
+        description: "Scene to apply; Auto falls back to the recommended scene."
+        example: "Cooking"
+    sequence:
+      - variables:
+          selected_scene: "{{ scene_name | default(states('input_select.room_scene_kitchen'), true) }}"
+          effective_scene: >
+            {% if selected_scene in ['unknown', 'unavailable', '', none] %}
+              {{ states('sensor.kitchen_recommended_scene') }}
+            {% elif selected_scene == 'Auto' %}
+              {{ states('sensor.kitchen_recommended_scene') }}
+            {% else %}
+              {{ selected_scene }}
+            {% endif %}
+          target_all: >
+            {{ ['group.lights_adaptive_kitchen', 'group.lights_ambient_kitchen']
+               | select('has_value') | list }}
+      - if: "{{ target_all | count > 0 }}"
+        then:
+          - choose:
+              - conditions: "{{ effective_scene == 'Off' }}"
+                sequence:
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      transition: 2
+              - conditions: "{{ effective_scene == 'Morning' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 70
+                      color_temp_kelvin: 3200
+                      transition: 1
+              - conditions: "{{ effective_scene == 'Evening' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 35
+                      color_temp_kelvin: 2700
+                      transition: 2
+              - conditions: "{{ effective_scene == 'Cooking' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 100
+                      color_temp_kelvin: 4000
+                      transition: 1
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ target_all }}"
+                data:
+                  brightness_pct: 90
+                  color_temp_kelvin: 3600
+                  transition: 1
+
+  room_resume_automation_kitchen:
+    alias: "Room: Resume Kitchen Automation"
+    mode: single
+    sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_kitchen
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.room_scene_kitchen
+        data:
+          option: Auto
+      - if: "{{ is_state('binary_sensor.kitchen_occupied', 'on') }}"
+        then:
+          - action: script.room_apply_scene_kitchen
+
+automation:
+  - alias: "Room: Kitchen Scene Selector"
+    id: room_scene_selector_kitchen
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_select.room_scene_kitchen
+      - platform: state
+        entity_id: input_boolean.room_automation_enabled_kitchen
+        to: "on"
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_kitchen' and trigger.to_state.state != 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.room_manual_hold_kitchen
+              - action: script.room_apply_scene_kitchen
+                data:
+                  scene_name: "{{ trigger.to_state.state }}"
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_kitchen' and trigger.to_state.state == 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.room_manual_hold_kitchen
+              - if: "{{ is_state('binary_sensor.kitchen_occupied', 'on') and is_state('input_boolean.room_automation_enabled_kitchen', 'on') }}"
+                then:
+                  - action: script.room_apply_scene_kitchen
+          - conditions: "{{ trigger.entity_id == 'input_boolean.room_automation_enabled_kitchen' and trigger.to_state.state == 'on' and is_state('binary_sensor.kitchen_occupied', 'on') and is_state('input_boolean.room_manual_hold_kitchen', 'off') }}"
+            sequence:
+              - action: script.room_apply_scene_kitchen
+                data:
+                  scene_name: Auto
+        default: []

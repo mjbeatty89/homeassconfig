@@ -1,0 +1,80 @@
+# packages/room_presence/ohana_suite.yaml
+# =========================================
+# Room: Ohana Suite (Den + Suite Bedroom)
+# Presence Package — Kai's Domain
+# =========================================
+# The Ohana Suite covers the rental/guest area:
+#   - Den (1st floor common area)
+#   - Suite Bedroom (guest room)
+#
+# These are HA area slugs: ohana_suite, den, suite_bedroom
+# The grouper may use different slugs depending on your area names.
+# Adjust entity IDs below to match your actual area slugs.
+#
+# Requires: group.sensors_presence_den or group.sensors_presence_ohana_suite
+#           Adjust 'presence_group' variable to match your setup.
+
+template:
+  - binary_sensor:
+      - name: "Ohana Suite Occupied"
+        unique_id: room_occupied_ohana_suite
+        device_class: occupancy
+        delay_off: "00:10:00"   # Longer grace — guests may step out briefly
+        state: >
+          {{
+            is_state('group.sensors_presence_den', 'on') or
+            is_state('group.sensors_presence_suite_bedroom', 'on') or
+            is_state('binary_sensor.den_occupancy', 'on') or
+            is_state('binary_sensor.1st_floor_guest_room_occupancy', 'on')
+          }}
+        availability: "true"
+
+automation:
+  - alias: "Room: Ohana Suite Light Follow"
+    id: room_light_follow_ohana_suite
+    description: >
+      Conservative rental automation on the main instance. Disabled by default
+      until the suite is split to its own HA instance.
+    mode: single
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.ohana_suite_occupied
+        to: "on"
+        id: occupied
+      - platform: state
+        entity_id: binary_sensor.ohana_suite_occupied
+        to: "off"
+        id: vacant
+    action:
+      - choose:
+          - conditions:
+              - condition: trigger
+                id: occupied
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_ohana_suite
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_ohana_suite
+                state: "off"
+            sequence:
+              - action: script.room_apply_scene_ohana_suite
+                data:
+                  scene_name: Auto
+          - conditions:
+              - condition: trigger
+                id: vacant
+              - condition: state
+                entity_id: input_boolean.room_automation_enabled_ohana_suite
+                state: "on"
+              - condition: state
+                entity_id: input_boolean.room_manual_hold_ohana_suite
+                state: "off"
+            sequence:
+              - action: light.turn_off
+                target:
+                  entity_id:
+                    - group.lights_adaptive_den
+                    - group.lights_adaptive_suite_bedroom
+                    - group.lights_ambient_den
+                data:
+                  transition: 3

@@ -1,0 +1,169 @@
+input_boolean:
+  room_automation_enabled_living_room:
+    name: Living Room Automation Enabled
+    icon: mdi:robot
+    initial: true
+  room_manual_hold_living_room:
+    name: Living Room Manual Hold
+    icon: mdi:hand-back-right
+    initial: false
+
+input_select:
+  room_scene_living_room:
+    name: Living Room Scene
+    icon: mdi:sofa
+    options:
+      - Auto
+      - Bright
+      - Evening
+      - Movie
+      - Party
+      - Off
+    initial: Auto
+
+template:
+  - sensor:
+      - name: "Living Room Recommended Scene"
+        unique_id: living_room_recommended_scene
+        state: >
+          {% set tod = states('sensor.time_of_day') %}
+          {% if tod == 'Morning' %}
+            Bright
+          {% elif tod == 'Afternoon' %}
+            Bright
+          {% elif tod == 'Evening' %}
+            Evening
+          {% else %}
+            Evening
+          {% endif %}
+      - name: "Living Room Lighting Mode"
+        unique_id: living_room_lighting_mode
+        state: >
+          {% if is_state('input_boolean.room_automation_enabled_living_room', 'off') %}
+            Automation Paused
+          {% elif is_state('input_boolean.room_manual_hold_living_room', 'on') %}
+            Manual: {{ states('input_select.room_scene_living_room') }}
+          {% else %}
+            Auto: {{ states('sensor.living_room_recommended_scene') }}
+          {% endif %}
+
+script:
+  room_apply_scene_living_room:
+    alias: "Room: Apply Living Room Scene"
+    mode: restart
+    fields:
+      scene_name:
+        description: "Scene to apply; Auto falls back to the recommended scene."
+        example: "Movie"
+    sequence:
+      - variables:
+          selected_scene: "{{ scene_name | default(states('input_select.room_scene_living_room'), true) }}"
+          effective_scene: >
+            {% if selected_scene in ['unknown', 'unavailable', '', none] %}
+              {{ states('sensor.living_room_recommended_scene') }}
+            {% elif selected_scene == 'Auto' %}
+              {{ states('sensor.living_room_recommended_scene') }}
+            {% else %}
+              {{ selected_scene }}
+            {% endif %}
+          target_all: >
+            {{ ['group.lights_adaptive_living_room', 'group.lights_ambient_living_room']
+               | select('has_value') | list }}
+          target_ambient: >
+            {{ ['group.lights_ambient_living_room'] | select('has_value') | list }}
+      - if: "{{ target_all | count > 0 }}"
+        then:
+          - choose:
+              - conditions: "{{ effective_scene == 'Off' }}"
+                sequence:
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      transition: 2
+              - conditions: "{{ effective_scene == 'Movie' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 18
+                      color_temp_kelvin: 2400
+                      transition: 2
+              - conditions: "{{ effective_scene == 'Party' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 70
+                      color_temp_kelvin: 3000
+                      transition: 1
+              - conditions: "{{ effective_scene == 'Evening' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 42
+                      color_temp_kelvin: 2700
+                      transition: 2
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ target_all }}"
+                data:
+                  brightness_pct: 90
+                  color_temp_kelvin: 3500
+                  transition: 1
+
+  room_resume_automation_living_room:
+    alias: "Room: Resume Living Room Automation"
+    mode: single
+    sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_living_room
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.room_scene_living_room
+        data:
+          option: Auto
+      - if: "{{ is_state('binary_sensor.living_room_occupied', 'on') }}"
+        then:
+          - action: script.room_apply_scene_living_room
+
+automation:
+  - alias: "Room: Living Room Scene Selector"
+    id: room_scene_selector_living_room
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_select.room_scene_living_room
+      - platform: state
+        entity_id: input_boolean.room_automation_enabled_living_room
+        to: "on"
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_living_room' and trigger.to_state.state != 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.room_manual_hold_living_room
+              - action: script.room_apply_scene_living_room
+                data:
+                  scene_name: "{{ trigger.to_state.state }}"
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_living_room' and trigger.to_state.state == 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.room_manual_hold_living_room
+              - if: "{{ is_state('binary_sensor.living_room_occupied', 'on') and is_state('input_boolean.room_automation_enabled_living_room', 'on') }}"
+                then:
+                  - action: script.room_apply_scene_living_room
+          - conditions: "{{ trigger.entity_id == 'input_boolean.room_automation_enabled_living_room' and trigger.to_state.state == 'on' and is_state('binary_sensor.living_room_occupied', 'on') and is_state('input_boolean.room_manual_hold_living_room', 'off') }}"
+            sequence:
+              - action: script.room_apply_scene_living_room
+                data:
+                  scene_name: Auto
+        default: []
