@@ -148,7 +148,7 @@
   description: Owns living room manual scene selection. Manual scene picks enable
     manual hold. Returning the selector to Auto clears manual hold and reapplies the
     dynamic room contract when the room is occupied.
-  triggers:
+  trigger:
   - platform: state
     entity_id: input_select.room_scene_living_room
   actions:
