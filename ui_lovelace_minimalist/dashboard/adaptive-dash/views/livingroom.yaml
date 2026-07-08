@@ -6,6 +6,7 @@ layout:
   grid-template-columns: "1fr 1fr 1fr"
   grid-template-areas: >
     "title1 title1 title1"
+    "title2 title2 title2"
     "card1 card1 card1"
     "card2 card3 card4"
     "card5 card6 ."
@@ -19,6 +20,7 @@ layout:
       grid-template-columns: "1fr 1fr"
       grid-template-areas: |
         "title1 title1"
+        "title2 title2"
         "card1 card1"
         "card2 card3"
         "card4 card5"
