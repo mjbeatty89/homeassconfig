@@ -110,10 +110,13 @@ def assign_entities(token: str, area_map: Dict[str, str]):
     print("ASSIGNING ENTITIES TO AREAS")
     print("="*80)
 
-    # Load analysis
-    exec(open('assign_areas.py').read(), globals())
+    # Load analysis without exec()
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("assign_areas", "assign_areas.py")
+    assign_areas = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(assign_areas)
 
-    high, medium, uncertain = analyze_entities()
+    high, medium, uncertain = assign_areas.analyze_entities()
 
     # Combine high and medium confidence (all confirmed)
     to_assign = high + medium
