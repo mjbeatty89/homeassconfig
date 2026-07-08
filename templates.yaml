@@ -204,7 +204,7 @@
           states('sensor.plant_bed_motion_battery') | float(0),
           states('sensor.little_motion_battery') | float(0)
         ] %}
-        {% set valid = batteries | select('>', 0) | list %}
+        {% set valid = batteries | select('gt', 0) | list %}
         {{ (valid | sum / valid | count) | round(0) if valid | count > 0 else 0 }}
 
   # -------------------------------------------------------------------------
