@@ -15,5 +15,5 @@
     - 10.1.40.0/23: 532abe23f07c40fbb9894032e15a661f
     - 10.1.50.0/23: 532abe23f07c40fbb9894032e15a661f
     - 10.1.99.0/23: 532abe23f07c40fbb9894032e15a661f
-  allow_bypass_login: true
+  allow_bypass_login: false
   # Note that bypass_login only works if one user is authorized
