@@ -63,11 +63,11 @@ Home Assistant Core
   - Top-level files `automations.yaml`, `scripts.yaml`, and `scenes.yaml` are present (currently minimal/empty) and are the primary YAML entry points for logic.
 
 UI and assets
-- `www/` is served as `/local/` by Home Assistant. This repo includes community frontend assets (e.g., `www/community/lovelace-layout-card/`).
+- `www/` is served as `/local/` by Home Assistant, but this repository currently gitignores `www/` and does not track those downloaded community assets.
 - `ui_lovelace_minimalist/` contains the “Minimalist UI” integration and a large set of Lovelace card/overlay/Popup templates under `__ui_minimalist__/`.
 
 Custom integrations (Python)
-- `custom_components/` contains multiple integrations (examples: `hacs`, `frigate`, `browser_mod`, `magic_areas`, `nodered`, `ui_lovelace_minimalist`, `tapo`, `watchman`, etc.).
+- `custom_components/` is gitignored in this repository and treated as HACS-managed/vendor runtime content rather than tracked source.
   - Treat these as vendor code unless intentionally forking—changes here alter integration behavior and require a Home Assistant restart to take effect.
   - Many subfolders contain `__pycache__/` artifacts which are not necessary for source control.
 

@@ -96,7 +96,7 @@
   description: Applies the living room room-contract scene on occupancy and key daypart
     transitions when automation is enabled and manual hold is not active. When the
     room stays vacant for a short period, it fades the room to off.
-  triggers:
+  trigger:
   - platform: state
     entity_id: binary_sensor.living_room_occupied
     to: 'on'

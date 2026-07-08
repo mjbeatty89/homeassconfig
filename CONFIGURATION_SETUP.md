@@ -42,11 +42,11 @@ Your Home Assistant configuration has been completely rebuilt following best pra
 
 3. **HTTP & Security**
    - Trusted proxies for reverse proxy support
-   - Your local network (10.1.30.0/24) whitelisted
+   - Trusted proxy ranges include loopback, LAN ranges, Tailscale, and Docker bridge networks (see `configuration.yaml`)
    - SSL ready (commented out, uncomment when needed)
 
 4. **Recorder & History**
-   - 30-day retention (keeps database lean)
+   - 7-day retention (keeps database lean)
    - Excludes noisy sensors (signal strength, WiFi stats, etc.)
    - Optimized commit interval
 
@@ -72,7 +72,7 @@ Your Home Assistant configuration has been completely rebuilt following best pra
    - Enabled for camera feeds
 
 9. **Text-to-Speech**
-   - Google Translate TTS configured
+   - No YAML TTS provider configured by default
 
 ### Template Sensors (templates.yaml)
 
