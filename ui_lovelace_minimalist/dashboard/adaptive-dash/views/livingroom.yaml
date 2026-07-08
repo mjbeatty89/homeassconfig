@@ -4,10 +4,11 @@ layout_type: "custom:grid-layout"
 layout:
   grid-template-rows: "min-content"
   grid-template-columns: "1fr 1fr 1fr"
-  grid-template-areas: >
+  grid-template-areas: |
     "title1 title1 title1"
     "title2 title2 title2"
     "card1 card1 card1"
+    "title2 title2 title2"
     "card2 card3 card4"
     "card5 card6 ."
     "card7 card8 card9"
@@ -22,6 +23,7 @@ layout:
         "title1 title1"
         "title2 title2"
         "card1 card1"
+        "title2 title2"
         "card2 card3"
         "card4 card5"
         "card6 card7"
@@ -30,7 +32,7 @@ layout:
         "card12 card13"
         "card14 card15"
         "card16 card17"
-        "card18 card19"
+        "card18 card18"
 view_layout:
   grid-area: "livingroom"
 cards:
