@@ -151,7 +151,7 @@
   trigger:
   - platform: state
     entity_id: input_select.room_scene_living_room
-  actions:
+  action:
   - choose:
     - conditions:
       - condition: state
