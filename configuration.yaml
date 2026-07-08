@@ -28,16 +28,10 @@ homeassistant:
 http:
   use_x_forwarded_for: true
   trusted_proxies:
+    # Only list reverse proxies that actually terminate/forward requests to HA.
+    # Avoid broad LAN/VPN CIDRs here; otherwise any client on those networks can spoof X-Forwarded-For.
     - 127.0.0.1
     - ::1
-    # LAN subnets
-    - 10.1.10.0/23
-    - 10.1.20.0/26
-    - 10.1.30.0/23
-    - 10.1.40.0/23
-    # Tailscale CGNAT block (covers any Tailscale peer access)
-    - 100.64.0.0/10
-    # HA addon / Docker bridge networks (Cloudflared addon lives here)
     - 172.30.0.0/16
 
 # ============================================================================
