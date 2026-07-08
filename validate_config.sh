@@ -95,8 +95,25 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 # Check if Python YAML module is available
 if command -v python3 &> /dev/null; then
     python3 << 'PYEOF'
-import yaml
 import sys
+
+try:
+    import yaml
+except ImportError:
+    print("❌ PyYAML is not installed (pip install pyyaml); cannot validate YAML syntax")
+    sys.exit(1)
+
+class IgnoreHATagsLoader(yaml.SafeLoader):
+    pass
+
+def _ignore_ha_tags(loader, tag_suffix, node):
+    if isinstance(node, yaml.ScalarNode):
+        return loader.construct_scalar(node)
+    if isinstance(node, yaml.SequenceNode):
+        return loader.construct_sequence(node)
+    return loader.construct_mapping(node)
+
+IgnoreHATagsLoader.add_multi_constructor("!", _ignore_ha_tags)
 
 files = [
     'configuration.yaml',
@@ -110,7 +127,7 @@ errors = 0
 for filename in files:
     try:
         with open(filename, 'r') as f:
-            yaml.safe_load(f)
+            yaml.load(f, Loader=IgnoreHATagsLoader)
         print(f"✅ {filename} - Valid YAML")
     except yaml.YAMLError as e:
         print(f"❌ {filename} - YAML Error:")
