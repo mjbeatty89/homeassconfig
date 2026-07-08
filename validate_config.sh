@@ -73,17 +73,19 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "Checking Secrets..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-# Check for required secrets
-REQUIRED_SECRETS=("ha_latitude" "ha_longitude" "ha_elevation" "internal_url" "external_url")
+# Check for required secrets (only if secrets.yaml exists)
+if [ -f "secrets.yaml" ]; then
+    REQUIRED_SECRETS=("ha_latitude" "ha_longitude" "ha_elevation" "internal_url" "external_url")
 
-for secret in "${REQUIRED_SECRETS[@]}"; do
-    if grep -q "^${secret}:" secrets.yaml 2>/dev/null; then
-        echo "✅ Secret: $secret"
-    else
-        echo "❌ Secret missing: $secret"
-        ERRORS=$((ERRORS + 1))
-    fi
-done
+    for secret in "${REQUIRED_SECRETS[@]}"; do
+        if grep -q "^${secret}:" secrets.yaml; then
+            echo "✅ Secret: $secret"
+        else
+            echo "❌ Secret missing: $secret"
+            ERRORS=$((ERRORS + 1))
+        fi
+    done
+fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
