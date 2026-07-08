@@ -11,11 +11,14 @@ system_cycle_room_light_selection:
       helper_entity: input_text.selected_light_{{ room_slug }}
       entity_list: '{{ state_attr(group_entity, ''entity_id'') }}'
       current_selection: '{{ states(helper_entity) }}'
-      next_index: "{% if entity_list and current_selection in entity_list %}\n  {%
-        set idx = entity_list.index(current_selection) %}\n  {% set next_idx = idx
-        + 1 %}\n  {% if next_idx >= entity_list | length %} 0 {% else %} {{ next_idx
-        }} {% endif %}\n{% else %}\n  0\n{% endif %}\n"
-      next_entity: '{{ entity_list[next_index] if entity_list else none }}'
+      next_index: >
+        {% if entity_list and current_selection in entity_list %}
+          {% set idx = entity_list.index(current_selection) %}
+          {{ (idx + 1) % (entity_list | length) }}
+        {% else %}
+          0
+        {% endif %}
+      next_entity: "{{ entity_list[next_index | int(0)] if entity_list else none }}"
   - if: '{{ next_entity is not none }}'
     then:
     - action: input_text.set_value
