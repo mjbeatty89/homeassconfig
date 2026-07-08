@@ -124,7 +124,7 @@
   - condition: state
     entity_id: input_boolean.room_manual_hold_living_room
     state: 'off'
-  actions:
+  action:
   - choose:
     - conditions:
       - condition: trigger
