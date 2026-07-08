@@ -146,7 +146,7 @@ mqtt:
       unique_id: "ikea_4_button_remote_action_manual"
       state_topic: "zigbee2mqtt/ikea_4_button_remote"
       value_template: "{{ value_json.action }}"
-      expire_after: 0.1
+      expire_after: 1
       icon: "mdi:gesture-tap"
 
 # ============================================================================
