@@ -96,6 +96,11 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 if command -v python3 &> /dev/null; then
     python3 << 'PYEOF'
 import sys
+try:
+    import yaml
+except ModuleNotFoundError:
+    print("⚠️  PyYAML (python 'yaml') not installed - skipping YAML syntax check")
+    sys.exit(0)
 
 try:
     import yaml
