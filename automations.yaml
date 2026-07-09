@@ -21,11 +21,9 @@
             \  | select('search', 'motion|occupancy|presence') \n   | list }}\n"
           ambient_lights: "{{ area_entities(area_slug) \n   | select('match', 'light')
             \n   | select('in', label_entities('ambient')) \n   | list }}\n"
-          adaptive_lights: '{% set all_lights = area_entities(area_slug) | select(''match'',
-            ''light'') | list %} {{ all_lights | reject(''in'', ambient_lights) |
-            list }}
-
-            '
+          adaptive_lights: >-
+            {% set all_lights = area_entities(area_slug) | select('match', 'light') | list %}
+            {{ all_lights | reject('in', ambient_lights) | list }}
       - if: '{{ area_presence | count > 0 }}'
         then:
         - action: group.set
