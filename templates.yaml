@@ -1,0 +1,254 @@
+# Template Sensors and Binary Sensors
+# Used for creating virtual/helper sensors from existing entities
+
+# ============================================================================
+# BINARY SENSORS - Motion and Presence Aggregation
+# ============================================================================
+
+# NOTE: "Office Occupied" has been moved to packages/room_presence/office.yaml
+# with a proper unique_id and 5-minute delay_off.
+# All per-room occupancy sensors now live in packages/room_presence/
+
+- binary_sensor:
+  # -------------------------------------------------------------------------
+  # Any Motion in House
+  # -------------------------------------------------------------------------
+    - name: "Any Motion Detected"
+      unique_id: any_motion_detected
+      device_class: motion
+      state: >
+        {{
+          is_state('binary_sensor.dining_motion', 'on') or
+          is_state('binary_sensor.plant_bed_motion', 'on') or
+          is_state('binary_sensor.den_motion', 'on') or
+          is_state('binary_sensor.1st_floor_guest_room_motion', 'on') or
+          is_state('binary_sensor.primary_bed_couch_motion', 'on') or
+          is_state('binary_sensor.office_motion', 'on') or
+          is_state('binary_sensor.little_motion', 'on') or
+          is_state('binary_sensor.front_porch_motion_aqara_occupancy', 'on') or
+          is_state('binary_sensor.basement_motion_aqara_occupancy', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Living Areas Motion (Main Living Space)
+  # -------------------------------------------------------------------------
+    - name: "Living Areas Motion"
+      unique_id: living_areas_motion
+      device_class: motion
+      state: >
+        {{
+          is_state('binary_sensor.dining_motion', 'on') or
+          is_state('binary_sensor.den_motion', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Bedrooms Motion
+  # -------------------------------------------------------------------------
+    - name: "Bedrooms Motion"
+      unique_id: bedrooms_motion
+      device_class: motion
+      state: >
+        {{
+          is_state('binary_sensor.plant_bed_motion', 'on') or
+          is_state('binary_sensor.primary_bed_couch_motion', 'on') or
+          is_state('binary_sensor.1st_floor_guest_room_motion', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Rental Area Motion (Den + Suite)
+  # -------------------------------------------------------------------------
+    - name: "Rental Area Motion"
+      unique_id: rental_area_motion
+      device_class: motion
+      state: >
+        {{
+          is_state('binary_sensor.den_motion', 'on') or
+          is_state('binary_sensor.1st_floor_guest_room_motion', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Outdoor Motion
+  # -------------------------------------------------------------------------
+    - name: "Outdoor Motion"
+      unique_id: outdoor_motion
+      device_class: motion
+      state: >
+        {{
+          is_state('binary_sensor.front_porch_motion_aqara_occupancy', 'on') or
+          is_state('binary_sensor.basement_motion_aqara_occupancy', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Any Occupancy in House
+  # -------------------------------------------------------------------------
+    - name: "Any Room Occupied"
+      unique_id: any_room_occupied
+      device_class: occupancy
+      state: >
+        {{
+          is_state('binary_sensor.den_occupancy', 'on') or
+          is_state('binary_sensor.1st_floor_guest_room_occupancy', 'on') or
+          is_state('binary_sensor.little_motion_occupancy', 'on') or
+          is_state('binary_sensor.magic_areas_presence_tracking_living_room_area_state', 'on') or
+          is_state('binary_sensor.magic_areas_presence_tracking_office_area_state', 'on') or
+          is_state('binary_sensor.magic_areas_presence_tracking_master_bedroom_area_state', 'on') or
+          is_state('binary_sensor.magic_areas_presence_tracking_kitchen_area_state', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Home Occupied (Anyone Home)
+  # -------------------------------------------------------------------------
+    - name: "Home Occupied"
+      unique_id: home_occupied
+      device_class: occupancy
+      state: >
+        {{
+          is_state('binary_sensor.any_room_occupied', 'on') or
+          is_state('binary_sensor.any_motion_detected', 'on')
+        }}
+
+  # -------------------------------------------------------------------------
+  # Night Mode (After 10 PM, before 6 AM)
+  # -------------------------------------------------------------------------
+    - name: "Night Mode"
+      unique_id: night_mode
+      state: >
+        {% set current_hour = now().hour %}
+        {{ current_hour >= 22 or current_hour < 6 }}
+
+  # -------------------------------------------------------------------------
+  # Rental Suite Occupied (Guests Present)
+  # -------------------------------------------------------------------------
+    - name: "Rental Suite Occupied"
+      unique_id: rental_suite_occupied
+      device_class: occupancy
+      state: >
+        {{
+          is_state('binary_sensor.den_occupancy', 'on') or
+          is_state('binary_sensor.1st_floor_guest_room_occupancy', 'on') or
+          is_state('binary_sensor.magic_areas_presence_tracking_suite_den_area_state', 'on')
+        }}
+
+# ============================================================================
+# SENSORS - Additional Helpers
+# ============================================================================
+
+- sensor:
+    - name: "DTE Export Power"
+      unique_id: dte_export_power
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      state: >
+        {% set demand = states('sensor.dte_instant_demand') | float(0) %}
+        {% if demand < 0 %}
+          {{ demand | abs }}
+        {% else %}
+          0
+        {% endif %}
+      availability: "{{ states('sensor.dte_instant_demand') | is_number }}"
+          
+    - name: "DTE Current Rate"
+      unique_id: dte_current_rate
+      unit_of_measurement: "USD/kWh"
+      state_class: measurement
+      state: >
+        {% set t = now() %}
+        {# DTE Peak is Mon-Fri, 3PM (15) to 7PM (19) #}
+        {% set is_weekday = t.weekday() < 5 %}
+        {% set is_peak_time = t.hour >= 15 and t.hour < 19 %}
+        {% set is_summer = t.month >= 6 and t.month <= 9 %}
+
+        {# SUMMER RATES (June-Sept) - Estimates, update when you get a summer bill #}
+        {% if is_summer %}
+          {% if is_weekday and is_peak_time %}
+            0.246
+          {% else %}
+            0.195
+          {% endif %}
+        
+        {# WINTER RATES (Oct-May) - Calculated from your Oct bill #}
+        {% else %}
+          {% if is_weekday and is_peak_time %}
+            0.202
+          {% else %}
+            0.187
+          {% endif %}
+        {% endif %}
+
+    - name: "DTE Export Rate"
+      unique_id: dte_export_rate
+      unit_of_measurement: "USD/kWh"
+      state: >
+        {% set t = now() %}
+        {% set is_weekday = t.weekday() < 5 %}
+        {% set is_peak_time = t.hour >= 15 and t.hour < 19 %}
+        
+        {# Rates from your bill's 'Outflow Credit' section #}
+        {% if is_weekday and is_peak_time %}
+          0.105
+        {% else %}
+          0.090
+        {% endif %}
+      
+  # -------------------------------------------------------------------------
+  # Motion Sensors Battery Levels (Average)
+  # -------------------------------------------------------------------------
+    - name: "Motion Sensors Average Battery"
+      unique_id: motion_sensors_avg_battery
+      unit_of_measurement: "%"
+      state_class: measurement
+      state: >
+        {% set batteries = [
+          states('sensor.dining_motion_battery') | float(0),
+          states('sensor.plant_bed_motion_battery') | float(0),
+          states('sensor.little_motion_battery') | float(0)
+        ] %}
+        {% set valid = batteries | select('gt', 0) | list %}
+        {{ (valid | sum / valid | count) | round(0) if valid | count > 0 else 0 }}
+
+  # -------------------------------------------------------------------------
+  # Active Motion Sensors Count
+  # -------------------------------------------------------------------------
+    - name: "Active Motion Sensors"
+      unique_id: active_motion_sensors_count
+      state: >
+        {{
+          [
+            states('binary_sensor.dining_motion'),
+            states('binary_sensor.plant_bed_motion'),
+            states('binary_sensor.den_motion'),
+            states('binary_sensor.1st_floor_guest_room_motion'),
+            states('binary_sensor.primary_bed_couch_motion'),
+            states('binary_sensor.office_motion'),
+            states('binary_sensor.little_motion')
+          ] | select('eq', 'on') | list | count
+        }}
+
+  # -------------------------------------------------------------------------
+  # Time of Day
+  # -------------------------------------------------------------------------
+    - name: "Time of Day"
+      unique_id: time_of_day
+      state: >
+        {% set hour = now().hour %}
+        {% if hour >= 6 and hour < 12 %}
+          Morning
+        {% elif hour >= 12 and hour < 17 %}
+          Afternoon
+        {% elif hour >= 17 and hour < 22 %}
+          Evening
+        {% else %}
+          Night
+        {% endif %}
+      icon: >
+        {% set hour = now().hour %}
+        {% if hour >= 6 and hour < 12 %}
+          mdi:weather-sunny
+        {% elif hour >= 12 and hour < 17 %}
+          mdi:weather-partly-cloudy
+        {% elif hour >= 17 and hour < 22 %}
+          mdi:weather-sunset
+        {% else %}
+          mdi:weather-night
+        {% endif %}

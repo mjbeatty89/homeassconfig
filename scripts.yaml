@@ -1,0 +1,362 @@
+system_cycle_room_light_selection:
+  alias: 'System: Cycle Room Light Selection'
+  description: Cycles the cursor to the next light in the adaptive group.
+  fields:
+    room_slug:
+      description: Room slug (e.g. office)
+      example: office
+  sequence:
+  - variables:
+      group_entity: group.lights_adaptive_{{ room_slug }}
+      helper_entity: input_text.selected_light_{{ room_slug }}
+      entity_list: '{{ state_attr(group_entity, ''entity_id'') }}'
+      current_selection: '{{ states(helper_entity) }}'
+      next_index: >
+        {% if entity_list and current_selection in entity_list %}
+          {% set idx = entity_list.index(current_selection) %}
+          {{ (idx + 1) % (entity_list | length) }}
+        {% else %}
+          0
+        {% endif %}
+      next_entity: "{{ entity_list[next_index | int(0)] if entity_list else none }}"
+  - if: '{{ next_entity is not none }}'
+    then:
+    - action: input_text.set_value
+      target:
+        entity_id: '{{ helper_entity }}'
+      data:
+        value: '{{ next_entity }}'
+    - action: light.turn_on
+      target:
+        entity_id: '{{ next_entity }}'
+      data:
+        flash: short
+phone_finder:
+  alias: 'Emergency: Find Matt''s iPhone'
+  icon: mdi:cellphone-sound
+  mode: restart
+  sequence:
+  - repeat:
+      count: 10
+      sequence:
+      - action: notify.mobile_app_matt_bs_phone
+        data:
+          title: "\U0001F50A LOCATOR BEACON"
+          message: I AM HERE. COME FIND ME.
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1.0
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 2
+          milliseconds: 0
+living_room_apply_contract_scene:
+  alias: 'Contract: Apply Living Room Scene'
+  description: Tailored living room lighting contract with warm ambient defaults,
+    conservative late-night behavior, and explicit bright-task/manual scenes. Screen
+    movement is intentionally excluded until the RF screen direction is verified.
+  icon: mdi:sofa-outline
+  mode: restart
+  fields:
+    scene_name:
+      name: Scene Name
+      description: Target living room scene. Auto resolves based on time and daylight
+        context.
+      selector:
+        text:
+  sequence:
+  - variables:
+      requested_scene: '{{ scene_name | default(states(''input_select.room_scene_living_room''),
+        true) }}'
+      auto_scene: "{% set hour = now().hour %}{% if hour >= 23 or hour < 6 %}Nightlight{% elif is_state('sun.sun', 'above_horizon') and hour < 11 %}Morning{% elif is_state('sun.sun', 'above_horizon') %}Daylight{% else %}Cozy{% endif %}"
+      resolved_scene: '{{ auto_scene if requested_scene == ''Auto'' else requested_scene
+        }}'
+      cloudy_weather: '{{ states(''weather.forecast_home'') in [''cloudy'', ''fog'',
+        ''hail'', ''lightning-rainy'', ''partlycloudy'', ''pouring'', ''rainy'', ''snowy'']
+        }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Morning'' }}'
+      sequence:
+      - action: cover.open_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ cloudy_weather }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.living_room_ambient_lights
+            data:
+              transition: 2
+              brightness_pct: 24
+          - action: light.turn_on
+            target:
+              entity_id: light.sectional_lamp
+            data:
+              transition: 2
+              brightness_pct: 24
+              color_temp_kelvin: 3200
+            continue_on_error: true
+        default:
+        - action: light.turn_on
+          target:
+            entity_id: light.living_room_ambient_lights
+          data:
+            transition: 2
+            brightness_pct: 12
+        - action: light.turn_on
+          target:
+            entity_id: light.sectional_lamp
+          data:
+            transition: 2
+            brightness_pct: 12
+            color_temp_kelvin: 3400
+          continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Daylight'' }}'
+      sequence:
+      - action: cover.open_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 2
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Cozy'' }}'
+      sequence:
+      - action: cover.close_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 2
+          brightness_pct: 34
+      - action: light.turn_on
+        target:
+          entity_id: light.sectional_lamp
+        data:
+          transition: 2
+          brightness_pct: 34
+          color_temp_kelvin: 2500
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Hosting'' }}'
+      sequence:
+      - action: cover.close_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 2
+          brightness_pct: 56
+      - action: light.turn_on
+        target:
+          entity_id: light.sectional_lamp
+        data:
+          transition: 2
+          brightness_pct: 56
+          color_temp_kelvin: 2700
+        continue_on_error: true
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_light_switch
+        data:
+          transition: 1
+          brightness_pct: 30
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''TV Time'' }}'
+      sequence:
+      - action: cover.close_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 2
+          brightness_pct: 18
+      - action: light.turn_on
+        target:
+          entity_id: light.sectional_lamp
+        data:
+          transition: 2
+          brightness_pct: 18
+          color_temp_kelvin: 2300
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Bright Task'' }}'
+      sequence:
+      - action: cover.open_cover
+        target:
+          entity_id:
+          - cover.living_front_left_blind
+          - cover.living_front_right_blind
+          - cover.living_west_left_blind
+          - cover.living_west_right_blind
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 1
+          brightness_pct: 72
+      - action: light.turn_on
+        target:
+          entity_id: light.sectional_lamp
+        data:
+          transition: 1
+          brightness_pct: 72
+          color_temp_kelvin: 3600
+        continue_on_error: true
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_light_switch
+        data:
+          transition: 1
+          brightness_pct: 100
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Nightlight'' }}'
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+      - action: light.turn_on
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 2
+          brightness_pct: 6
+      - action: light.turn_on
+        target:
+          entity_id: light.sectional_lamp
+        data:
+          transition: 2
+          brightness_pct: 6
+          color_temp_kelvin: 2200
+        continue_on_error: true
+    - conditions:
+      - condition: template
+        value_template: '{{ resolved_scene == ''Off'' }}'
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_ambient_lights
+        data:
+          transition: 3
+      - action: light.turn_off
+        target:
+          entity_id: light.living_room_light_switch
+        continue_on_error: true
+    default:
+    - action: light.turn_off
+      target:
+        entity_id: light.living_room_light_switch
+      continue_on_error: true
+    - action: light.turn_on
+      target:
+        entity_id: light.living_room_ambient_lights
+      data:
+        transition: 2
+        brightness_pct: 34
+    - action: light.turn_on
+      target:
+        entity_id: light.sectional_lamp
+      data:
+        transition: 2
+        brightness_pct: 34
+        color_temp_kelvin: 2500
+      continue_on_error: true
+living_room_resume_contract_automation:
+  alias: 'Contract: Resume Living Room Automation'
+  description: Clears manual hold, returns the living room scene selector to Auto,
+    and reapplies the room contract if the room is occupied.
+  icon: mdi:autorenew
+  mode: restart
+  sequence:
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.room_manual_hold_living_room
+  - action: input_select.select_option
+    target:
+      entity_id: input_select.room_scene_living_room
+    data:
+      option: Auto
+  - if:
+    - condition: state
+      entity_id: binary_sensor.living_room_occupied
+      state: 'on'
+    - condition: state
+      entity_id: input_boolean.room_automation_enabled_living_room
+      state: 'on'
+    then:
+    - action: script.living_room_apply_contract_scene
+      data:
+        scene_name: Auto
+    else:
+    - action: light.turn_off
+      target:
+        entity_id: light.living_room_ambient_lights
+      data:
+        transition: 2
+    - action: light.turn_off
+      target:
+        entity_id: light.living_room_light_switch
+      continue_on_error: true

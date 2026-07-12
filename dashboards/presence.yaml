@@ -1,0 +1,40 @@
+title: Presence
+views:
+  - title: Overview
+    path: overview
+    icon: mdi:account-group
+    cards:
+      - type: entities
+        title: Whole Home
+        show_header_toggle: false
+        entities:
+          - binary_sensor.home_occupied
+          - binary_sensor.any_room_occupied
+          - binary_sensor.any_motion_detected
+          - binary_sensor.night_mode
+          - sensor.time_of_day
+          - sensor.active_motion_sensors
+      - type: entities
+        title: Room Occupancy
+        show_header_toggle: false
+        entities:
+          - binary_sensor.living_room_occupied
+          - binary_sensor.kitchen_occupied
+          - binary_sensor.office_occupied
+          - binary_sensor.primary_bedroom_occupied
+          - binary_sensor.ohana_suite_occupied
+      - type: entities
+        title: Lighting Modes
+        show_header_toggle: false
+        entities:
+          - sensor.living_room_lighting_mode
+          - sensor.kitchen_lighting_mode
+          - sensor.office_lighting_mode
+          - sensor.primary_bedroom_lighting_mode
+          - sensor.ohana_suite_lighting_mode
+      - type: markdown
+        content: |
+          ## Presence Notes
+
+          - `Manual Hold` means a room was intentionally overridden and should not auto-react.
+          - `Rental Automation Held On Main HA` is the expected default until the suite moves to its own Home Assistant instance.

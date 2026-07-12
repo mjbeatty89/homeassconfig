@@ -1,0 +1,35 @@
+title: Rental Suite
+views:
+  - title: Suite
+    path: suite
+    icon: mdi:home-floor-1
+    cards:
+      - type: markdown
+        content: |
+          ## Rental Suite Guardrail
+
+          This dashboard is the stable control surface for Den + Suite Bedroom + Suite Bathroom.
+
+          Main-instance automation is intentionally conservative here and defaults to held/off until the dedicated Proxmox Home Assistant instance is ready.
+      - type: entities
+        title: Rental Status
+        show_header_toggle: false
+        entities:
+          - binary_sensor.ohana_suite_occupied
+          - sensor.ohana_suite_lighting_mode
+          - input_boolean.room_automation_enabled_ohana_suite
+          - input_boolean.room_manual_hold_ohana_suite
+          - input_select.room_scene_ohana_suite
+      - type: entities
+        title: Direct Controls
+        show_header_toggle: false
+        entities:
+          - script.room_apply_scene_ohana_suite
+          - script.room_resume_automation_ohana_suite
+      - type: entities
+        title: Suite Presence Detail
+        show_header_toggle: false
+        entities:
+          - binary_sensor.den_occupancy
+          - binary_sensor.1st_floor_guest_room_occupancy
+          - binary_sensor.rental_suite_occupied

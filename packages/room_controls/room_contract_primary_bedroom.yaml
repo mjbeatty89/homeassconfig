@@ -1,0 +1,180 @@
+input_boolean:
+  room_automation_enabled_primary_bedroom:
+    name: Primary Bedroom Automation Enabled
+    icon: mdi:robot
+    initial: true
+  room_manual_hold_primary_bedroom:
+    name: Primary Bedroom Manual Hold
+    icon: mdi:hand-back-right
+    initial: false
+
+input_select:
+  room_scene_primary_bedroom:
+    name: Primary Bedroom Scene
+    icon: mdi:bed-king
+    options:
+      - Auto
+      - Wake
+      - Reading
+      - Wind Down
+      - Sleep
+      - Off
+    initial: Auto
+
+template:
+  - sensor:
+      - name: "Primary Bedroom Recommended Scene"
+        unique_id: primary_bedroom_recommended_scene
+        state: >
+          {% set tod = states('sensor.time_of_day') %}
+          {% if tod == 'Morning' %}
+            Wake
+          {% elif tod == 'Afternoon' %}
+            Reading
+          {% elif tod == 'Evening' %}
+            Wind Down
+          {% else %}
+            Sleep
+          {% endif %}
+      - name: "Primary Bedroom Lighting Mode"
+        unique_id: primary_bedroom_lighting_mode
+        state: >
+          {% if is_state('input_boolean.room_automation_enabled_primary_bedroom', 'off') %}
+            Automation Paused
+          {% elif is_state('input_boolean.room_manual_hold_primary_bedroom', 'on') %}
+            Manual: {{ states('input_select.room_scene_primary_bedroom') }}
+          {% else %}
+            Auto: {{ states('sensor.primary_bedroom_recommended_scene') }}
+          {% endif %}
+
+script:
+  room_apply_scene_primary_bedroom:
+    alias: "Room: Apply Primary Bedroom Scene"
+    mode: restart
+    fields:
+      scene_name:
+        description: "Scene to apply; Auto falls back to the recommended scene."
+        example: "Wind Down"
+    sequence:
+      - variables:
+          selected_scene: "{{ scene_name | default(states('input_select.room_scene_primary_bedroom'), true) }}"
+          effective_scene: >
+            {% if selected_scene in ['unknown', 'unavailable', '', none] %}
+              {{ states('sensor.primary_bedroom_recommended_scene') }}
+            {% elif selected_scene == 'Auto' %}
+              {{ states('sensor.primary_bedroom_recommended_scene') }}
+            {% else %}
+              {{ selected_scene }}
+            {% endif %}
+          target_all: >
+            {{ ['group.lights_adaptive_primary_bedroom', 'group.lights_ambient_primary_bedroom']
+               | select('has_value') | list }}
+      - if: "{{ target_all | count > 0 }}"
+        then:
+          - choose:
+              - conditions: "{{ effective_scene == 'Off' }}"
+                sequence:
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      transition: 4
+              - conditions: "{{ effective_scene == 'Sleep' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 5
+                      color_temp_kelvin: 2200
+                      transition: 4
+              - conditions: "{{ effective_scene == 'Wind Down' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 18
+                      color_temp_kelvin: 2400
+                      transition: 3
+              - conditions: "{{ effective_scene == 'Reading' }}"
+                sequence:
+                  - action: light.turn_on
+                    target:
+                      entity_id: "{{ target_all }}"
+                    data:
+                      brightness_pct: 40
+                      color_temp_kelvin: 3000
+                      transition: 2
+            default:
+              - action: light.turn_on
+                target:
+                  entity_id: "{{ target_all }}"
+                data:
+                  brightness_pct: 25
+                  color_temp_kelvin: 2700
+                  transition: 2
+
+  room_resume_automation_primary_bedroom:
+    alias: "Room: Resume Primary Bedroom Automation"
+    mode: single
+    sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_primary_bedroom
+      - action: input_select.select_option
+        target:
+          entity_id: input_select.room_scene_primary_bedroom
+        data:
+          option: Auto
+      - if: >
+          {{ is_state('binary_sensor.primary_bedroom_occupied', 'on')
+             and is_state('switch.adaptive_lighting_sleep_mode_primary_bedroom', 'off')
+             and is_state('binary_sensor.night_mode', 'off') }}
+        then:
+          - action: script.room_apply_scene_primary_bedroom
+
+automation:
+  - alias: "Room: Primary Bedroom Scene Selector"
+    id: room_scene_selector_primary_bedroom
+    mode: restart
+    trigger:
+      - platform: state
+        entity_id: input_select.room_scene_primary_bedroom
+      - platform: state
+        entity_id: input_boolean.room_automation_enabled_primary_bedroom
+        to: "on"
+    action:
+      - choose:
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_primary_bedroom' and trigger.to_state.state != 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.room_manual_hold_primary_bedroom
+              - action: script.room_apply_scene_primary_bedroom
+                data:
+                  scene_name: "{{ trigger.to_state.state }}"
+          - conditions: "{{ trigger.entity_id == 'input_select.room_scene_primary_bedroom' and trigger.to_state.state == 'Auto' }}"
+            sequence:
+              - action: input_boolean.turn_off
+                target:
+                  entity_id: input_boolean.room_manual_hold_primary_bedroom
+              - if: >
+                  {{ is_state('binary_sensor.primary_bedroom_occupied', 'on')
+                     and is_state('input_boolean.room_automation_enabled_primary_bedroom', 'on')
+                     and is_state('switch.adaptive_lighting_sleep_mode_primary_bedroom', 'off')
+                     and is_state('binary_sensor.night_mode', 'off') }}
+                then:
+                  - action: script.room_apply_scene_primary_bedroom
+          - conditions: >
+              {{ trigger.entity_id == 'input_boolean.room_automation_enabled_primary_bedroom'
+                 and trigger.to_state.state == 'on'
+                 and is_state('binary_sensor.primary_bedroom_occupied', 'on')
+                 and is_state('input_boolean.room_manual_hold_primary_bedroom', 'off')
+                 and is_state('switch.adaptive_lighting_sleep_mode_primary_bedroom', 'off')
+                 and is_state('binary_sensor.night_mode', 'off') }}
+            sequence:
+              - action: script.room_apply_scene_primary_bedroom
+                data:
+                  scene_name: Auto
+        default: []

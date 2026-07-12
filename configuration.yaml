@@ -1,0 +1,206 @@
+# Home Assistant Configuration
+# Multi-Agent Smart Home Architecture
+# See ARCHITECTURE.md for design philosophy
+default_config:
+
+# ============================================================================
+# CORE HOMEASSISTANT SETTINGS
+# ============================================================================
+
+homeassistant:
+  #internal_url: !secret internal_url
+  #external_url: !secret external_url
+
+  # Allowlist for external directories (if needed)
+  allowlist_external_dirs:
+    - /config
+    - /media
+    - /share
+
+  # Modular YAML-owned logic lives in packages/.
+  # This loader is recursive, so packages can be organized by concern.
+  packages: !include_dir_named packages/
+
+# ============================================================================
+# HTTP / SSL CONFIGURATION
+# ============================================================================
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    # Only list reverse proxies that actually terminate/forward requests to HA.
+    # Avoid broad LAN/VPN CIDRs here; otherwise any client on those networks can spoof X-Forwarded-For.
+    - 127.0.0.1
+    - ::1
+    - 172.30.0.0/16
+
+# ============================================================================
+# RECORDER & HISTORY
+# ============================================================================
+
+recorder:
+  purge_keep_days: 7
+  commit_interval: 30
+  exclude:
+    entity_globs:
+      - sensor.sun_*
+      - sensor.*_signal_strength
+      - sensor.*_rssi
+      - sensor.*_wifi_*
+      - sensor.*_estimated_distance # Bermuda BLE distance sensors are very noisy
+      - media_player.*_airplay # AirPlay duplicates unnecessary
+    domains:
+      - update
+      - automation
+      - script
+
+# ============================================================================
+# LOGGER
+# ============================================================================
+
+logger:
+  default: info
+  logs:
+    # homeassistant.components.automation: debug
+    # homeassistant.components.script: debug
+    custom_components.spook: warning
+    custom_components.bps: warning # polls every 10s with no-op messages when idle
+    custom_components.tuya_cloud_ha_bridge: warning # chatty publish_eligible/infer_pid on every cycle
+
+# ============================================================================
+# FRONTEND & THEMES
+# ============================================================================
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+# ============================================================================
+# LOVELACE DASHBOARDS
+# ============================================================================
+
+lovelace:
+  mode: storage
+  dashboards:
+    presence-dashboard:
+      mode: yaml
+      title: Presence
+      icon: mdi:account-group
+      show_in_sidebar: true
+      require_admin: true
+      filename: dashboards/presence.yaml
+    network-dashboard:
+      mode: yaml
+      title: Network
+      icon: mdi:network-outline
+      show_in_sidebar: true
+      require_admin: true
+      filename: dashboards/network.yaml
+    rental-suite-dashboard:
+      mode: yaml
+      title: Rental Suite
+      icon: mdi:home-floor-1
+      show_in_sidebar: true
+      require_admin: false
+      filename: dashboards/rental_suite.yaml
+
+# ============================================================================
+# CONFIGURATION INCLUDES
+# ============================================================================
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+template: !include templates.yaml
+
+# ============================================================================
+# MQTT — DTE Energy Monitoring
+# ============================================================================
+# Broker connection is managed via UI (Settings > Devices & Services > MQTT).
+# Only YAML-defined sensors live here.
+
+mqtt:
+  sensor:
+    - name: "DTE Instant Demand"
+      unique_id: dte_instant_demand
+      state_topic: "event/metering/instantaneous_demand"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      value_template: "{{ value_json.demand | int }}"
+
+    - name: "DTE Total Energy"
+      unique_id: dte_total_energy
+      state_topic: "event/metering/summation/minute"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      value_template: "{{ value_json.value | float / 60000 }}"
+
+    - name: "IKEA 4-Button Remote Action"
+      unique_id: "ikea_4_button_remote_action_manual"
+      state_topic: "zigbee2mqtt/ikea_4_button_remote"
+      value_template: "{{ value_json.action }}"
+      expire_after: 1
+      icon: "mdi:gesture-tap"
+
+# ============================================================================
+# LEVITON
+# ============================================================================
+# DISABLED — decora_wifi platform recursively re-enters login on Python 3.14
+# and can destabilize Core during startup. Re-evaluate after upstream fix.
+# light:
+#   - platform: decora_wifi
+#     username: !secret leviton_username
+#     password: !secret leviton_password
+
+# ============================================================================
+# HOMEKIT BRIDGE
+# ============================================================================
+# Filter keeps us under the 150-device cap.
+# Only expose actionable domains; sensors/media_players eat cap with no benefit.
+
+homekit:
+  - name: HASS Bridge
+    filter:
+      include_domains:
+        - light
+        - switch
+        - climate
+        - cover
+        - fan
+        - lock
+        - alarm_control_panel
+      exclude_entity_globs:
+        - media_player.*
+        - sensor.*
+        - binary_sensor.*browser_mod*
+        - button.*
+        - switch.*do_not_disturb
+        - switch.*adaptive_lighting*
+        - switch.*zigbee2mqtt*
+
+# ============================================================================
+# NOTIFICATIONS
+# ============================================================================
+
+notify:
+  - name: all_devices
+    platform: group
+    services:
+      - service: mobile_app_mjb_iphone
+
+# ============================================================================
+# STREAM (camera feeds)
+# ============================================================================
+
+stream:
+
+# ============================================================================
+# NOTES & MAINTENANCE
+# ============================================================================
+# Last Updated: 2026-06-24
+# Architecture: Multi-Agent Collaborative System
+# See ARCHITECTURE.md for system design philosophy
+#
+# Validate: Settings > System > Restart > Check Configuration
+# Quick reload (automations/scripts/templates): Developer Tools > YAML > Reload All

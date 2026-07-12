@@ -1,0 +1,6 @@
+- type: homeassistant
+- type: trusted_networks
+  trusted_networks:
+    - 127.0.0.1
+    - ::1
+  allow_bypass_login: false

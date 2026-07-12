@@ -1,0 +1,261 @@
+- alias: 'System: Dynamic Asset Grouper v2'
+  description: Builds functional groups for Adaptive Lighting and Presence.
+  mode: single
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: event
+    event_type: call_service
+    event_data:
+      domain: automation
+      service: trigger
+      service_data:
+        entity_id: automation.system_dynamic_asset_grouper_v2
+  action:
+  - repeat:
+      for_each: '{{ areas() }}'
+      sequence:
+      - variables:
+          area_slug: '{{ repeat.item }}'
+          area_presence: |
+            {{ area_entities(area_slug)
+               | select('match', 'binary_sensor')
+               | select('search', 'motion|occupancy|presence')
+               | list }}
+          ambient_lights: |
+            {{ area_entities(area_slug)
+               | select('match', 'light')
+               | select('in', label_entities('ambient'))
+               | list }}
+          adaptive_lights: >-
+            {% set all_lights = area_entities(area_slug) | select('match', 'light') | list %}
+            {{ all_lights | reject('in', ambient_lights) | list }}
+      - if: '{{ area_presence | count > 0 }}'
+        then:
+        - action: group.set
+          data:
+            object_id: sensors_presence_{{ area_slug }}
+            name: '{{ area_name(area_slug) }} Presence'
+            icon: mdi:motion-sensor
+            entities: '{{ area_presence }}'
+            all: false
+      - if: '{{ adaptive_lights | count > 0 }}'
+        then:
+        - action: group.set
+          data:
+            object_id: lights_adaptive_{{ area_slug }}
+            name: '{{ area_name(area_slug) }} Adaptive Target'
+            icon: mdi:theme-light-dark
+            entities: '{{ adaptive_lights }}'
+      - if: '{{ ambient_lights | count > 0 }}'
+        then:
+        - action: group.set
+          data:
+            object_id: lights_ambient_{{ area_slug }}
+            name: '{{ area_name(area_slug) }} Ambient'
+            icon: mdi:lamp
+            entities: '{{ ambient_lights }}'
+  id: 590b95498c0e4424ad717731daaa90d1
+- alias: 'Controller: Office IKEA Remote'
+  trigger:
+  - platform: state
+    entity_id: sensor.ikea_4_button_remote_action
+    not_to:
+    - ''
+    - None
+    - unknown
+    - unavailable
+  action:
+  - variables:
+      room_slug: office
+      selection_helper: input_text.selected_light_office
+  - choose:
+    - conditions: '{{ trigger.to_state.state == ''arrow_right_click'' }}'
+      sequence:
+      - action: script.system_cycle_room_light_selection
+        data:
+          room_slug: '{{ room_slug }}'
+    - conditions: '{{ trigger.to_state.state == ''brightness_up_hold'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ states(selection_helper) }}'
+        data:
+          brightness_step_pct: 10
+    - conditions: '{{ trigger.to_state.state == ''brightness_down_hold'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: '{{ states(selection_helper) }}'
+        data:
+          brightness_step_pct: -10
+    - conditions: '{{ trigger.to_state.state == ''on'' }}'
+      sequence:
+      - action: light.toggle
+        target:
+          entity_id: '{{ states(selection_helper) }}'
+  id: 0c2a000fcff24594b97dabe07505125e
+- id: '1779380197627'
+  alias: 'Contract: Living Room Occupancy Follow'
+  description: Applies the living room room-contract scene on occupancy and key daypart
+    transitions when automation is enabled and manual hold is not active. When the
+    room stays vacant for a short period, it fades the room to off.
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.living_room_occupied
+    to: 'on'
+    id: occupied
+  - platform: state
+    entity_id: binary_sensor.living_room_occupied
+    to: 'off'
+    for: 00:08:00
+    id: vacant
+  - platform: sun
+    event: sunrise
+    offset: 00:30:00
+    id: morning_refresh
+  - platform: sun
+    event: sunset
+    offset: -00:30:00
+    id: dusk_refresh
+  - platform: time
+    at: '23:00:00'
+    id: late_refresh
+  condition:
+  - condition: state
+    entity_id: input_boolean.room_automation_enabled_living_room
+    state: 'on'
+  - condition: state
+    entity_id: input_boolean.room_manual_hold_living_room
+    state: 'off'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: vacant
+      sequence:
+      - action: script.living_room_apply_contract_scene
+        data:
+          scene_name: 'Off'
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.living_room_occupied
+        state: 'on'
+      sequence:
+      - action: script.living_room_apply_contract_scene
+        data:
+          scene_name: Auto
+  mode: restart
+  initial_state: false
+- id: '1779380198855'
+  alias: 'Contract: Living Room Scene Selector'
+  description: Owns living room manual scene selection. Manual scene picks enable
+    manual hold. Returning the selector to Auto clears manual hold and reapplies the
+    dynamic room contract when the room is occupied.
+  trigger:
+  - platform: state
+    entity_id: input_select.room_scene_living_room
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: input_select.room_scene_living_room
+        state: Auto
+      sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.room_manual_hold_living_room
+      - if:
+        - condition: state
+          entity_id: input_boolean.room_automation_enabled_living_room
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.living_room_occupied
+          state: 'on'
+        then:
+        - action: script.living_room_apply_contract_scene
+          data:
+            scene_name: Auto
+    default:
+    - action: input_boolean.turn_on
+      target:
+        entity_id: input_boolean.room_manual_hold_living_room
+    - action: script.living_room_apply_contract_scene
+      data:
+        scene_name: '{{ trigger.to_state.state }}'
+  mode: restart
+  initial_state: false
+- id: '1782189746819'
+  alias: Primary Bedroom Hue Dial
+  description: ''
+  use_blueprint:
+    path: clousberg/hue_tap_dial_media_controls.yaml
+    input:
+      remote: c891fa668a2c780e8201056455a92f85
+      volume_player: media_player.master_bedroom_speaker
+      transport_player: media_player.master_bedroom_speaker
+      dial_mode: smart
+      light_entity: light.corner_trio
+      button_1_short:
+      - action: light.toggle
+        metadata: {}
+        target:
+          device_id: 872d4cf4b4df88a160f779bbe6b56343
+        data:
+          brightness_pct: 76
+          transition: 1
+      button_2_short:
+      - action: light.toggle
+        metadata: {}
+        target:
+          device_id: 2b537df3d929baa1f58c974d1d02580a
+        data:
+          color_temp_kelvin: 2000
+          brightness_pct: 76
+      logbook_enabled: true
+      button_3_short:
+      - action: light.toggle
+        metadata: {}
+        target:
+          entity_id: light.master_bed_fan
+        data:
+          brightness_pct: 72
+          transition: 1
+          color_temp_kelvin: 2000
+      button_4_short:
+      - action: light.toggle
+        metadata: {}
+        target:
+          entity_id: light.primary_bed_hall_dimmer
+        data:
+          transition: 1
+          brightness_pct: 76
+      button_1_long:
+      - action: light.toggle
+        metadata: {}
+        target:
+          entity_id: light.master_bedroom_couch_light
+        data:
+          transition: 1
+          brightness_pct: 30
+      button_2_long:
+      - action: light.toggle
+        metadata: {}
+        target:
+          device_id: 2b537df3d929baa1f58c974d1d02580a
+        data:
+          brightness_pct: 25
+      button_3_long:
+      - action: fan.toggle
+        metadata: {}
+        target:
+          entity_id: fan.master_bed_fan
+        data: {}
+      button_4_long:
+      - action: light.toggle
+        metadata: {}
+        target:
+          entity_id: light.primary_bed_hall_dimmer
+        data:
+          transition: 1
+          brightness_pct: 27
