@@ -1,0 +1,413 @@
+# Instincts generated from https://github.com/mjbeatty89/homeassconfig
+# Generated: 2026-07-12T12:53:14.117Z
+# Version: 2.0
+# NOTE: This file supplements (does not replace) any existing curated instincts.
+# High-confidence manually curated instincts should be preserved alongside these.
+
+---
+id: homeassconfig-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Commit Length
+
+## Action
+
+Keep commit messages concise (~42 characters)
+
+## Evidence
+
+- Average commit message length: 42 chars
+- Based on 22 commits
+
+---
+id: homeassconfig-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: homeassconfig-import-relative
+trigger: "when importing modules"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Import Relative
+
+## Action
+
+Use relative imports for project files
+
+## Evidence
+
+- Import analysis shows relative import pattern
+- Example: import { x } from '../lib/x'
+
+---
+id: homeassconfig-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Export Style
+
+## Action
+
+Prefer named exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: named
+
+---
+id: homeassconfig-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: homeassconfig-workflow-automated-fix-for-pull-request-findings
+trigger: "when doing automated fix for pull request findings"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Workflow Automated Fix For Pull Request Findings
+
+## Action
+
+Follow the automated-fix-for-pull-request-findings workflow:
+1. Receive pull request review with findings.
+2. Apply automated or manual fix to the identified file.
+3. Commit the change with a message referencing the pull request finding and Copilot Autofix.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~10x per month
+- Files: validate_config.sh, ui_lovelace_minimalist/dashboard/ui-lovelace.yaml, ui_lovelace_minimalist/dashboard/adaptive-dash/views/livingroom.yaml
+
+---
+id: homeassconfig-workflow-multi-file-pr-review-fixes
+trigger: "when doing multi file pr review fixes"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Workflow Multi File Pr Review Fixes
+
+## Action
+
+Follow the multi-file-pr-review-fixes workflow:
+1. Review all unresolved PR comments.
+2. Apply fixes across all affected files.
+3. Commit all changes together with a message referencing the PR and review comments.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: CONFIGURATION_SETUP.md, WARP.md, auth_providers.yaml
+
+---
+id: homeassconfig-workflow-secrets-and-sensitive-content-purge
+trigger: "when doing secrets and sensitive content purge"
+confidence: 0.55
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Workflow Secrets And Sensitive Content Purge
+
+## Action
+
+Follow the secrets-and-sensitive-content-purge workflow:
+1. Identify and remove all files containing secrets or sensitive data.
+2. Update .gitignore to prevent future leaks.
+3. Add documentation (e.g., SECRETS_ROTATION.md) with rotation and cleanup procedures.
+4. Commit all removals and documentation updates.
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~1x per month
+- Files: .gitignore, SECRETS_ROTATION.md, various sensitive files (e.g., *.pem, .storage_backup_before_recovery/, theme packs, blueprints, logs)
+
+---
+id: homeassconfig-instinct-file-naming
+trigger: "When creating a new file in the repository."
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct File Naming
+
+## Action
+
+Name the file using snake_case convention.
+
+## Evidence
+
+- Pattern in folderStructure.commonFolders
+- Naming conventions: files = snake_case
+
+---
+id: homeassconfig-instinct-function-naming
+trigger: "When defining a new function in Python code."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Function Naming
+
+## Action
+
+Name the function using camelCase convention.
+
+## Evidence
+
+- Naming conventions: functions = camelCase
+
+---
+id: homeassconfig-instinct-class-naming
+trigger: "When defining a new class in Python code."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Class Naming
+
+## Action
+
+Name the class using PascalCase convention.
+
+## Evidence
+
+- Naming conventions: classes = PascalCase
+
+---
+id: homeassconfig-instinct-constant-naming
+trigger: "When defining a constant in Python code."
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Constant Naming
+
+## Action
+
+Name the constant using SCREAMING_SNAKE_CASE convention.
+
+## Evidence
+
+- Naming conventions: constants = SCREAMING_SNAKE_CASE
+
+---
+id: homeassconfig-instinct-import-style
+trigger: "When importing modules in Python code."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Import Style
+
+## Action
+
+Use relative imports.
+
+## Evidence
+
+- importStyle: relative
+
+---
+id: homeassconfig-instinct-export-style
+trigger: "When exporting modules or functions."
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Export Style
+
+## Action
+
+Use named exports.
+
+## Evidence
+
+- exportStyle: named
+
+---
+id: homeassconfig-instinct-test-location
+trigger: "When adding or updating tests."
+confidence: 0.9
+domain: testing
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Test Location
+
+## Action
+
+Place test files in a separate directory from source code.
+
+## Evidence
+
+- architecture.folderStructure.testLocation: separate
+
+---
+id: homeassconfig-instinct-commit-prefix-fix
+trigger: "When committing a change that fixes a bug or issue."
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Commit Prefix Fix
+
+## Action
+
+Prefix the commit message with 'fix:'.
+
+## Evidence
+
+- commits.prefixes includes 'fix'
+- Example: 'fix: disable trusted_networks bypass login in committed auth provider config'
+
+---
+id: homeassconfig-instinct-commit-reference-pr
+trigger: "When committing changes in response to a pull request review."
+confidence: 0.8
+domain: git
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Commit Reference Pr
+
+## Action
+
+Reference the pull request or review finding in the commit message.
+
+## Evidence
+
+- Example commit: 'fix: address unresolved PR #4 copilot review comments'
+- workflow: automated-fix-for-pull-request-findings
+
+---
+id: homeassconfig-instinct-automated-fix-pr
+trigger: "When a pull request review (often by Copilot) identifies an issue in a specific file."
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Automated Fix Pr
+
+## Action
+
+Apply an automated or manual fix to the identified file and commit with a message referencing the pull request finding and Copilot Autofix.
+
+## Evidence
+
+- workflow: automated-fix-for-pull-request-findings
+- commits: 'fix: address unresolved PR #4 copilot review comments'
+
+---
+id: homeassconfig-instinct-multi-file-pr-fix
+trigger: "When a pull request has multiple unresolved review comments requiring changes in different files."
+confidence: 0.8
+domain: workflow
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Multi File Pr Fix
+
+## Action
+
+Apply fixes across all affected files and commit all changes together with a message referencing the PR and review comments.
+
+## Evidence
+
+- workflow: multi-file-pr-review-fixes
+- commits: 'fix: address unresolved PR #4 copilot review comments'
+
+---
+id: homeassconfig-instinct-secrets-purge
+trigger: "When secrets or sensitive files are accidentally committed and need to be purged from the repository."
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: mjbeatty89/homeassconfig
+---
+
+# Homeassconfig Instinct Secrets Purge
+
+## Action
+
+Remove all files containing secrets or sensitive data, update .gitignore, add documentation for rotation/cleanup, and commit all changes.
+
+## Evidence
+
+- workflow: secrets-and-sensitive-content-purge
+- commit: 'Remove leaked secrets, credentials, and bulk community content'
+
