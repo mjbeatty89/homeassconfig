@@ -53,7 +53,7 @@ Home Assistant will validate the YAML when you restart, but here's what's config
 - ✅ secrets.yaml
 - ✅ templates.yaml
 - ✅ dashboards/rental_suite.yaml
-- ✅ scripts/rental_scenes.yaml
+- ✅ scripts.yaml
 - ✅ All required secrets present
 
 **Potential issues to watch for:**
