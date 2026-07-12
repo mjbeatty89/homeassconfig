@@ -97,15 +97,9 @@ if command -v python3 &> /dev/null; then
 import sys
 try:
     import yaml
-except ModuleNotFoundError:
+except ImportError:
     print("⚠️  PyYAML (python 'yaml') not installed - skipping YAML syntax check")
     sys.exit(0)
-
-try:
-    import yaml
-except ImportError:
-    print("❌ PyYAML is not installed (pip install pyyaml); cannot validate YAML syntax")
-    sys.exit(1)
 
 class IgnoreHATagsLoader(yaml.SafeLoader):
     pass
