@@ -79,8 +79,7 @@ binary_sensor:
 # configuration.yaml includes other files
 template: !include templates.yaml
 automation: !include automations.yaml
-script: !include scripts/rental_scenes.yaml
-
+script: !include scripts.yaml
 # Dashboards registered in lovelace section
 lovelace:
   mode: storage  # Main dashboard is UI-managed
