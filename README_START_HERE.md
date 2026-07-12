@@ -9,7 +9,7 @@ Your Home Assistant configuration has been completely rebuilt and modernized. He
 1. **configuration.yaml** - Complete, well-organized main config
 2. **templates.yaml** - 12 new helper sensors for motion/presence
 3. **dashboards/rental_suite.yaml** - Guest-friendly dashboard
-4. **scripts/rental_scenes.yaml** - Rental area scenes
+4. **scripts.yaml** - Home Assistant scripts (YAML-managed)
 5. **CONFIGURATION_SETUP.md** - Full documentation
 6. **validate_config.sh** - Pre-flight checker
 
