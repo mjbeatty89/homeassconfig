@@ -72,10 +72,7 @@ living_room_apply_contract_scene:
   - variables:
       requested_scene: '{{ scene_name | default(states(''input_select.room_scene_living_room''),
         true) }}'
-      auto_scene: '{% set hour = now().hour %} {% if hour >= 23 or hour < 6 %}Nightlight{%
-        elif is_state(''sun.sun'', ''above_horizon'') and hour < 11 %}Morning{% elif
-        is_state(''sun.sun'', ''above_horizon'') %}Daylight{% else %}Cozy{% endif
-        %}'
+      auto_scene: "{% set hour = now().hour %}{% if hour >= 23 or hour < 6 %}Nightlight{% elif is_state('sun.sun', 'above_horizon') and hour < 11 %}Morning{% elif is_state('sun.sun', 'above_horizon') %}Daylight{% else %}Cozy{% endif %}"
       resolved_scene: '{{ auto_scene if requested_scene == ''Auto'' else requested_scene
         }}'
       cloudy_weather: '{{ states(''weather.forecast_home'') in [''cloudy'', ''fog'',
