@@ -51,7 +51,6 @@ echo "Checking Directories..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 check_dir "dashboards"
-check_dir "scripts"
 check_dir "themes"
 
 echo ""
