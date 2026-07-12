@@ -166,9 +166,10 @@ entities:
 
 ```yaml
 # Guest arrived scene
-service: script.rental_goodnight_scene
-# Pre-configured in scripts/rental_scenes.yaml
-```
+service: script.room_apply_scene_ohana_suite
+data:
+  scene_name: Welcome
+# Defined in packages/room_controls/room_contract_ohana_suite.yaml
 
 ---
 
