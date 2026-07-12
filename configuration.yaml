@@ -200,7 +200,7 @@ stream:
 # ============================================================================
 # Last Updated: 2026-06-24
 # Architecture: Multi-Agent Collaborative System
-# See architecture.md for system design philosophy
+# See ARCHITECTURE.md for system design philosophy
 #
 # Validate: Settings > System > Restart > Check Configuration
 # Quick reload (automations/scripts/templates): Developer Tools > YAML > Reload All
