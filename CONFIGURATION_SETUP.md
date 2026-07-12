@@ -15,8 +15,7 @@ Your Home Assistant configuration has been completely rebuilt following best pra
 ├── templates.yaml              # Template sensors & binary sensors
 ├── automations.yaml            # Automations (UI-managed)
 ├── scenes.yaml                 # Scenes (UI-managed)
-├── scripts/
-│   └── rental_scenes.yaml      # Rental suite scripts
+├── scripts.yaml                # Scripts (YAML-managed)
 ├── dashboards/
 │   └── rental_suite.yaml       # Rental suite dashboard (YAML)
 ├── themes/                     # Frontend themes
