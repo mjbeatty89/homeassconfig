@@ -30,9 +30,8 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
       --name ha-dev ghcr.io/home-assistant/home-assistant:stable
     ```
 
-- Start Zigbee2MQTT using the repo’s config
-  - Uses TCP serial per `zigbee2mqtt/configuration.yaml` and publishes to the configured MQTT broker.
-  - macOS/Linux (zsh/bash):
+- Start Zigbee2MQTT using a local `zigbee2mqtt/` folder
+  - Note: `zigbee2mqtt/` is gitignored in this repo; the bind mount below assumes you have that directory locally on the host.
     ```sh
     docker run --rm -it \
       -v "$PWD/zigbee2mqtt":/app/data \
