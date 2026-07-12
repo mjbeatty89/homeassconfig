@@ -201,7 +201,7 @@ service: script.rental_goodnight_scene
 - **CONFIGURATION_SETUP.md** - Full setup guide with examples
 - **AREA_ASSIGNMENT_README.md** - How to assign entities to rooms
 - **RENTAL_INSTANCE_SETUP.md** - Rental area isolation guide
-- **architecture.md** - Multi-agent system design
+- **ARCHITECTURE.md** - Multi-agent system design
 
 ---
 
