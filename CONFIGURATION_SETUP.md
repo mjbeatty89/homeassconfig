@@ -38,7 +38,7 @@ Your Home Assistant configuration has been completely rebuilt following best pra
 
 3. **HTTP & Security**
    - Trusted proxies for reverse proxy support
-   - Trusted proxy ranges include loopback, LAN ranges, Tailscale, and Docker bridge networks (see `configuration.yaml`)
+   - Trusted proxy ranges include loopback and the Home Assistant Docker network(s) (see `configuration.yaml`)
    - SSL ready (commented out, uncomment when needed)
 
 4. **Recorder & History**
