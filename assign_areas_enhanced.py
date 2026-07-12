@@ -186,7 +186,7 @@ def analyze_entities():
     area_id_to_name = {}
     area_name_to_id = {}
     for area in area_data.get('data', {}).get('areas', []):
-        area_id = area.get('id')
+        area_id = area.get('area_id')
         area_name = area.get('name')
         if area_id and area_name:
             area_id_to_name[area_id] = area_name

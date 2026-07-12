@@ -72,29 +72,41 @@ def create_areas(token: str) -> Dict[str, str]:
     print("="*80)
 
     area_map = {}
+    headers = {
+        "Authorization": f"******",
+        "Content-Type": "application/json",
+    }
 
     for area_config in AREAS:
         area_name = area_config["name"]
         print(f"\n📍 Creating area: {area_name}")
 
-        success = call_service(
-            "homeassistant.create_area",
-            {
-                "name": area_name,
-                "aliases": area_config["aliases"]
-            },
-            token
-        )
-
-        if success:
+        try:
+            response = requests.post(
+                f"{HA_URL}/api/config/area_registry/create",
+                headers=headers,
+                json={"name": area_name},
+                timeout=10,
+            )
+            response.raise_for_status()
             print(f"   ✅ Created successfully")
-        else:
-            print(f"   ⚠️  May already exist (this is OK)")
+        except requests.exceptions.HTTPError as e:
+            if e.response is not None and e.response.status_code in (400, 409):
+                print(f"   ⚠️  May already exist (this is OK)")
+            else:
+                print(f"   ❌ Error creating area: {e}")
+        except requests.exceptions.RequestException as e:
+            print(f"   ❌ Error creating area: {e}")
 
     # Fetch all areas to get IDs
-    headers = {"Authorization": f"Bearer {token}"}
     try:
-        response = requests.get(f"{HA_URL}/api/config/area_registry/list", headers=headers)
+        response = requests.post(
+            f"{HA_URL}/api/config/area_registry/list",
+            headers=headers,
+            json={},
+            timeout=10,
+        )
+        response.raise_for_status()
         areas = response.json()
         for area in areas:
             area_map[area["name"]] = area["area_id"]
@@ -102,7 +114,6 @@ def create_areas(token: str) -> Dict[str, str]:
         print(f"\n❌ Error fetching areas: {e}")
 
     return area_map
-
 
 def assign_entities(token: str, area_map: Dict[str, str]):
     """Assign entities to areas."""

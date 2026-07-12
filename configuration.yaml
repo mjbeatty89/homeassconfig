@@ -86,14 +86,14 @@ lovelace:
       title: Presence
       icon: mdi:account-group
       show_in_sidebar: true
-      require_admin: false
+      require_admin: true
       filename: dashboards/presence.yaml
     network-dashboard:
       mode: yaml
       title: Network
       icon: mdi:network-outline
       show_in_sidebar: true
-      require_admin: false
+      require_admin: true
       filename: dashboards/network.yaml
     rental-suite-dashboard:
       mode: yaml

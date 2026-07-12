@@ -17,10 +17,16 @@
       sequence:
       - variables:
           area_slug: '{{ repeat.item }}'
-          area_presence: "{{ area_entities(area_slug) \n   | select('match', 'binary_sensor')\n
-            \  | select('search', 'motion|occupancy|presence') \n   | list }}\n"
-          ambient_lights: "{{ area_entities(area_slug) \n   | select('match', 'light')
-            \n   | select('in', label_entities('ambient')) \n   | list }}\n"
+          area_presence: |
+            {{ area_entities(area_slug)
+               | select('match', 'binary_sensor')
+               | select('search', 'motion|occupancy|presence')
+               | list }}
+          ambient_lights: |
+            {{ area_entities(area_slug)
+               | select('match', 'light')
+               | select('in', label_entities('ambient'))
+               | list }}
           adaptive_lights: >-
             {% set all_lights = area_entities(area_slug) | select('match', 'light') | list %}
             {{ all_lights | reject('in', ambient_lights) | list }}

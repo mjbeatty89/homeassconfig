@@ -73,17 +73,28 @@ echo "Checking Secrets..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # Check for required secrets (only if secrets.yaml exists)
+# Only check secrets that are actively referenced (not commented out) in configuration.yaml
 if [ -f "secrets.yaml" ]; then
-    REQUIRED_SECRETS=("ha_latitude" "ha_longitude" "ha_elevation" "internal_url" "external_url")
+    REQUIRED_SECRETS=()
+    while IFS= read -r secret_name; do
+        REQUIRED_SECRETS+=("$secret_name")
+    done < <(grep -h '!secret' configuration.yaml templates.yaml automations.yaml scripts.yaml 2>/dev/null \
+             | grep -v '^\s*#' \
+             | grep -oP '(?<=!secret )\S+' \
+             | sort -u)
 
-    for secret in "${REQUIRED_SECRETS[@]}"; do
-        if grep -q "^${secret}:" secrets.yaml; then
-            echo "✅ Secret: $secret"
-        else
-            echo "❌ Secret missing: $secret"
-            ERRORS=$((ERRORS + 1))
-        fi
-    done
+    if [ ${#REQUIRED_SECRETS[@]} -eq 0 ]; then
+        echo "ℹ️  No !secret references found in tracked YAML files"
+    else
+        for secret in "${REQUIRED_SECRETS[@]}"; do
+            if grep -q "^${secret}:" secrets.yaml; then
+                echo "✅ Secret: $secret"
+            else
+                echo "❌ Secret missing: $secret"
+                ERRORS=$((ERRORS + 1))
+            fi
+        done
+    fi
 fi
 
 echo ""

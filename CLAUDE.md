@@ -16,7 +16,7 @@ The configuration is designed around specialized AI agents that own, maintain, a
 
 **Key Principle**: Agents don't just execute - they analyze patterns, detect gaps, and proactively suggest improvements.
 
-See `architecture.md` for complete design philosophy and agent responsibilities.
+See `ARCHITECTURE.md` for complete design philosophy and agent responsibilities.
 
 ## Critical Files & Ownership
 
@@ -212,7 +212,7 @@ Office, Plant Bedroom, Upstairs Bathroom, Primary Bedroom, Primary Bathroom, Pri
 3. Full restart required
 
 ### Adding Scripts/Scenes
-1. Edit `scripts/rental_scenes.yaml` or create new file
+1. Edit `scripts.yaml` or create new file
 2. If new file, include it in `configuration.yaml`
 3. Quick reload or restart
 
@@ -261,7 +261,7 @@ suggestion:
 ## Documentation Map
 
 - `README_START_HERE.md` - Quick start, restart guide
-- `architecture.md` - Multi-agent philosophy and design (READ THIS FIRST)
+- `ARCHITECTURE.md` - Multi-agent philosophy and design (READ THIS FIRST)
 - `CONFIGURATION_SETUP.md` - Configuration details and usage examples
 - `AREA_ASSIGNMENT_README.md` - Area assignment workflow
 - `RENTAL_INSTANCE_SETUP.md` - Rental VM isolation guide
@@ -276,8 +276,7 @@ suggestion:
 ├── secrets.yaml                # Credentials (NEVER commit)
 ├── templates.yaml              # Helper sensors
 ├── automations.yaml            # UI-managed automations
-├── scripts/
-│   └── rental_scenes.yaml      # Rental scripts
+├── scripts.yaml                # Home Assistant scripts
 ├── dashboards/
 │   └── rental_suite.yaml       # YAML dashboards
 ├── themes/                     # Frontend themes
@@ -306,4 +305,4 @@ Each agent has expertise, suggests improvements, and coordinates with others. Th
 
 ---
 
-*For detailed architecture, read `architecture.md`. For quick start, read `README_START_HERE.md`.*
+*For detailed architecture, read `ARCHITECTURE.md`. For quick start, read `README_START_HERE.md`.*
