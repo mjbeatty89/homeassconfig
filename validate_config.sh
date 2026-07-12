@@ -59,7 +59,8 @@ echo "Checking Dashboard Files..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 check_file "dashboards/rental_suite.yaml"
-
+check_file "dashboards/presence.yaml"
+check_file "dashboards/network.yaml"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Checking Script Files..."
