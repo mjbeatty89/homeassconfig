@@ -31,11 +31,8 @@ Your Home Assistant configuration has been completely rebuilt following best pra
 ### Core Settings (configuration.yaml)
 
 1. **Homeassistant Core**
-   - Name: Miller Smart Home
-   - Location: Using secrets for latitude/longitude/elevation
-   - Timezone: America/Detroit
-   - Units: Imperial
-   - URLs: Internal and external from secrets
+   - Name/location/timezone/units are managed via HA UI (storage) in this repo.
+   - Optional internal/external URLs are present but currently commented out (enable with `!secret` if needed).
 
 2. **Default Integrations**
    - Includes all standard HA integrations (automation, history, logbook, etc.)
