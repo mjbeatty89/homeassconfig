@@ -79,7 +79,7 @@ Zigbee2MQTT
 
 Other
 - `appdaemon/` exists for AppDaemon apps (e.g., a vendor “covers manager” app directory). No runtime configuration is defined here in this repo.
-- `packages/openhands/` contains a vendored third-party artifact unrelated to Home Assistant; it is not used by the HA configuration.
+- `packages/openhands/` was previously vendored content; it is gitignored and not part of this repo’s tracked configuration.
 
 ## Workflow tips specific to this repo
 - Primary validation is via the Home Assistant config check and running HA locally with this directory mounted.
