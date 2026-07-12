@@ -23,9 +23,8 @@ See `architecture.md` for complete design philosophy and agent responsibilities.
 | File | Owner Agent | Purpose |
 |------|-------------|---------|
 | `configuration.yaml` | Configuration Lead | Main entry point, includes all components |
-| `templates.yaml` | Template Agent | Helper sensors (motion aggregation, occupancy, time-based logic) |
 | `dashboards/rental_suite.yaml` | Dashboard Agent | Guest-friendly controls for rental area |
-| `scripts/rental_scenes.yaml` | Script Agent | Rental automation scenes |
+| `scripts.yaml` | Script Agent | Home Assistant scripts (YAML-managed) |
 | `automations.yaml` | Automation Agent | Automation rules (UI-managed) |
 | `secrets.yaml` | Configuration Lead | Sensitive credentials (NEVER commit to git) |
 
