@@ -22,6 +22,12 @@ git config --global --add safe.directory "$CONFIG_DIR" 2>/dev/null || true
 # ─── Stage all changes ──────────────────────────────────────
 git add -A
 
+# ─── Safety: refuse to commit likely-secret / HA-state files ─
+if git diff --cached --name-only | grep -E '(^|/)(secrets\.yaml|\.storage/|\.storage_backup_before_recovery/|\.cloud/|ssl/)|(^|/)(\.ha_token)$|(\.pem$|\.key$|\.crt$|\.log$|\.db$)' >/dev/null; then
+  echo "ERROR: Refusing to commit files that commonly contain secrets or HA state. Review staged changes and .gitignore."
+  git restore --staged .
+  exit 1
+fi
 # ─── Commit only if there are staged changes ────────────────
 if ! git diff-index --quiet HEAD --; then
   TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
