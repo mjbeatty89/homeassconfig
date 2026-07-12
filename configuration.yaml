@@ -1,6 +1,6 @@
 # Home Assistant Configuration
 # Multi-Agent Smart Home Architecture
-# See architecture.md for design philosophy
+# See ARCHITECTURE.md for design philosophy
 default_config:
 
 # ============================================================================
