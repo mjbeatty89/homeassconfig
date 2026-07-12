@@ -72,7 +72,7 @@ Your Home Assistant configuration has been completely rebuilt following best pra
 
 ### Template Sensors (templates.yaml)
 
-**11 New Helper Sensors Created:**
+**12 New Helper Sensors Created:**
 
 #### Binary Sensors (Motion & Occupancy):
 
