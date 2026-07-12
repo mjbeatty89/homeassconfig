@@ -56,7 +56,7 @@ Your Home Assistant configuration has been completely rebuilt following best pra
    - **Added YAML dashboard:** "Rental Suite"
      - Filename: `dashboards/rental_suite.yaml`
      - Shows in sidebar
-     - Icon: mdi:home-variant
+     - Icon: mdi:home-floor-1
      - Available to non-admin users
 
 7. **Notifications**
