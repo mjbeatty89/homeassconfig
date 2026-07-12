@@ -115,8 +115,12 @@ IgnoreHATagsLoader.add_multi_constructor("!", _ignore_ha_tags)
 files = [
     'configuration.yaml',
     'templates.yaml',
+    'automations.yaml',
+    'scripts.yaml',
+    'scenes.yaml',
     'dashboards/rental_suite.yaml',
-    'scripts/rental_scenes.yaml'
+    'dashboards/presence.yaml',
+    'dashboards/network.yaml'
 ]
 
 errors = 0
